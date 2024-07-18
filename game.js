@@ -3,8 +3,8 @@ const config = {
   scale: {
     mode: Phaser.Scale.FIT, // este es escalado automatico revisarlo para la ventana completa
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 1000,
-    height: 550,
+    width: 1000,//1920,
+    height: 550,//1080,
   },
   physics: {
     default: "arcade",

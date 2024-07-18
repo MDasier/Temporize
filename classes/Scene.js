@@ -21,14 +21,14 @@ class Scene extends Phaser.Scene {
   
       this.anims.create({
         key: "detenido",
-        frames: this.anims.generateFrameNumbers("player", { start: 0, end: 1 }), //------------animaciones detenido
-        frameRate: 2,
+        frames: this.anims.generateFrameNumbers("player", { start: 0, end: 8 }), //------------animaciones detenido
+        frameRate: 10,
         repeat: -1, // -1 significa que se repite para siempre
       });
       this.anims.create({
         key: "caminar",
-        frames: this.anims.generateFrameNumbers("player", { start: 2, end: 4 }), //animaciones caminando
-        frameRate: 0.5,
+        frames: this.anims.generateFrameNumbers("player", { start: 4, end: 8 }), //animaciones caminando
+        frameRate: 5,
         repeat: -1, // -1 significa que se repite para siempre
       });
   
@@ -39,29 +39,29 @@ class Scene extends Phaser.Scene {
       //plataformas
       platforms = this.physics.add.staticGroup(); //hijos de platafprmas
   
-      /* 
+      
       platforms
-        .create(500, 450, "platforms")
+        .create(500, 380, "platforms")
         .setScale(1.5, 0.3)
         .setSize(150, 35)
         .setOffset(-25, 75); //escaladoo de plataformas
         platforms
-        .create(700, 350, "platforms")
+        .create(700, 280, "platforms")
         .setScale(1.5, 0.3)
         .setSize(150, 35)
         .setOffset(-25, 75); //setsize y setoffset para modificar el hitbox
         platforms
-        .create(500, 540, "platforms")
+        .create(500, 480, "platforms")
         .setScale(7.6, 0.3)
-        .setSize(760, 35)
-        .setOffset(-330, 75);
+        .setSize(800, 35)
+        .setOffset(-400, 75);
       //plataformas.setSize(20,20)
-      */
+      
   
       //jugador
-      player = this.physics.add.sprite(200, 400, "player");
-      player.setScale(1); //escalar el jugador
-      player.setSize(40, 60); //hitbox, modificando el debug de false a true en gamne para visualizarlo
+      player = this.physics.add.sprite(180, 300, "player");
+      player.setScale(0.9); //escalar el jugador
+      player.setSize(30, 90); //hitbox, modificando el debug de false a true en gamne para visualizarlo
       //jugador.setOffset()para cuadrar dentro del hitbox
       player.setCollideWorldBounds(true); //colision con el borde
   
@@ -81,13 +81,13 @@ class Scene extends Phaser.Scene {
         player.setVelocityX(180);
         player.anims.play("caminar", true); //para los sprites
         player.flipX = false; //regula el giro del personaje
-        player.setOffset(2, 2); //para regular el hitbox se copia el anterior
+        player.setOffset(100, 50); //para regular el hitbox se copia el anterior
       } //console.log("presionando");
       else if (cursors.left.isDown) {
         player.setVelocityX(-180);
         player.anims.play("caminar", true); //para los sprites
         player.flipX = true; //gira el personaje, hay que modificar hitbox
-        player.setOffset(2, 2);
+        player.setOffset(100,50);
       } else {
         player.setVelocityX(0);
         player.anims.play("detenido", true);
