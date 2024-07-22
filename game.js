@@ -17,7 +17,3 @@ const config = {
 
 };
 const game = new Phaser.Game(config)
-
-let player
-let platforms
-let cursors

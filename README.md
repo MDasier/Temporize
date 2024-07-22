@@ -1,26 +1,40 @@
-TEMPORIZE BY TESTEO-GAME.
-> Primer proyecto en conjunto.
+
+
+TEMPORIZE by Testeo-games*
+> Primer proyecto en grupo.
 
 
 
-# TODO LIST (e ideas): 
+# TODO list (e ideas): 
 
-- Corregir la altura del hitbox del personaje.
-- Ajustar tamaños de las plataformas y la base del juego.
-- Separar las clases de jugador, enemigos, obstaculos...
-- Añadir el cronometro.
-- Que el juego aparezca oscuro y vaya cogiendo luz para empezar a jugar. A la vez el jugador aparece corriendo desde la parte "no jugable" de la izq. Animacion para el inicio.
-- En modo "endless run" se mueve el fondo sin parar y el jugador solo se puede mover en vertical y atacar.
-- Cuando sale el jefe final el fondo solo se mueve en vertical (parallax) y el jugador se puede mover por la pantalla para esquivar ataques especiales etc.
-
+- Añadir pantalla principal de opciones.
+- ¿Tienda de puntos?
+- Separar las clases: jugador, enemigos, obstáculos...
+- Añadir el cronómetro/temporizador.
+- Animación inicial de juego.
+- Controlar modo 'endless run' y modo 'arcade' en función del tiempo que quede.
 
 
-> - Escena principal: Cargar clases y el temporizador.
-> - Jugador: Mago y Caballero. Sus variaciones...
-> - Plataformas y Obstaculos: Formas, colores, tamaños, fondo...
-> - Enemigos: Enemigo melee*, enemigo rango*.
-> - Jefe final.
-> - PowerUps: Habilidades potenciadas, multiplicadores de puntos...
-> - Juice: Sonidos, sprites, backgrounds. Menús. Tienda de puntos. Start/End-game.
 
-# Thanks
+
+## DIARIO:
+### 1/7/24 El grupo se junta para empezar con la idea de proyecto
+
+>- Reunión de grupo para decidir el modo de trabajo, los días que se le dedica a cada parte del proyecto, la organización del grupo en general...
+
+
+
+### 10/7/24 Trabajo realizado por el equipo:
+
+>- Inicia el proyecto 'Temporize' del grupo.
+>- Creación del repositorio y primer commit.
+
+
+
+### 22/7/24 Trabajo realizado por el equipo:
+
+- Se inicia el "blog" del proyecto. (Intentarémos subir info a las redes cada 2 semanas o cuando el proyecto avance de forma notable)
+>- Pruebas de colisión del jugador contra las plataformas.
+>- Movimientos del jugador por la pantalla.
+>- Posición del fondo respecto al movimiento del jugador. (Parallax)
+>- Organizar y comentar el código, crear funciones para separ líneas y mejor lectura y la lógica.
