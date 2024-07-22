@@ -8,7 +8,7 @@ class Scene extends Phaser.Scene {
     preload() {
       //donde cargamos los assets
       this.load.image("background", "../img/background/mountain.png");
-      this.load.image("plataformas", ".//assets/grass.png"); //plataforma
+      this.load.image("platforms", ".//assets/grass.png"); //plataforma //TODO NO CARGA IMAGEN PORQUE NO EXISTE(REVISAR RUTA)
       this.load.spritesheet("player", "../img/mage/Run.png", {
         frameWidth: 1848/8,
         frameHeight: 190
@@ -38,6 +38,7 @@ class Scene extends Phaser.Scene {
      
   
       //plataformas
+     
       platforms = this.physics.add.staticGroup(); //hijos de platafprmas
   
       
@@ -103,6 +104,13 @@ class Scene extends Phaser.Scene {
         //salto
         player.setVelocityY(-450);
       }
+      //limitar el movimiento para evitar salir de la pantalla 
+      //TODO por algun motivo el PJ spawnea fuera del background y claro, ya no puede moverse
+      /* if (player.x<0){
+        player.x = 0;
+      }else if (player.x + player.width > this.background.width){
+        player.x = this.background.width - player.width;
+      } */
     }
   }
   
