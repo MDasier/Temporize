@@ -15,13 +15,12 @@ TEMPORIZE BY TESTEO-GAME.
 
 
 
-> Escena principal: Cargar clases y el temporizador.
-> Jugador: Mago y Caballero. Sus variaciones...
-> Plataformas y Obstaculos: Formas, colores, tamaños, fondo...
-> Enemigos: Enemigo melee*, enemigo rango*.
-> Jefe final.
-> PowerUps: Habilidades potenciadas, multiplicadores de puntos...
-
-Juice: Sonidos, sprites, backgrounds. Menús. Tienda de puntos. Start/End-game.
+> - Escena principal: Cargar clases y el temporizador.
+> - Jugador: Mago y Caballero. Sus variaciones...
+> - Plataformas y Obstaculos: Formas, colores, tamaños, fondo...
+> - Enemigos: Enemigo melee*, enemigo rango*.
+> - Jefe final.
+> - PowerUps: Habilidades potenciadas, multiplicadores de puntos...
+> - Juice: Sonidos, sprites, backgrounds. Menús. Tienda de puntos. Start/End-game.
 
 # Thanks
