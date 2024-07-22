@@ -75,13 +75,16 @@ class Scene extends Phaser.Scene {
 
       //PAUSA
       let pauseButton = this.add.text(this.cameras.main.centerX, 20, 'Pause', {
+        fontFamily:"comic-sans",
         fontSize: 20,
-        fill: '#ffffff'
+        fill: 'white'
       });
       pauseButton.setInteractive({useHandCursor: true}); //agrega evento onclick
       pauseButton.on('pointerdown', ()=>{
         if(this.isPaused){
           this.resume(); //reanudar
+          
+          
         }else {
           this.pause(); //pausar
         }
@@ -89,11 +92,13 @@ class Scene extends Phaser.Scene {
       this.pause = function() { //funcion para pausar
         this.physics.pause();
         this.anims.pauseAll()
+        pauseButton.setText("Resume")
         this.isPaused = true;
       }
       this.resume = function(){ //función reanudar
         this.physics.resume();
         this.anims.resumeAll()
+        pauseButton.setText("Pause")
         this.isPaused = false;
       };
       
@@ -101,8 +106,10 @@ class Scene extends Phaser.Scene {
   
     //----------------------movimientos----------------------------
     update() {
-        //--------------------------------movimiento perpetuo del fondo-------descomentar-----
-        this.background.tilePositionX += 0.5;   //vlocidad de fondo
+       //--------------------------------movimiento perpetuo del fondo-------descomentar-----
+      if(!this.isPaused){//--------controla el pause de las fisicas 
+       
+        this.background.tilePositionX += 0.5;  //vlocidad de fondo
 
       //le da movimientos y acciones
   
@@ -135,6 +142,6 @@ class Scene extends Phaser.Scene {
       }else if (player.x + player.width > this.background.width){
         player.x = this.background.width - player.width;
       } */
-    }
+    }} 
   }
   
