@@ -37,4 +37,4 @@ TEMPORIZE by Testeo-games*
 >- Pruebas de colisión del jugador contra las plataformas.
 >- Movimientos del jugador por la pantalla.
 >- Posición del fondo respecto al movimiento del jugador. (Parallax)
->- Organizar y comentar el código, crear funciones para separ líneas y mejor lectura y la lógica.
+>- Organizar y comentar el código para una mejor lectura.
