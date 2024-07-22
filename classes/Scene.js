@@ -34,7 +34,7 @@ class Scene extends Phaser.Scene {
   
       //fondo siempre primero
       this.background = this.add.tileSprite(500, 200, 0, 350, "background");
-      this.background.setScale(3);
+      this.background.setScale(3.8);
      
   
       //plataformas
@@ -45,26 +45,26 @@ class Scene extends Phaser.Scene {
       platforms
         .create(500, 380, "platforms")
         .setScale(1.5, 0.3)
-        .setSize(150, 35)
+        .setSize(150, 15)
         .setOffset(-25, 75); //escaladoo de plataformas
         platforms
         .create(700, 280, "platforms")
         .setScale(1.5, 0.3)
-        .setSize(150, 35)
+        .setSize(150, 15)
         .setOffset(-25, 75); //setsize y setoffset para modificar el hitbox
         platforms
         .create(500, 480, "platforms")
         .setScale(7.6, 0.3)
-        .setSize(800, 35)
-        .setOffset(-400, 75);
+        .setSize(1000, 15)
+        .setOffset(-480, 75);
       //plataformas.setSize(20,20)
       
   
       //jugador
       player = this.physics.add.sprite(180, 450, "player");
       player.setScale(0.9); //escalar el jugador
-      player.setSize(30, 90); //hitbox, modificando el debug de false a true en gamne para visualizarlo
-      //jugador.setOffset()para cuadrar dentro del hitbox
+      player.setSize(30, 90); //hitbox, modificando el debug de false a true en game para visualizarlo
+      player.setOffset(100,65) //para cuadrar dentro del hitbox
       player.setCollideWorldBounds(true); //colision con el borde
   
       //teclas
@@ -109,7 +109,7 @@ class Scene extends Phaser.Scene {
        //--------------------------------movimiento perpetuo del fondo-------descomentar-----
       if(!this.isPaused){//--------controla el pause de las fisicas 
        
-        this.background.tilePositionX += 0.5;  //vlocidad de fondo
+        this.background.tilePositionX += 0.5;  //velocidad de fondo
 
       //le da movimientos y acciones
   
@@ -126,15 +126,24 @@ class Scene extends Phaser.Scene {
         player.anims.play("caminar", true); //para los sprites
         player.flipX = true; //gira el personaje, hay que modificar hitbox
         player.setOffset(100,50);
-       // this.background.tilePositionX -= 0.01  //-------------movimiento del fondo con las flechas
+        //this.background.tilePositionX -= 0.01  //-------------movimiento del fondo con las flechas
       } else {
         player.setVelocityX(0);
         player.anims.play("detenido", true);
       }
-      if (cursors.up.isDown && player.body.touching.down) {
+      if (cursors.space.isDown && player.body.touching.down) {
         //salto
         player.setVelocityY(-450);
       }
+
+      //Efecto 'PARALLAX' cuando nos movemos en vertical (Saltos)
+      if (cursors.space.isDown /*&& this.background.tilePositionY<300*/){
+        this.background.tilePositionY -= 0.09
+      }else if(!cursors.space.isDown && !player.body.touching.down){
+        this.background.tilePositionY += 0.05
+      }
+
+
       //limitar el movimiento para evitar salir de la pantalla 
       //TODO por algun motivo el PJ spawnea fuera del background y claro, ya no puede moverse
       /* if (player.x<0){
