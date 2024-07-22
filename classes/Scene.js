@@ -72,6 +72,30 @@ class Scene extends Phaser.Scene {
   
       //colisiones
       this.physics.add.collider(platforms, player); // detecta las colisiones
+
+      //PAUSA
+      let pauseButton = this.add.text(this.cameras.main.centerX, 20, 'Pause', {
+        fontSize: 20,
+        fill: '#ffffff'
+      });
+      pauseButton.setInteractive({useHandCursor: true}); //agrega evento onclick
+      pauseButton.on('pointerdown', ()=>{
+        if(this.isPaused){
+          this.resume(); //reanudar
+        }else {
+          this.pause(); //pausar
+        }
+      })
+      this.pause = function() { //funcion para pausar
+        this.physics.pause();
+        this.anims.pauseAll()
+        this.isPaused = true;
+      }
+      this.resume = function(){ //función reanudar
+        this.physics.resume();
+        this.anims.resumeAll()
+        this.isPaused = false;
+      };
       
     }
   
