@@ -33,8 +33,9 @@ class Scene extends Phaser.Scene {
       });
   
       //fondo siempre primero
-      let fondo = this.add.image(500, 200, "background"); //se añade el fondo
-      fondo.setScale(3); //para escalar el background
+      this.background = this.add.tileSprite(500, 200, 0, 350, "background");
+      this.background.setScale(3);
+     
   
       //plataformas
       platforms = this.physics.add.staticGroup(); //hijos de platafprmas
@@ -59,7 +60,7 @@ class Scene extends Phaser.Scene {
       
   
       //jugador
-      player = this.physics.add.sprite(180, 300, "player");
+      player = this.physics.add.sprite(180, 450, "player");
       player.setScale(0.9); //escalar el jugador
       player.setSize(30, 90); //hitbox, modificando el debug de false a true en gamne para visualizarlo
       //jugador.setOffset()para cuadrar dentro del hitbox
@@ -70,10 +71,14 @@ class Scene extends Phaser.Scene {
   
       //colisiones
       this.physics.add.collider(platforms, player); // detecta las colisiones
+      
     }
   
     //----------------------movimientos----------------------------
     update() {
+        //--------------------------------movimiento perpetuo del fondo-------descomentar-----
+        this.background.tilePositionX += 0.5;   //vlocidad de fondo
+
       //le da movimientos y acciones
   
       if (cursors.right.isDown) {
@@ -82,12 +87,14 @@ class Scene extends Phaser.Scene {
         player.anims.play("caminar", true); //para los sprites
         player.flipX = false; //regula el giro del personaje
         player.setOffset(100, 50); //para regular el hitbox se copia el anterior
+        //this.background.tilePositionX += 0.01 //---------------------------movimiento del fondo con las flechas
       } //console.log("presionando");
       else if (cursors.left.isDown) {
         player.setVelocityX(-180);
         player.anims.play("caminar", true); //para los sprites
         player.flipX = true; //gira el personaje, hay que modificar hitbox
         player.setOffset(100,50);
+       // this.background.tilePositionX -= 0.01  //-------------movimiento del fondo con las flechas
       } else {
         player.setVelocityX(0);
         player.anims.play("detenido", true);
