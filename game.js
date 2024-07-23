@@ -13,7 +13,7 @@ const config = {
       debug: true, //visualizar el debug hitbox....
     },
   },
-  scene:[Scene]
+  scene:[InitialScene ,Scene]
 
 };
 const game = new Phaser.Game(config)

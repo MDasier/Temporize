@@ -1,12 +1,22 @@
+//variables timer
+let warningAppeared = false;
+
+//! ya no se usa, pues cree un timer nuevo en create, vamos a dejarlo un tiempo antes de borrarlo, por si el otro timer se escacharra(mientras se trabaja con el)
+/* let timer = 60; //aquí pongo un placeholder en este caso 60 segundos. */
+
 class Scene extends Phaser.Scene {
+  
   constructor() {
     super("level1"); //siempre se mantiene la estructura
 
     this.isPaused = false;
     this.player = null;
     this.platforms = null;
-    this.cursors = null
-  }
+    this.cursors = null;
+    this.timer = 60;
+    this.timerText = null;
+  };
+
   //phaser tiene siempre 3 funciones
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
@@ -21,7 +31,7 @@ class Scene extends Phaser.Scene {
   }
 
   //*********************** ELEMENTOS ***********************
-  create() {
+  create(data) {
     //crea 1 sola vez
 
     this.createAnimations();
@@ -45,13 +55,53 @@ class Scene extends Phaser.Scene {
 
     //PAUSA
     this.createPauseButton();
+    //*TIMER
+    //iniciar timer
+    if (data.initialTimerValue){
+    this.initialTimerValue = data.initialTimerValue; //esto es para la logica de tiempo del boss.
+    this.timer = this.initialTimerValue;
+  }
+    //texto del timer
+    this.timerText = this.add.text(10, 10, 'Time: 01:00', {fontSize: '20px', fill: '#ffffff'})
+    //inicia timer
+    this.time.addEvent({delay: 1000, callback: ()=> this.decrementTimer(), loop:true})
+  };
+  
+  
+  decrementTimer(){
+    if (this.timer >0){
+      let minutes = Math.floor(this.timer / 60);
+      let seconds = this.timer % 60;
+      this.timer -= 1;
+      this.timerText.text = 'Time:' + this.minutesTime(minutes, seconds);
+
+      //tiempo restante para el boss.
+      if (this.timer <= (60 * 0.20) && !warningAppeared){
+        this.showBossWarning();
+        warningAppeared = true;
+      }
+    }else{
+      console.log("Se acabó el tiempo")
+      this.time.removeAllEvents();
+    }
+  }
+
+  showBossWarning(){
+    let warningBossText = this.add.text(this.cameras.main.centerX, 70, "Boss Approaching!", {fontSize: '40px', fill: '#ff0000', textAlign: 'center'});
+    warningBossText.setOrigin(0.5, 0.5);
+    this.time.addEvent({delay: 5000, callback: ()=> warningBossText.destroy()})
+  }
+  minutesTime(minutes, seconds){
+    let minuteString = minutes.toString().padStart(2, '0');
+    let secondString = seconds.toString().padStart(2, '0');
+    return minuteString + ':' + secondString;
   }
 
   //*********************** MOVIMIENTOS Y ACCIONES ***********************
   update() {
     //--------------------------------movimiento perpetuo del fondo-------descomentar-----
-
-    // aqui va el timer
+  
+    
     // this.player.body.checkCollision.down = false;
 
     if (this.isPaused) {
@@ -72,6 +122,7 @@ class Scene extends Phaser.Scene {
         player.x = this.background.width - player.width;
       } */
   }
+
 
   //*********************** FUNCCIONES DEL JUEGO ***********************
   playerActions() {
