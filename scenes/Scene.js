@@ -23,11 +23,11 @@ class Scene extends Phaser.Scene {
   preload() {
     //donde cargamos los assets
     this.load.image("background", "../img/background/mountain.png");
-    //this.load.image("platforms", ".//assets/grass.png"); //plataforma //TODO NO CARGA IMAGEN PORQUE NO EXISTE(REVISAR RUTA)
+    this.load.image("platforms", ".//assets/grass.png"); //plataforma //TODO NO CARGA IMAGEN PORQUE NO EXISTE(REVISAR RUTA)
     this.load.spritesheet("player", "../img/mage/Run.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
-    }); //para añadir al jugador se toman las medidas del sprite el ancho se divide por la cantidad de imagenes del personaje
+    }); //para añadir al jugador se t oman las medidas del sprite el ancho se divide por la cantidad de imagenes del personaje
   }
 
   //*********************** ELEMENTOS ***********************
@@ -81,7 +81,7 @@ class Scene extends Phaser.Scene {
         warningAppeared = true;
       }
     }else{
-      console.log("Se te queman las lentejas")
+      console.log("Se acabó el tiempo")
       this.time.removeAllEvents();
     }
   }
