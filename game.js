@@ -1,3 +1,5 @@
+import Scene from './scenes/Scene.js'
+import InitialScene from './scenes/InitialScene.js'
 
 const config = {
   type: Phaser.AUTO,
