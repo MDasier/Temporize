@@ -1,9 +1,6 @@
 //variables timer
 let warningAppeared = false;
 
-//! ya no se usa, pues cree un timer nuevo en create, vamos a dejarlo un tiempo antes de borrarlo, por si el otro timer se escacharra(mientras se trabaja con el)
-/* let timer = 60; //aquí pongo un placeholder en este caso 60 segundos. */
-
 class Scene extends Phaser.Scene {
   
   constructor() {
@@ -59,11 +56,13 @@ class Scene extends Phaser.Scene {
     //iniciar timer
     if (data.initialTimerValue){
     this.initialTimerValue = data.initialTimerValue; //esto es para la logica de tiempo del boss.
+    console.log(data.initialTimerValue);
     this.timer = this.initialTimerValue;
   }
     //texto del timer
-    this.timerText = this.add.text(10, 10, 'Time: 01:00', {fontSize: '20px', fill: '#ffffff'})
+    this.timerText = this.add.text(10, 10, '', {fontSize: '20px', fill: '#ffffff'})
     //inicia timer
+    this.decrementTimer();
     this.time.addEvent({delay: 1000, callback: ()=> this.decrementTimer(), loop:true})
   };
   
@@ -72,13 +71,21 @@ class Scene extends Phaser.Scene {
     if (this.timer >0){
       let minutes = Math.floor(this.timer / 60);
       let seconds = this.timer % 60;
+      if (minutes > 59){
+        minutes = 59;
+        seconds = 59;
+      }
       this.timer -= 1;
       this.timerText.text = 'Time:' + this.minutesTime(minutes, seconds);
 
-      //tiempo restante para el boss.
-      if (this.timer <= (60 * 0.20) && !warningAppeared){
+      //calcular el tiempo restante para el boss
+      let warningTime = this.initialTimerValue * 0.20;
+
+      //tiempo restante para el aviso del boss.
+      if (this.timer <= warningTime && !warningAppeared){
         this.showBossWarning();
         warningAppeared = true;
+        console.log("se te van a quemar las lentejas como sigas así")
       }
     }else{
       console.log("Se te queman las lentejas")
@@ -227,6 +234,24 @@ class Scene extends Phaser.Scene {
       this.anims.pauseAll();
       pauseButton.setText("Resume");
       this.isPaused = true;
+
+      //oscuridad en la pantalla cuando se pause.
+      this.pauseOverlay = this.add.rectangle(2, 2, 2, 2, 0x000000, 0.5);
+      this.pauseOverlay.setScale(this.cameras.main.width, this.cameras.main.height); 
+      this.pauseOverlay.setDepth(1000);
+
+      const pauseAnimation = {
+          targets: pauseButton,
+          alpha: {from: 1, to: 0.5},
+          duration: 800,
+          yoyo: true, //hace que la animacions e repita en sentido inverso, le da mas fluidez
+          repeat: -1,
+      }
+
+      //animación para que Resume parpadee
+      this.tweens.add(
+        pauseAnimation
+      )
     };
     this.resume = function () {
       //función reanudar
@@ -234,6 +259,11 @@ class Scene extends Phaser.Scene {
       this.anims.resumeAll();
       pauseButton.setText("Pause");
       this.isPaused = false;
+
+      //quitar elementos de pausa.
+      this.pauseOverlay.destroy();
+      this.pauseAnimation = null;
+      //con destroy da fallo y se queda en gris la "pausa"
     };
   }
 }
