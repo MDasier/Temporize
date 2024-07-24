@@ -14,21 +14,6 @@
     create(){
         console.log("CREATE DE MENU")
 
-        //campo texto en HTML
-            const inputMinutes = document.createElement('input');
-            inputMinutes.type = 'text';
-            inputMinutes.style.fontSize = '30px';
-            inputMinutes.style.color = '#ffffff';
-            inputMinutes.style.textAlign = 'center';
-            inputMinutes.style.position = 'absolute';
-            inputMinutes.style.top = (this.cameras.main.centerY - 100 + timePlayingText.height) + 'px'; //hay que toquetear para centrar
-            inputMinutes.style.left = this.cameras.main.centerX + 'px';
-            inputMinutes.style.width = '200px';
-            inputMinutes.style.height = '30px';
-            inputMinutes.style.zIndex = '1000';
-            inputMinutes.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-            document.body.appendChild(inputMinutes);
-            
         //*Creamos el elemento del menu, le añadimos el sprite del preload y lo hacemos interactivo para el usuario.
         //this.menu1 = this.relatedScene.scene.add.sprite(posicionEnX,posicionEnY,'spriteBoton').setInteractive()
 
