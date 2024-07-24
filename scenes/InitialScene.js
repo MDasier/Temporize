@@ -1,5 +1,4 @@
 
-
 class InitialScene extends Phaser.Scene{
 constructor(){
     super({key: "initialScene"});
@@ -41,5 +40,10 @@ create(){
             }
         }
     })
+    
+    this.menuOpciones = new Menu();
+    this.menuOpciones.preload();
+    this.menuOpciones.create();
+    
 }
 }
