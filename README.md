@@ -38,3 +38,11 @@ TEMPORIZE by Testeo-games*
 >- Movimientos del jugador por la pantalla.
 >- Posición del fondo respecto al movimiento del jugador. (Parallax)
 >- Organizar y comentar el código para una mejor lectura.
+
+
+
+### 24/7/24 Trabajo realizado por el equipo:
+
+>- Añadido Pausa y efectos de pausa.
+>- Añadido Menú de pausa.
+>- Añadido Temporizador.
