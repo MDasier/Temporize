@@ -29,6 +29,10 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     }); //para añadir al jugador se t oman las medidas del sprite el ancho se divide por la cantidad de imagenes del personaje
+    this.load.spritesheet("jump", "../img/mage/Jump.png", {
+      frameWidth: 1848 / 8,
+      frameHeight: 190,
+    })
   }
 
   //*********************** ELEMENTOS ***********************

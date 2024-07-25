@@ -26,6 +26,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
             frameRate:10,
             repeat:-1
         })
+        this.anims.create({
+            key:"jump",
+            frames:this.anims.generateFrameNumbers("jump",{start:0,end:7}),
+            frameRate:10,
+            repeat:-1
+        })
     }
 
     update(){
@@ -42,6 +48,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
         //*SALTO
         if (this.scene.cursors.space.isDown && this.scene.player.body.touching.down) {
             this.scene.player.setVelocityY(-450);
+            this.anims.play("jump")
+        }else if(!this.body.touching.down){
+            this.anims.play("jump",true)
+        }else{
+            this.anims.play("run",true)
         }
     }
 }
