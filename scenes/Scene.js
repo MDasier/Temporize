@@ -1,6 +1,7 @@
 import PlatformGroup from "../components/PlatformGroup.js";
 import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
+import FlyingEnemy from "../components/FlyingEnemy.js";
 
 //variables timer
 let warningAppeared = false;
@@ -50,6 +51,9 @@ export default class Scene extends Phaser.Scene {
 
     //jugador
     this.player = new Player(this,450,250,"player")
+
+    //flying enemy
+    this.createFlyingEnemy();
 
     //colisiones
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
@@ -165,6 +169,29 @@ export default class Scene extends Phaser.Scene {
       loop: true,
     });
     
+  }
+
+  createFlyingEnemy() {
+    const minX = 100; //dejar margen de 100 pixeles borde izq.
+    const maxX = this.game.config.width - 100;
+    const minY = 100; //lo mismo borde superior
+    const maxY = this.game.config.height - 100;
+
+    const x = Phaser.Math.Between(minX, maxX);
+    const y = Phaser.Math.Between(minY, maxY);
+
+   const enemy = new FlyingEnemy(this, x, y, this.Player);
+   this.add.existing(enemy);
+   console.log("enemigo creado");
+   enemy.update(this.time.now, this.time.delta)
+/* 
+   this.time.addEvent({ //robado de plataforma, hay que randomizarlo y limitar la zona
+    delay: 10000,
+    callback: () => {
+      this.enemy.createFlyingEnemy(this.game.config.width,600,'flyingEnemy',5,0.5)        
+    },
+    loop: true,
+  }); */
   }
 
   createPauseButton() {

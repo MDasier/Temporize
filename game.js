@@ -14,7 +14,12 @@ const config = {
     arcade: {
       gravity: { y: 800 },
       debug: true, //visualizar el debug hitbox....
+      fps: 60,
     },
+  },
+  fps:{
+    target:120,
+    forceSetTimeOut: true,
   },
   scene:[InitialScene ,Scene]
 
