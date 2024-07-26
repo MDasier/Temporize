@@ -16,6 +16,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
 
         this.createAnimation()
         this.anims.play("run")
+        this.scene.keys=this.scene.input.keyboard.addKeys("z")
         this.scene.cursors=this.scene.input.keyboard.createCursorKeys()
     }
 
