@@ -34,10 +34,14 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     })
+    //TODO no va a cargar es como el grass pero en enemigo, no existe.
+    this.load.image("flyingEnemy", "../img/enemies/beholder.png");
+    console.log("textura flyingEnemy cargada"); //plataforma
   }
 
   //*********************** ELEMENTOS ***********************
   create(data) {
+
     //crea 1 sola vez
 
     
@@ -54,6 +58,7 @@ export default class Scene extends Phaser.Scene {
 
     //flying enemy
     this.createFlyingEnemy();
+    console.log("Enemigo agregado correctamente");
 
     //colisiones
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
@@ -127,7 +132,16 @@ export default class Scene extends Phaser.Scene {
   }
 
   //*********************** MOVIMIENTOS Y ACCIONES ***********************
-  update() {
+  update(time, delta) {
+    const camera = this.cameras.main;
+    const cameraBounds = camera.worldView;
+    const enemyPosition = this.flyingEnemy.getCenter()
+    console.log('Enemigo dentro de los límites de la cámara:',
+      enemyPosition.x > cameraBounds.x && enemyPosition.x < cameraBounds.right &&
+      enemyPosition.y > cameraBounds.y && enemyPosition.y < cameraBounds.bottom);
+
+    console.log('Enemigo visible:', this.flyingEnemy.visible);
+    console.log('Enemigo alpha:', this.flyingEnemy.alpha);
 
     this.player.update()
 
@@ -140,6 +154,10 @@ export default class Scene extends Phaser.Scene {
     this.backgroundAnimationY();
 
     this.platforms.movePlatforms()
+    if(this.flyingEnemy){
+
+      this.flyingEnemy.update(time, delta)
+    }
   }
 
 
@@ -172,26 +190,42 @@ export default class Scene extends Phaser.Scene {
   }
 
   createFlyingEnemy() {
-    const minX = 100; //dejar margen de 100 pixeles borde izq.
-    const maxX = this.game.config.width - 100;
-    const minY = 100; //lo mismo borde superior
-    const maxY = this.game.config.height - 100;
+    const camera = this.cameras.main
+     const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
+    const maxX = camera.worldView.right - 100;
+    const minY = camera.worldView.y + 100; //lo mismo borde superior
+    const maxY = camera.worldView.bottom - 100; 
 
-    const x = Phaser.Math.Between(minX, maxX);
-    const y = Phaser.Math.Between(minY, maxY);
+    let x, y;
+    do{
+      x = Phaser.Math.Between(minX, maxX);
+     y = Phaser.Math.Between(minY, maxY);
+    } while(!this.isWithinCameraBounds(x, y, camera))
 
-   const enemy = new FlyingEnemy(this, x, y, this.Player);
-   this.add.existing(enemy);
+
+   this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
+   this.add.existing(this.flyingEnemy);
    console.log("enemigo creado");
-   enemy.update(this.time.now, this.time.delta)
-/* 
-   this.time.addEvent({ //robado de plataforma, hay que randomizarlo y limitar la zona
-    delay: 10000,
-    callback: () => {
-      this.enemy.createFlyingEnemy(this.game.config.width,600,'flyingEnemy',5,0.5)        
-    },
-    loop: true,
-  }); */
+
+   console.log(`Enemigo creado con textura: ${this.flyingEnemy.texture.key}`);
+
+   this.flyingEnemy.setVisible(true);
+   console.log(`Enemigo visible: ${this.flyingEnemy.visible}`);
+
+   this.flyingEnemy.alpha = 1;
+
+  //TODO destruir el enemigo y crear otro en otra parte aleatoria
+
+  //TODO limitar la creación aleatoria a mitad de pantalla hacia arriba
+   
+  }
+  isWithinCameraBounds(x, y, camera) {
+    return (
+      x >= camera.worldView.x &&
+      x <= camera.worldView.right &&
+      y >= camera.worldView.y &&
+      y <= camera.worldView.bottom
+    );
   }
 
   createPauseButton() {
