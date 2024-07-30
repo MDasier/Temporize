@@ -1,7 +1,7 @@
 export default class Player extends Phaser.Physics.Arcade.Sprite{
 
     constructor(scene,x,y,texture){
-        super(scene)
+        super(scene,x,y,texture)
 
         this.scene=scene
         this.x=x
@@ -16,8 +16,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
 
         this.createAnimation()
         this.anims.play("run")
+
         this.scene.keys=this.scene.input.keyboard.addKeys("z")
         this.scene.cursors=this.scene.input.keyboard.createCursorKeys()
+
+        this.isAttacking=false
+        this.scene.beamGroup = this.scene.physics.add.group()
     }
 
     createAnimation(){
@@ -31,8 +35,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
             key:"jump",
             frames:this.anims.generateFrameNumbers("jump",{start:0,end:7}),
             frameRate:10,
-            repeat:-1
+            repeat:0
         })
+        this.anims.create({
+            key:"attack",
+            frames:this.scene.anims.generateFrameNumbers("attack",{start:4,end:7}),
+            frameRate:15,
+            repeat:0
+          })
     }
 
     update(){
@@ -53,7 +63,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
         }else if(!this.body.touching.down){
             this.anims.play("jump",true)
         }else{
+            if(!this.isAttacking){
             this.anims.play("run",true)
+       }
+        }
+        //*attack
+        if(Phaser.Input.Keyboard.JustDown(this.scene.keys.z)&&!this.isAttacking){
+            this.isAttacking=true
+            this.anims.play("attack",true).on("animationcomplete",()=>{
+                this.isAttacking=false
+          
+            })  
+             this.scene.createBeam(this.x+80, this.y-22) ;//------------ojo-provisional
+            // const beamOffsetX = this.flipX ? -80 : 80;
+            //this.scene.createBeam(this.x + beamOffsetX, this.y - 22);
         }
     }
 }

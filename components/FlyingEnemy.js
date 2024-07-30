@@ -16,7 +16,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
         this.setDepth(1);
         this.setTexture("flyingEnemy");
         this.setPosition(x, y);
-        this.setScale(0.050
+        this.setScale(0.02
         );
 
         //! asegurarse de que se crea dentro de los limites de la camara

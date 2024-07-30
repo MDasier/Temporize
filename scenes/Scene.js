@@ -2,6 +2,7 @@ import PlatformGroup from "../components/PlatformGroup.js";
 import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
+import Beam from "../components/beam.js";
 
 //variables timer
 let warningAppeared = false;
@@ -34,9 +35,17 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     })
+    this.load.spritesheet("attack", "../img/mage/Attack2.png", {
+      frameWidth: 1848 / 8,
+      frameHeight: 190,
+    })
+    this.load.image("beam", "../img/mage/beam.png", {
+      frameWidth: 127,
+      frameHeight: 123,
+    })
     //TODO no va a cargar es como el grass pero en enemigo, no existe.
     this.load.image("flyingEnemy", "../img/enemies/beholder.png");
-    console.log("textura flyingEnemy cargada"); //plataforma
+   // console.log("textura flyingEnemy cargada"); //plataforma
   }
 
   //*********************** ELEMENTOS ***********************
@@ -55,10 +64,11 @@ export default class Scene extends Phaser.Scene {
 
     //jugador
     this.player = new Player(this,450,250,"player")
+    
 
     //flying enemy
     this.createFlyingEnemy();
-    console.log("Enemigo agregado correctamente");
+    //console.log("Enemigo agregado correctamente");
 
     //colisiones
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
@@ -159,6 +169,15 @@ export default class Scene extends Phaser.Scene {
       this.flyingEnemy.update(time, delta)
     }
   }
+  createBeam(x, y) {
+    const beam = new Beam(this, x, y, "beam");
+    
+    this.setGravity();
+    
+    this.beamGroup.add(beam);
+    
+    
+}
 
 
 
