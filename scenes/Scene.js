@@ -146,12 +146,6 @@ export default class Scene extends Phaser.Scene {
     const camera = this.cameras.main;
     const cameraBounds = camera.worldView;
     const enemyPosition = this.flyingEnemy.getCenter()
-    console.log('Enemigo dentro de los límites de la cámara:',
-      enemyPosition.x > cameraBounds.x && enemyPosition.x < cameraBounds.right &&
-      enemyPosition.y > cameraBounds.y && enemyPosition.y < cameraBounds.bottom);
-
-    console.log('Enemigo visible:', this.flyingEnemy.visible);
-    console.log('Enemigo alpha:', this.flyingEnemy.alpha);
 
     this.player.update()
 
@@ -169,15 +163,20 @@ export default class Scene extends Phaser.Scene {
       this.flyingEnemy.update(time, delta)
     }
   }
-  createBeam(x, y) {
-    const beam = new Beam(this, x, y, "beam");
+  createBeam(x, y, gravity, speed) {
+    const beam = new Beam(this, x, y, "beam", 0, gravity, speed );
+
+   
+  
     
-    this.setGravity();
+    
+    setGravityY(-800);
     
     this.beamGroup.add(beam);
     
     
-}
+  }
+  
 
 
 
@@ -224,12 +223,10 @@ export default class Scene extends Phaser.Scene {
 
    this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
    this.add.existing(this.flyingEnemy);
-   console.log("enemigo creado");
 
-   console.log(`Enemigo creado con textura: ${this.flyingEnemy.texture.key}`);
 
    this.flyingEnemy.setVisible(true);
-   console.log(`Enemigo visible: ${this.flyingEnemy.visible}`);
+
 
    this.flyingEnemy.alpha = 1;
 

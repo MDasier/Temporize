@@ -1,15 +1,20 @@
 export default class Beam extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene,x,y,texture){
-        super(scene,x,y,texture);
+    constructor(scene,x,y, texture, frame, gravity, speed ){
+        super(scene,x,y, texture, frame, gravity, speed);
         this.scene=scene;
         this.x=x;
         this.y=y;
+        this.gravity= gravity;
+        this.speed = speed;
 
       
          
         this.scene.physics.add.existing(this);
         this.scene.add.existing(this);
-        this.body.setGravityY(-800);
+        this.body.setGravityY(this.gravity);
+       /*  this.body.setGravityY(this.gravity); */
+     /*    this.body.setGravityX(0); */
+
         
        
       
@@ -22,7 +27,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite{
 
         //this.flipX = flipX;
         
-        this.setVelocityX(800)
+        this.setVelocityX(this.speed)
        
     }
   

@@ -33,13 +33,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
         })
         this.anims.create({
             key:"jump",
-            frames:this.anims.generateFrameNumbers("jump",{start:0,end:7}),
+            frames:this.anims.generateFrameNumbers("jump",{start:0,end:1}),
             frameRate:10,
             repeat:0
         })
         this.anims.create({
             key:"attack",
             frames:this.scene.anims.generateFrameNumbers("attack",{start:4,end:7}),
+            frameRate:15,
+            repeat:0
+          })
+          this.anims.create({
+            key:"jumpAttack",
+            frames:this.scene.anims.generateFrameNumbers
+            ("attack",{start:5,end:7}),
             frameRate:15,
             repeat:0
           })
@@ -59,10 +66,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
         //*SALTO
         if (this.scene.cursors.space.isDown && this.scene.player.body.touching.down) {
             this.scene.player.setVelocityY(-450);
-            this.anims.play("jump")
-        }else if(!this.body.touching.down){
-            this.anims.play("jump",true)
-        }else{
+             this.anims.play("jump")
+        }else if(!this.body.touching.down&&Phaser.Input.Keyboard.JustDown(this.scene.keys.z)){
+            console.log("disparo anal");
+            this.isAttacking=true
+            this.x -= 35;
+            this.anims.play("jumpAttack",true).on("animationcomplete",()=>{
+                this.isAttacking=false 
+          
+            })  
+            this.scene.createBeam(this.x+80, this.y-22, -800, 800) ;
+
+        }else if(!this.body.touching.down&&!this.isAttacking){
+            console.log("salto vaginal");
+         this.anims.play("jump",true)
+        }
+        else{
             if(!this.isAttacking){
             this.anims.play("run",true)
        }
@@ -70,11 +89,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
         //*attack
         if(Phaser.Input.Keyboard.JustDown(this.scene.keys.z)&&!this.isAttacking){
             this.isAttacking=true
+            this.x -= 35;
             this.anims.play("attack",true).on("animationcomplete",()=>{
-                this.isAttacking=false
+                this.isAttacking=false 
           
             })  
-             this.scene.createBeam(this.x+80, this.y-22) ;//------------ojo-provisional
+             this.scene.createBeam(this.x+80, this.y-22, -800, 800) ;
+             
+             //! Beam.createBeam para que Beam llame a createBeam, para usarlo posteriormente en la escena.
+             //*------------ojo-provisional
             // const beamOffsetX = this.flipX ? -80 : 80;
             //this.scene.createBeam(this.x + beamOffsetX, this.y - 22);
         }

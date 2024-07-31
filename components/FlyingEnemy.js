@@ -3,7 +3,9 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
 
         super(scene, x, y, "flyingEnemy");
         this.sceneRef = scene;//esto me gustaria mirarlo mejor, se guarda una copia de la escena y así siempre hay un "backup" para cuando se destruye
-        console.log(`El enemigo volador se creó en x=${x}, y=${y}`)
+       
+        //* LOG DE ENEMIGO
+        /* console.log(`El enemigo volador se creó en x=${x}, y=${y}`) */
 
         this.scene = scene;
         this.player = player;
@@ -16,8 +18,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
         this.setDepth(1);
         this.setTexture("flyingEnemy");
         this.setPosition(x, y);
-        this.setScale(0.02
-        );
+        this.setScale(0.2);
 
         //! asegurarse de que se crea dentro de los limites de la camara
         const camera = this.scene.cameras.main;
@@ -38,8 +39,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
         this.frequency = 10;
     }
     update(time, delta){
-        //log para saber donde esta el enemigo:
-        console.log(`Enemigo x: ${this.x}, y: ${this.y}`);
+       
 
         //movimiento horizontal
         this.x += this.velocityX
@@ -59,13 +59,6 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
           this.sceneRef.createFlyingEnemy()
           }
 
-          /* if (this.x < 0) {
-            this.x = this.scene.game.config.width;
-          }
-          if (this.x <0 || this.x > this.scene.game.config.width ||this.y < 0 || this.y > this.scene.game.config.height){
-            this.destroy();
-            this.scene.createFlyingEnemy()
-          } */
 
         //No se salga de los limites de la camara(por ahora)
 
@@ -73,20 +66,13 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
         const minX = camera.worldView.x;
         const maxX = camera.worldView.right;
         const minY = camera.worldView.y;
-        const maxY = camera.worldView.bottom;
+        const maxY = camera.worldView.bottom; 
 
   if (this.x < minX) this.x = minX;
   if (this.x > maxX) this.x = maxX;
   if (this.y < minY) this.y = minY;
   if (this.y > maxY) this.y = maxY;
 
-        //para que se quede en la izq en caso de ir super rápido.
-        if (this.x < 0) {
-            this.x = 0;
-          } else {
-            this.x -= this.speed * delta;
-          }
-        
         //delta tiempo transcurrido desde el ultimo frame en milisec
         if (this.isFloating){ //si el enemigo está flotando incrementa el tiempo de flotacion en milisecs
             this.floatTime += delta;
