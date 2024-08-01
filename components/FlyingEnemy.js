@@ -1,13 +1,12 @@
-export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
-    constructor(scene, x, y, player){
+export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
+  constructor(scene, x, y, player) {
+    super(scene, x, y, "flyingEnemy");
+    this.sceneRef = scene; //esto me gustaria mirarlo mejor, se guarda una copia de la escena y así siempre hay un "backup" para cuando se destruye
 
-        super(scene, x, y, "flyingEnemy");
-        this.sceneRef = scene;//esto me gustaria mirarlo mejor, se guarda una copia de la escena y así siempre hay un "backup" para cuando se destruye
-       
-        //* LOG DE ENEMIGO
-        console.log(`El enemigo volador se creó en x=${x}, y=${y}`) 
+    //* LOG DE ENEMIGO
+    //console.log(`El enemigo volador se creó en x=${x}, y=${y}`)
 
-        /* //! ataque autista
+    /* //! ataque autista
      this.time.addEvent({
       delay: 0.1,
       callback: this.flyingEnemy.shootBeam(),
@@ -16,103 +15,95 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
     })
     console.log("disparo enemigo")*/
 
-        this.scene = scene;
-        this.player = player;
-        this.speed = 0.1; //velocidad de movimiento, probando
-        this.floatTime = 0; //para controlar el tiempo que el enemigo está flotando en pantalla antes de irse
-        this.shootInterval = 5000; //5 segundos para disparar
-        this.lastShootTime = 0; //contador de tiempo para el disparo
-        this.isFloating = false; //empieza moviendose
-        this.setVisible(true);
-        this.setDepth(1);
-        this.setTexture("flyingEnemy");
-        this.setPosition(x, y);
-        this.setScale(0.2);
+    this.scene = scene;
+    this.player = player;
+    this.speed = 0.1; //velocidad de movimiento, probando
+    this.floatTime = 0; //para controlar el tiempo que el enemigo está flotando en pantalla antes de irse
+    this.shootInterval = 5000; //5 segundos para disparar
+    this.lastShootTime = 0; //contador de tiempo para el disparo
+    this.isFloating = false; //empieza moviendose
+    this.setVisible(true);
+    this.setDepth(1);
+    this.setTexture("flyingEnemy");
+    this.setPosition(x, y);
+    this.setScale(0.2);
 
-        //! asegurarse de que se crea dentro de los limites de la camara
-        const camera = this.scene.cameras.main;
-        const minX = camera.worldView.x + 100;
-        const maxX = camera.worldView.right - 100;
-        const minY = camera.worldView.y +100;
-        const maxY = camera.worldView.bottom - 100;
+    //! asegurarse de que se crea dentro de los limites de la camara
+    const camera = this.scene.cameras.main;
+    const minX = camera.worldView.x + 100;
+    const maxX = camera.worldView.right - 100;
+    const minY = camera.worldView.y + 100;
+    const maxY = camera.worldView.bottom - 100;
 
-        if (x < minX) x = minX;
-        if (x > maxX) x = maxX;
-        if (y < minY) y = minY;
-        if (y > maxY) y = maxY;
+    if (x < minX) x = minX;
+    if (x > maxX) x = maxX;
+    if (y < minY) y = minY;
+    if (y > maxY) y = maxY;
 
-        //para moverlo
-        this.velocityX = -2; //mov horizontal, negativa izquierda
-        this.velocityY = 0.001; //mov vertical
-        this.amplitude = 4;
-        this.frequency = 10;
+    //para moverlo
+    this.velocityX = -2; //mov horizontal, negativa izquierda
+    this.velocityY = 0.001; //mov vertical
+    this.amplitude = 4;
+    this.frequency = 10;
+  }
 
-        
+  shootBeam() {
+    this.scene.createBeam(this.x, this.y, -800, +500);
+  }
+  update(time, delta) {
+    //movimiento horizontal
+    this.x += this.velocityX;
+
+    //efecto flotar
+    //todo no sale, hay que revisar
+    this.y += Math.sin(this.frequency * time) * this.amplitude;
+
+    //rebotar en los bordes superiores
+    //!
+    if (this.y < 0 || this.y > this.scene.game.config.height - this.height) {
     }
-    
-    
-    shootBeam(){
-        this.scene.createBeam(this.x, this.y, -800, +500)
+
+    //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
+
+    if (this.x < 0 || this.x > this.scene.game.config.width) {
+      this.destroy();
+      this.sceneRef.createFlyingEnemy();
     }
-    update(time, delta){
-       
-             
-             
-            
-        
-    
 
-        //movimiento horizontal
-        this.x += this.velocityX
+    //No se salga de los limites de la camara(por ahora)
 
-        //efecto flotar
-        //todo no sale, hay que revisar
-        this.y += Math.sin(this.frequency * time) * this.amplitude;
+    const camera = this.scene.cameras.main;
+    const minX = camera.worldView.x;
+    const maxX = camera.worldView.right;
+    const minY = camera.worldView.y;
+    const maxY = camera.worldView.bottom;
 
-        //rebotar en los bordes superiores
-        //!
-        if (this.y < 0 || this.y > this.scene.game.config.height - this.height) {}
+    if (this.x < minX) this.x = minX;
+    if (this.x > maxX) this.x = maxX;
+    if (this.y < minY) this.y = minY;
+    if (this.y > maxY) this.y = maxY;
 
-        //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
-
-        if (this.x < 0 || this.x > this.scene.game.config.width) {
-          this.destroy();
-          this.sceneRef.createFlyingEnemy()
-          }
-
-
-        //No se salga de los limites de la camara(por ahora)
-
-        const camera = this.scene.cameras.main;
-        const minX = camera.worldView.x;
-        const maxX = camera.worldView.right;
-        const minY = camera.worldView.y;
-        const maxY = camera.worldView.bottom; 
-
-  if (this.x < minX) this.x = minX;
-  if (this.x > maxX) this.x = maxX;
-  if (this.y < minY) this.y = minY;
-  if (this.y > maxY) this.y = maxY;
-
-        //delta tiempo transcurrido desde el ultimo frame en milisec
-        if (this.isFloating){ //si el enemigo está flotando incrementa el tiempo de flotacion en milisecs
-            this.floatTime += delta;
-            if (this.floatTime  >= 3000){ //cuando alcanza los 3 segundos la flotacion acaba y se va hacia la izquierda
-                this.isFloating = false;
-                this.floatTime = 0;
-            }
-        } else{
-            this.x -= this.speed * delta;
-            if (this.x < -this.width){
-                this.destroy();
-            }
-        }
-        /* if (time - this.lastShootTime >= this.shootInterval){
+    //delta tiempo transcurrido desde el ultimo frame en milisec
+    if (this.isFloating) {
+      //si el enemigo está flotando incrementa el tiempo de flotacion en milisecs
+      this.floatTime += delta;
+      if (this.floatTime >= 3000) {
+        //cuando alcanza los 3 segundos la flotacion acaba y se va hacia la izquierda
+        this.isFloating = false;
+        this.floatTime = 0;
+      }
+    } else {
+      this.x -= this.speed * delta;
+      if (this.x < -this.width) {
+        this.destroy();
+      }
+    }
+    /* if (time - this.lastShootTime >= this.shootInterval){
             this.lastShootTime = time;
             this.shoot();
         } */
-    }
-    /* createFlyingEnemy(){
+  }
+  /* createFlyingEnemy(){
         const enemy = new FlyingEnemy(this, x, y, this.Player)
 ;       this.add.existing(enemy);
         enemy.body.velocity.x = 100; //100px sec
@@ -122,7 +113,6 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
         this.setScale(1);
     }
  */
-//TODO Hacer el disparo
-//TODO que ronde un poco por la pantalla, se pare y dispare, etc.
-
+  //TODO Hacer el disparo
+  //TODO que ronde un poco por la pantalla, se pare y dispare, etc.
 }

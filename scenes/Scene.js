@@ -2,7 +2,7 @@ import PlatformGroup from "../components/PlatformGroup.js";
 import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
-import Beam from "../components/beam.js";
+import Beam from "../components/Beam.js";
 
 //variables timer
 let warningAppeared = false;
@@ -20,8 +20,6 @@ export default class Scene extends Phaser.Scene {
     this.floor = null;
   }
 
-  //phaser tiene siempre 3 funciones
-
   //*********************** ASSETS-SPRITES/IMAGES ***********************
   preload() {
     //donde cargamos los assets
@@ -34,28 +32,21 @@ export default class Scene extends Phaser.Scene {
     this.load.spritesheet("jump", "../img/mage/Jump.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
-    })
+    });
     this.load.spritesheet("attack", "../img/mage/Attack2.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
-    })
+    });
     this.load.image("beam", "../img/mage/beam.png", {
       frameWidth: 127,
       frameHeight: 123,
-    })
+    });
     //TODO no va a cargar es como el grass pero en enemigo, no existe.
     this.load.image("flyingEnemy", "../img/enemies/beholder.png");
-   // console.log("textura flyingEnemy cargada"); //plataforma
   }
 
   //*********************** ELEMENTOS ***********************
   create(data) {
-
-
-    //crea 1 sola vez
-
-    
-
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
@@ -64,21 +55,18 @@ export default class Scene extends Phaser.Scene {
     this.createPlatforms();
 
     //jugador
-    this.player = new Player(this,450,250,"player")
-    
+    this.player = new Player(this, 450, 250, "player");
 
     //flying enemy
     this.createFlyingEnemy();
-    
+
     //console.log("Enemigo agregado correctamente");
 
     //colisiones
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
 
     //disparos!!
-   this.beamGroup = this.physics.add.group();
-    
-
+    this.beamGroup = this.physics.add.group();
 
     //PAUSA
     this.createPauseButton();
@@ -105,17 +93,13 @@ export default class Scene extends Phaser.Scene {
 
   //crear disparos reutilizables
   createBeam(x, y, gravity, speed) {
-    const beam = new Beam(this, x, y, "beam", 0, gravity, speed );
+    const beam = new Beam(this, x, y, "beam", 0, gravity, speed);
     console.log(gravity);
     console.log(speed);
 
-    
     this.beamGroup.add(beam);
-    this.physics.add.existing(this.beamGroup)
-   /*  this.beamGroup.body.physics. */
-    
+    //this.physics.add.existing(this.beamGroup)
   }
-  
 
   decrementTimer() {
     if (this.timer > 0) {
@@ -166,28 +150,23 @@ export default class Scene extends Phaser.Scene {
   update(time, delta) {
     const camera = this.cameras.main;
     const cameraBounds = camera.worldView;
-    const enemyPosition = this.flyingEnemy.getCenter()
+    const enemyPosition = this.flyingEnemy.getCenter();
 
-    this.player.update()
+    this.player.update();
 
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
     }
 
     //le da movimientos y acciones AL FONDO
-    this.background.tilePositionX += 0.5; //velocidad de fondo    
+    this.background.tilePositionX += 0.5; //velocidad de fondo
     this.backgroundAnimationY();
 
-    this.platforms.movePlatforms()
-    if(this.flyingEnemy){
-
-      this.flyingEnemy.update(time, delta)
+    this.platforms.movePlatforms();
+    if (this.flyingEnemy) {
+      this.flyingEnemy.update(time, delta);
     }
   }
-  
-  
-
-
 
   backgroundAnimationY() {
     //Efecto 'PARALLAX' cuando nos movemos en vertical (Saltos/Gravedad)
@@ -200,49 +179,56 @@ export default class Scene extends Phaser.Scene {
 
   createPlatforms() {
     //this.platforms = this.physics.add.staticGroup(); //hijos de platformas
-    this.platforms = new PlatformGroup(this)
-    this.platforms.createPlatform(0,this.game.config.height-10,'ground',this.game.config.width,1)
-    this.platforms.createPlatform(110,250,'platform',5,0.5)
-    this.platforms.createPlatform(680,320,'platform',6,0.5)
-    this.platforms.createPlatform(380,420,'platform',6,0.5)
+    this.platforms = new PlatformGroup(this);
+    this.platforms.createPlatform(
+      0,
+      this.game.config.height - 10,
+      "ground",
+      this.game.config.width,
+      1
+    );
+    this.platforms.createPlatform(110, 250, "platform", 5, 0.5);
+    this.platforms.createPlatform(680, 320, "platform", 6, 0.5);
+    this.platforms.createPlatform(380, 420, "platform", 6, 0.5);
 
     this.time.addEvent({
       delay: 3000,
       callback: () => {
-        this.platforms.createPlatform(this.game.config.width,450,'platform',5,0.5)        
+        this.platforms.createPlatform(
+          this.game.config.width,
+          450,
+          "platform",
+          5,
+          0.5
+        );
       },
       loop: true,
     });
-    
   }
 
   createFlyingEnemy() {
-    const camera = this.cameras.main
-     const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
+    const camera = this.cameras.main;
+    const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
     const maxX = camera.worldView.right - 100;
     const minY = camera.worldView.y + 100; //lo mismo borde superior
-    const maxY = camera.worldView.bottom - 100; 
+    const maxY = camera.worldView.bottom - 100;
 
     let x, y;
-    do{
+    do {
       x = Phaser.Math.Between(minX, maxX);
-     y = Phaser.Math.Between(minY, maxY);
-    } while(!this.isWithinCameraBounds(x, y, camera))
+      y = Phaser.Math.Between(minY, maxY);
+    } while (!this.isWithinCameraBounds(x, y, camera));
 
+    this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
+    this.add.existing(this.flyingEnemy);
 
-   this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
-   this.add.existing(this.flyingEnemy);
+    this.flyingEnemy.setVisible(true);
 
+    this.flyingEnemy.alpha = 1;
 
-   this.flyingEnemy.setVisible(true);
+    //TODO destruir el enemigo y crear otro en otra parte aleatoria
 
-
-   this.flyingEnemy.alpha = 1;
-
-  //TODO destruir el enemigo y crear otro en otra parte aleatoria
-
-  //TODO limitar la creación aleatoria a mitad de pantalla hacia arriba
-   
+    //TODO limitar la creación aleatoria a mitad de pantalla hacia arriba
   }
   isWithinCameraBounds(x, y, camera) {
     return (
@@ -324,7 +310,7 @@ export default class Scene extends Phaser.Scene {
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
         console.log("EXIT CLICK");
-        this.resume()
+        this.resume();
         this.scene.start("initialScene");
       });
     };
