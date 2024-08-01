@@ -100,7 +100,7 @@ export default class Scene extends Phaser.Scene {
     });
   }
 
-  //crear disparos reutiolizables
+  //crear disparos reutilizables
   createBeam(x, y, gravity, speed) {
     const beam = new Beam(this, x, y, "beam", 0, gravity, speed );
     
