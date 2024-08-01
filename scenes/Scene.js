@@ -73,6 +73,10 @@ export default class Scene extends Phaser.Scene {
     //colisiones
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
 
+    //disparos!!
+    this.beamGroup = this.physics.add.group();
+
+
     //PAUSA
     this.createPauseButton();
     //*TIMER
@@ -94,6 +98,15 @@ export default class Scene extends Phaser.Scene {
       callback: () => this.decrementTimer(),
       loop: true,
     });
+  }
+
+  //crear disparos reutiolizables
+  createBeam(x, y, gravity, speed) {
+    const beam = new Beam(this, x, y, "beam", 0, gravity, speed );
+    
+    this.beamGroup.add(beam);
+    
+    
   }
 
   decrementTimer() {
@@ -163,19 +176,7 @@ export default class Scene extends Phaser.Scene {
       this.flyingEnemy.update(time, delta)
     }
   }
-  createBeam(x, y, gravity, speed) {
-    const beam = new Beam(this, x, y, "beam", 0, gravity, speed );
-
-   
   
-    
-    
-    setGravityY(-800);
-    
-    this.beamGroup.add(beam);
-    
-    
-  }
   
 
 
