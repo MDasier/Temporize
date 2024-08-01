@@ -51,6 +51,7 @@ export default class Scene extends Phaser.Scene {
   //*********************** ELEMENTOS ***********************
   create(data) {
 
+
     //crea 1 sola vez
 
     
@@ -68,13 +69,15 @@ export default class Scene extends Phaser.Scene {
 
     //flying enemy
     this.createFlyingEnemy();
+    
     //console.log("Enemigo agregado correctamente");
 
     //colisiones
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
 
     //disparos!!
-    this.beamGroup = this.physics.add.group();
+   this.beamGroup = this.physics.add.group();
+    
 
 
     //PAUSA
@@ -103,11 +106,16 @@ export default class Scene extends Phaser.Scene {
   //crear disparos reutilizables
   createBeam(x, y, gravity, speed) {
     const beam = new Beam(this, x, y, "beam", 0, gravity, speed );
+    console.log(gravity);
+    console.log(speed);
+
     
     this.beamGroup.add(beam);
-    
+    this.physics.add.existing(this.beamGroup)
+   /*  this.beamGroup.body.physics. */
     
   }
+  
 
   decrementTimer() {
     if (this.timer > 0) {

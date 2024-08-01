@@ -5,7 +5,16 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
         this.sceneRef = scene;//esto me gustaria mirarlo mejor, se guarda una copia de la escena y así siempre hay un "backup" para cuando se destruye
        
         //* LOG DE ENEMIGO
-        /* console.log(`El enemigo volador se creó en x=${x}, y=${y}`) */
+        console.log(`El enemigo volador se creó en x=${x}, y=${y}`) 
+
+        /* //! ataque autista
+     this.time.addEvent({
+      delay: 0.1,
+      callback: this.flyingEnemy.shootBeam(),
+      callbackScope: this,
+      loop: true,
+    })
+    console.log("disparo enemigo")*/
 
         this.scene = scene;
         this.player = player;
@@ -37,9 +46,21 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite{
         this.velocityY = 0.001; //mov vertical
         this.amplitude = 4;
         this.frequency = 10;
+
+        
+    }
+    
+    
+    shootBeam(){
+        this.scene.createBeam(this.x, this.y, -800, +500)
     }
     update(time, delta){
        
+             
+             
+            
+        
+    
 
         //movimiento horizontal
         this.x += this.velocityX

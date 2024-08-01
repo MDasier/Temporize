@@ -53,7 +53,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
     }
     //cambiamos el create por shoot ya que debe crearse en scene, aquí solo lo llamamos.
     shootBeam(){
-        this.scene.createBeam(this.x + 80, this.y -22, this.gravity-800, this.speed+500)
+        this.scene.createBeam(this.x + 80, this.y -22, -800, +500)
     }
 
     update(){
