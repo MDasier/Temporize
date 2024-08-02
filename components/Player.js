@@ -57,6 +57,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
     }
 
     update(){
+
+        if(this.scene.isPaused){
+            this.anims.pause()
+        }
+
         if(this.scene.cursors.right.isDown){
             this.scene.player.setVelocityX(180)
             this.scene.player.flipX=false

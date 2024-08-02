@@ -89,7 +89,15 @@ export default class Scene extends Phaser.Scene {
       callback: () => this.decrementTimer(),
       loop: true,
     });
+    //********ground *///****************************************** */
+  this.ground=this.physics.add.staticGroup()
+  this.ground.create(500,550,"ground")
+  .setScale(50,1)
+  .setSize(1100)
+  .setOffset(-500,0)
+  this.physics.add.collider(  this.ground,this.player)
   }
+  
 
   //crear disparos reutilizables
   createBeam(x, y, gravity, speed) {
@@ -180,13 +188,13 @@ export default class Scene extends Phaser.Scene {
   createPlatforms() {
     //this.platforms = this.physics.add.staticGroup(); //hijos de platformas
     this.platforms = new PlatformGroup(this);
-    this.platforms.createPlatform(
-      0,
-      this.game.config.height - 10,
-      "ground",
-      this.game.config.width,
-      1
-    );
+    // this.platforms.createPlatform(
+    //   -1,
+    //   this.game.config.height - 10,
+    //   "ground",
+    //   this.game.config.width,
+    //   1
+    // );
     this.platforms.createPlatform(110, 250, "platform", 5, 0.5);
     this.platforms.createPlatform(680, 320, "platform", 6, 0.5);
     this.platforms.createPlatform(380, 420, "platform", 6, 0.5);
@@ -257,10 +265,14 @@ export default class Scene extends Phaser.Scene {
     this.pause = function () {
       //funcion para pausar
       this.physics.pause();
+     
       this.anims.pauseAll();
+      
+
+ 
       pauseButton.setText("Resume");
       this.isPaused = true;
-
+ 
       //oscuridad en la pantalla cuando se pause.
       this.pauseOverlay = this.add.rectangle(2, 2, 2, 2, 0x000000, 0.5);
       this.pauseOverlay.setScale(
@@ -319,8 +331,14 @@ export default class Scene extends Phaser.Scene {
       //función reanudar
       this.physics.resume();
       this.anims.resumeAll();
+
+
+
       pauseButton.setText("Pause");
       this.isPaused = false;
+
+      
+
 
       //quitar elementos de pausa.
       this.pauseOverlay.destroy();
