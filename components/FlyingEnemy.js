@@ -42,7 +42,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
 
     //para moverlo
     this.velocityX = -2; //mov horizontal, negativa izquierda
-    this.velocityY = 0.001; //mov vertical
+    this.velocityY = 0.020; //mov vertical
     this.amplitude = 4;
     this.frequency = 10;
   }
@@ -50,40 +50,37 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
   shootBeam() {
     this.scene.createBeam(this.x, this.y, -800, +500);
   }
-  update(time, delta) {
+  update(time) {
     //movimiento horizontal
     this.x += this.velocityX;
 
     //efecto flotar
     //todo no sale, hay que revisar
-    this.y += Math.sin(this.frequency * time) * this.amplitude;
+    //this.y += Math.sin(this.frequency * time) * this.amplitude;
+    //this.y += Math.sin(this.frequency * time + Math.cos(this.frequency * time * 0.5)) * this.amplitude;
+    //this.y += Math.sin(this.frequency * time) * this.amplitude * Math.cos(this.frequency * time * 0.5);
+    this.y += this.velocityY;
+    this.velocityY += Math.sin(this.frequency * time) * this.amplitude * 0.05;
+    //this.velocityY *= 0.99; // Desaceleración
 
-    //rebotar en los bordes superiores
+    //rebotar en los bordes superiores e inferiores
     //!
-    if (this.y < 0 || this.y > this.scene.game.config.height - this.height) {
+
+    if (this.y <= 0 || this.y - this.scene.game.config.height >= this.scene.game.config.height) {
+      this.velocityY *= -1
     }
 
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
 
     if (this.x < 0 || this.x > this.scene.game.config.width) {
       this.destroy();
+      console.log("destruido enemigo");
       this.sceneRef.createFlyingEnemy();
     }
 
-    //No se salga de los limites de la camara(por ahora)
 
-    const camera = this.scene.cameras.main;
-    const minX = camera.worldView.x;
-    const maxX = camera.worldView.right;
-    const minY = camera.worldView.y;
-    const maxY = camera.worldView.bottom;
-
-    if (this.x < minX) this.x = minX;
-    if (this.x > maxX) this.x = maxX;
-    if (this.y < minY) this.y = minY;
-    if (this.y > maxY) this.y = maxY;
-
-    //delta tiempo transcurrido desde el ultimo frame en milisec
+//TODO ahora mismo no tiene sentido, para más tarde
+    /* //delta tiempo transcurrido desde el ultimo frame en milisec
     if (this.isFloating) {
       //si el enemigo está flotando incrementa el tiempo de flotacion en milisecs
       this.floatTime += delta;
@@ -97,7 +94,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
       if (this.x < -this.width) {
         this.destroy();
       }
-    }
+    } */
     /* if (time - this.lastShootTime >= this.shootInterval){
             this.lastShootTime = time;
             this.shoot();
