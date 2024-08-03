@@ -107,9 +107,9 @@ export default class Scene extends Phaser.Scene {
   //   this.beamGroup.add(beam);
   //   //this.physics.add.existing(this.beamGroup)
   // }
-
+//------------------------------------parametros del beam funcionales-------
   createBeam(x, y, direction) {
-    // crea un nuevo Beam en la escena
+    // crea un nuevo beam en la escena usando los parametros establecidos en la clase 
     const beam = new Beam(this, x, y, 'beam', direction === 'left',1000,1,1000,25,20);
     this.beamGroup.add(beam);
 }

@@ -115,12 +115,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
           
         
 
-            //  this.shootBeam()
-             
-             //! Beam.createBeam para que Beam llame a createBeam, para usarlo posteriormente en la escena.
-             //*------------ojo-provisional
-            // const beamOffsetX = this.flipX ? -80 : 80;
-            //this.scene.createBeam(this.x + beamOffsetX, this.y - 22);
+            
         }
     }
 }
