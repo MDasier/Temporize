@@ -2,8 +2,7 @@ import PlatformGroup from "../components/PlatformGroup.js";
 import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
-import Beam from "../components/Beam.js";
-
+import Beam from "../components/beam.js";
 //variables timer
 let warningAppeared = false;
 
@@ -99,15 +98,21 @@ export default class Scene extends Phaser.Scene {
   }
   
 
-  //crear disparos reutilizables
-  createBeam(x, y, gravity, speed) {
-    const beam = new Beam(this, x, y, "beam", 0, gravity, speed);
-    console.log(gravity);
-    console.log(speed);
+  // //crear disparos reutilizables
+  // createBeam(x, y, gravity, speed) {
+  //   const beam = new Beam(this, x, y, "beam", 0, gravity, speed);
+  //   console.log(gravity);
+  //   console.log(speed);
 
+  //   this.beamGroup.add(beam);
+  //   //this.physics.add.existing(this.beamGroup)
+  // }
+
+  createBeam(x, y, direction) {
+    // crea un nuevo Beam en la escena
+    const beam = new Beam(this, x, y, 'beam', direction === 'left',1000,1,1000,25,20);
     this.beamGroup.add(beam);
-    //this.physics.add.existing(this.beamGroup)
-  }
+}
 
   decrementTimer() {
     if (this.timer > 0) {
@@ -165,6 +170,10 @@ export default class Scene extends Phaser.Scene {
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
     }
+//------------------------actualiza los diferentes beams---------
+    this.beamGroup.getChildren().forEach(beam => {
+      beam.update();
+  });
 
     //le da movimientos y acciones AL FONDO
     this.background.tilePositionX += 0.5; //velocidad de fondo

@@ -83,7 +83,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
                 this.isAttacking=false 
           
             })  
-            this.shootBeam() ;
+            // this.shootBeam() ;
+
+
+            const direction = this.flipX ? 'left' : 'right';
+            const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
+
+            this.scene.createBeam(this.x + offsetX, this.y - 22,direction);
 
         }else if(!this.body.touching.down&&!this.isAttacking){
          this.anims.play("jump",true)
@@ -101,7 +107,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
                 this.isAttacking=false 
           
             })  
-             this.shootBeam()
+
+            const direction = this.flipX ? 'left' : 'right';
+            const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
+
+            this.scene.createBeam(this.x + offsetX, this.y - 22,direction);
+          
+        
+
+            //  this.shootBeam()
              
              //! Beam.createBeam para que Beam llame a createBeam, para usarlo posteriormente en la escena.
              //*------------ojo-provisional

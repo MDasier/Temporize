@@ -1,33 +1,28 @@
-export default class Beam extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene,x,y, texture, frame, gravity, speed ){
-        super(scene,x,y, texture, frame);
-        this.scene=scene;
-        this.x=x;
-        this.y=y;
-        this.gravity= gravity;
+export default class Beam extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, texture, flipX, velocity , scale, lifetime , width , height ) {
+        super(scene, x, y, texture);
+        this.scene = scene;
+        this.flipX = flipX;
+        this.velocity = velocity;
+        this.lifetime = lifetime;
 
-        //console.log("Beam "+gravity);
-        //console.log("Beam "+speed);         
-
+        // Agrega el objeto Beam al sistema de físicas y a la escena
         this.scene.physics.add.existing(this);
         this.scene.add.existing(this);
 
-        //* Configurar velocidad y gravedad
-        this.setVelocityX(speed);
-        this.setVelocityY(gravity-gravity);
-        this.velocity.x = speed // Velocidad horizontal
-        //this.body.velocity.x = speed // Velocidad horizontal
-        this.setGravityY(gravity);
-        //this.velocity.y = gravity //Velocidad en el eje y por fallo de gravedad         
-        //console.log(this.velocity.x)//!NO LO BORRES QUE FUNCIONA!
-        //this.body.velocity.y = -speed/9 //Velocidad en el eje y por fallo de gravedad         
-        
-        this.setCollideWorldBounds(true);
-        this.setScale(1)
-        this.body.setSize(25,20,true)
+        // Configura el tamaño del cuerpo y otras propiedades
+        this.setCollideWorldBounds(false);
+        this.setScale(scale);
+        this.body.setSize(width, height, true);
 
-        //this.setVelocityX(flipX ? -300 : 300); // Move left if flipX is true, otherwise move right
-        //this.flipX = flipX;
+        // Destruye el objeto Beam después del tiempo especificado
+        this.scene.time.delayedCall(this.lifetime, () => {
+            this.destroy(); 
+        });
     }
-  
- }
+
+    update() {
+        this.setVelocityY(0); // Establece la velocidad en Y a 0 para anular la gravedad
+        this.setVelocityX(this.flipX ? -this.velocity : this.velocity); // Establece la velocidad en X según flipX
+    }
+}
