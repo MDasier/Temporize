@@ -17,6 +17,7 @@ export default class Scene extends Phaser.Scene {
     this.timer = 60;
     this.timerText = null;
     this.floor = null;
+    
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************

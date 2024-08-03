@@ -21,7 +21,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
         this.scene.cursors=this.scene.input.keyboard.createCursorKeys()
 
         this.isAttacking=false
-        this.scene.beamGroup = this.scene.physics.add.group()
+        //this.scene.beamGroup = this.scene.physics.add.group()
     }
 
     createAnimation(){
@@ -52,9 +52,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
           })
     }
     //cambiamos el create por shoot ya que debe crearse en scene, aquí solo lo llamamos.
-    shootBeam(){
-        this.scene.createBeam(this.x + 80, this.y -22, -800, 1500)
-    }
+    // shootBeam(){
+    //     this.scene.createBeam(this.x + 80, this.y -22, -800, 1500)
+    // }
 
     update(){
 
@@ -90,6 +90,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
             const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
 
             this.scene.createBeam(this.x + offsetX, this.y - 22,direction);
+            if(direction==="left"){
+                this.x+=70
+            }
 
         }else if(!this.body.touching.down&&!this.isAttacking){
          this.anims.play("jump",true)
@@ -113,7 +116,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
 
             this.scene.createBeam(this.x + offsetX, this.y - 22,direction);
           
-        
+        if(direction==="left"){
+            this.x+=70
+        }
 
             
         }
