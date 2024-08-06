@@ -51,7 +51,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
     this.scene.createBeam(this.x, this.y, -800, +500);
   }
   update(time) {
-    //movimiento horizontal
+    //movimiento horizontgital
     this.x += this.velocityX;
 
     //efecto flotar
@@ -63,12 +63,15 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
     this.velocityY += Math.sin(this.frequency * time) * this.amplitude * 0.05;
     //this.velocityY *= 0.99; // Desaceleración
 
-    //rebotar en los bordes superiores e inferiores
-    //!
+    //rebotar en los bordes superiores y mitad de pantalla
 
     if (this.y <= 0 || this.y - this.scene.game.config.height >= this.scene.game.config.height) {
       this.velocityY *= -1
     }
+    if (this.y >= this.scene.game.config.height/2 ) {
+      this.velocityY *= -1
+    }
+     
 
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
 
@@ -100,16 +103,8 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
             this.shoot();
         } */
   }
-  /* createFlyingEnemy(){
-        const enemy = new FlyingEnemy(this, x, y, this.Player)
-;       this.add.existing(enemy);
-        enemy.body.velocity.x = 100; //100px sec
-        this.setVisible(true); //para ver si aparece
-        this.setDepth(1);
-        this.setTexture('flyingEnemy');
-        this.setScale(1);
-    }
- */
+  
+ 
   //TODO Hacer el disparo
   //TODO que ronde un poco por la pantalla, se pare y dispare, etc.
 }

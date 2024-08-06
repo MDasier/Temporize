@@ -226,14 +226,15 @@ export default class Scene extends Phaser.Scene {
 
   createFlyingEnemy() {
     const camera = this.cameras.main;
-    const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
-    const maxX = camera.worldView.right - 100;
+    const x = camera.worldView.right;
+    /* const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
+    const maxX = camera.worldView.right - 100; */
     const minY = camera.worldView.y + 100; //lo mismo borde superior
-    const maxY = camera.worldView.bottom - 100;
+    const maxY = camera.worldView.bottom - camera.worldView.height /2; //mitad pantalla
 
-    let x, y;
+    let y;
     do {
-      x = Phaser.Math.Between(minX, maxX);
+     /*  x = Phaser.Math.Between(minX, maxX); */
       y = Phaser.Math.Between(minY, maxY);
     } while (!this.isWithinCameraBounds(x, y, camera));
 
