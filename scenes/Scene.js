@@ -42,7 +42,7 @@ export default class Scene extends Phaser.Scene {
       frameHeight: 123,
     });
     this.load.spritesheet("flyingEnemy", "../img/enemies/reaperbot.png", {
-      frameWidth: 384 / 8,
+      frameWidth: 384 / 9,
       frameHeight: 43,
     });
     /* this.load.image("flyingEnemy", "../img/enemies/beholder.png");*/
