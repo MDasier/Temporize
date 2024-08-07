@@ -22,6 +22,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
 
         this.isAttacking=false
         //this.scene.beamGroup = this.scene.physics.add.group()
+        
     }
 
     createAnimation(){
@@ -84,6 +85,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
           
             })  
             // this.shootBeam() ;
+       
 
 
             const direction = this.flipX ? 'left' : 'right';
@@ -122,5 +124,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite{
 
             
         }
+        // if (this.body.touching.down && this.scene.cursors.down.isDown) {
+        //     this.physics.add.collider(this.platforms, this.player)===false
+            
+        //     }
+      
+          
     }
 }

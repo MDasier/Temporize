@@ -17,7 +17,7 @@ export default class Scene extends Phaser.Scene {
     this.timer = 60;
     this.timerText = null;
     this.floor = null;
-    
+   
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
@@ -64,6 +64,7 @@ export default class Scene extends Phaser.Scene {
 
     //colisiones
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
+    
 
     //disparos!!
     this.beamGroup = this.physics.add.group();
@@ -167,6 +168,8 @@ export default class Scene extends Phaser.Scene {
     const enemyPosition = this.flyingEnemy.getCenter();
 
     this.player.update();
+   
+    
 
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
