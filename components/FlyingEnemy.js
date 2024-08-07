@@ -1,4 +1,6 @@
+let shootTimer = 0
 export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
+  
   constructor(scene, x, y, player) {
     super(scene, x, y, "flyingEnemy");
     this.sceneRef = scene; //esto me gustaria mirarlo mejor, se guarda una copia de la escena y así siempre hay un "backup" para cuando se destruye
@@ -42,15 +44,15 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
 
     //para moverlo
     this.velocityX = -2; //mov horizontal, negativa izquierda
-    this.velocityY = 0.020; //mov vertical
-    this.amplitude = 4;
+    this.velocityY = 0.015; //mov vertical
+    this.amplitude = 3;
     this.frequency = 10;
   }
-
+  
   shootBeam() {
-    this.scene.createBeam(this.x, this.y, -800, +500);
+    this.scene.createBeam(this.x, this.y ,500,2,30,50,60);//los valores no funcionan
   }
-  update(time) {
+  update(time, delta) {
     //movimiento horizontgital
     this.x += this.velocityX;
 
@@ -79,6 +81,14 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
       this.destroy();
       console.log("destruido enemigo");
       this.sceneRef.createFlyingEnemy();
+    }
+
+    //disparo enemigo
+    if (shootTimer <= 0) {
+      shootTimer = Phaser.Math.Between(2000, 4500); // 2-5 segundos en milisegundos
+      this.shootBeam();
+    } else {
+      shootTimer -= delta;
     }
 
 
