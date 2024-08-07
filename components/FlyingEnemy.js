@@ -66,7 +66,21 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
   }
   
   shootBeam() {
-    this.scene.createBeam(this.x, this.y ,500,2,30,50,60);//los valores no funcionan
+    const beam = this.scene.add.sprite(this.x, this.y, 'fire'); 
+    beam.setScale(0.5); 
+   
+    
+    
+    const beamSpeed = 800; //  velocidad del bea,m
+  
+    this.scene.tweens.add({
+      targets: beam,
+      y: this.y + this.scene.game.config.height, // el beam cae
+      duration: beamSpeed,
+      onComplete: () => {
+        beam.destroy(); 
+      }
+    });
   }
   update(time, delta) {
     //movimiento horizontgital
@@ -101,7 +115,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
 
     //disparo enemigo
     if (shootTimer <= 0) {
-      shootTimer = Phaser.Math.Between(2000, 4500); // 2-5 segundos en milisegundos
+      shootTimer = Phaser.Math.Between(1000, 1000); // 2-5 segundos en milisegundos
       this.shootBeam();
     } else {
       shootTimer -= delta;
