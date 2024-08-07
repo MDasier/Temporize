@@ -47,6 +47,7 @@ export default class Scene extends Phaser.Scene {
 
   //*********************** ELEMENTOS ***********************
   create(data) {
+
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
@@ -163,13 +164,12 @@ export default class Scene extends Phaser.Scene {
 
   //*********************** MOVIMIENTOS Y ACCIONES ***********************
   update(time, delta) {
+
     const camera = this.cameras.main;
     const cameraBounds = camera.worldView;
     const enemyPosition = this.flyingEnemy.getCenter();
 
     this.player.update();
-   
-    
 
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
@@ -187,7 +187,9 @@ export default class Scene extends Phaser.Scene {
     if (this.flyingEnemy) {
       this.flyingEnemy.update(time, delta);
     }
-  }
+
+
+  }//cierre update
 
   backgroundAnimationY() {
     //Efecto 'PARALLAX' cuando nos movemos en vertical (Saltos/Gravedad)
@@ -222,6 +224,8 @@ export default class Scene extends Phaser.Scene {
           5,
           0.5
         );
+        console.log("plataforma creada")
+        console.log(this.keys)
       },
       loop: true,
     });

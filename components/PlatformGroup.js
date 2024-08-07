@@ -17,8 +17,10 @@ export default class PlatformGroup extends Phaser.Physics.Arcade.StaticGroup {
     platform.body.checkCollision.right = false;
   }
   removeCollisionUp(){
-    platform.body.checkCollision.up=false
     console.log("removeCollisionUp");
+    this.children.iterate((eachPlatform)=>{
+      eachPlatform.body.checkCollision.up=false
+    })
     
   }
 
