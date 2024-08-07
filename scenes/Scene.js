@@ -41,9 +41,12 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 127,
       frameHeight: 123,
     });
-    //TODO no va a cargar es como el grass pero en enemigo, no existe.
-    this.load.image("flyingEnemy", "../img/enemies/beholder.png");
-  }
+    this.load.spritesheet("flyingEnemy", "../img/enemies/reaperbot.png", {
+      frameWidth: 384 / 8,
+      frameHeight: 43,
+    });
+    /* this.load.image("flyingEnemy", "../img/enemies/beholder.png");*/
+  } 
 
   //*********************** ELEMENTOS ***********************
   create(data) {

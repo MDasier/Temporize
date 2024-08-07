@@ -16,6 +16,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
       loop: true,
     })
     console.log("disparo enemigo")*/
+    
 
     this.scene = scene;
     this.player = player;
@@ -28,7 +29,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
     this.setDepth(1);
     this.setTexture("flyingEnemy");
     this.setPosition(x, y);
-    this.setScale(0.2);
+    this.setScale(2);
 
     //! asegurarse de que se crea dentro de los limites de la camara
     const camera = this.scene.cameras.main;
@@ -47,6 +48,21 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
     this.velocityY = 0.015; //mov vertical
     this.amplitude = 3;
     this.frequency = 10;
+
+    this.createAnimation = this.createAnimation.bind(this);
+    this.createAnimation()
+    this.anims.play("fly");
+    }
+    createAnimation() {
+      this.anims.create({
+        key: "fly",
+        frames: this.anims.generateFrameNumbers(this.texture.key, {
+          start: 0,
+          end: 7,
+        }),
+        frameRate: 10,
+        repeat: -1,
+      });
   }
   
   shootBeam() {
