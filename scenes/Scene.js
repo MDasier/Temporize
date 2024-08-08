@@ -46,7 +46,7 @@ export default class Scene extends Phaser.Scene {
       frameHeight: 43,
     });
     /* this.load.image("flyingEnemy", "../img/enemies/beholder.png");*/
-    this.load.image("fire","../img/enemies/24.png",{
+    this.load.image("fire","../img/enemies/ball.png",{
       frameWidth: 92,
       frameHeight: 211
     })

@@ -7,15 +7,6 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
 
     //* LOG DE ENEMIGO
     //console.log(`El enemigo volador se creó en x=${x}, y=${y}`)
-
-    /* //! ataque autista
-     this.time.addEvent({
-      delay: 0.1,
-      callback: this.flyingEnemy.shootBeam(),
-      callbackScope: this,
-      loop: true,
-    })
-    console.log("disparo enemigo")*/
     
 
     this.scene = scene;
@@ -70,17 +61,28 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
     beam.setScale(0.5); 
    
     
-    
+   const player = this.scene.player; 
     const beamSpeed = 800; //  velocidad del bea,m
   
     this.scene.tweens.add({
       targets: beam,
-      y: this.y + this.scene.game.config.height, // el beam cae
+      x: player.x,
+      y: player.y,
       duration: beamSpeed,
       onComplete: () => {
         beam.destroy(); 
       }
     });
+    //efecto visual pulsación 
+    this.scene.tweens.add({
+      targets: beam,
+      scaleX: 0.6,
+      scaleY: 0.6,
+      duration: 100,
+      yoyo: true,
+      repeat: -1
+    });
+
   }
   update(time, delta) {
     //movimiento horizontgital
