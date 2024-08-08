@@ -5,6 +5,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
         this.flipX = flipX;
         this.velocity = velocity;
         this.lifetime = lifetime;
+       
 
         // agrega el objeto Beam al sistema de físicas y a la escena
         this.scene.physics.add.existing(this);
