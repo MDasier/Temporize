@@ -12,10 +12,10 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
     this.scene = scene;
     this.player = player;
     this.speed = 0.1; //velocidad de movimiento, probando
-    this.floatTime = 0; //para controlar el tiempo que el enemigo está flotando en pantalla antes de irse
+   /*  this.floatTime = 0; //para controlar el tiempo que el enemigo está flotando en pantalla antes de irse
     this.shootInterval = 5000; //5 segundos para disparar
     this.lastShootTime = 0; //contador de tiempo para el disparo
-    this.isFloating = false; //empieza moviendose
+    this.isFloating = false; //empieza moviendose */
     this.setVisible(true);
     this.setDepth(1);
     this.setTexture("flyingEnemy");
@@ -58,7 +58,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
   
   shootBeam() {
     const beam = this.scene.add.sprite(this.x, this.y, 'fire'); 
-    beam.setScale(0.5); 
+    beam.setScale(0.8); 
    
     
    const player = this.scene.player; 
