@@ -7,6 +7,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.y = y;
     this.texture = texture;
 
+    this.coins = 0;
+
     this.scene.physics.add.existing(this); //cargar el jugador a la scene
     this.scene.add.existing(this); //hitbox del jugador
     this.setCollideWorldBounds(true); //limites para el jugador
@@ -109,6 +111,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     ) {
       this.scene.player.setVelocityY(-450);
       this.anims.play("jump");
+      this.scene.boss.bossDeath()
     } /*else if (
       !this.body.touching.down &&
       Phaser.Input.Keyboard.JustDown(this.scene.keys.z)

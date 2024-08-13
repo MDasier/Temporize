@@ -3,6 +3,7 @@ import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
 import Beam from "../components/beam.js";
+import Boss from "../components/Boss.js";
 //variables timer
 let warningAppeared = false;
 
@@ -22,9 +23,11 @@ export default class Scene extends Phaser.Scene {
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
   preload() {
-    //donde cargamos los assets
+
     this.load.image("background", "../img/background/mountain.png");
     this.load.image("platform", ".//assets/grass.png"); //plataforma //TODO NO CARGA IMAGEN PORQUE NO EXISTE(REVISAR RUTA)
+
+    //JUGADOR
     this.load.spritesheet("player", "../img/mage/Run.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
@@ -37,19 +40,34 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     });
+
+    //DISPARO
     this.load.image("beam", "../img/mage/beam.png", {
       frameWidth: 127,
       frameHeight: 123,
     });
+
+    //ENEMIGO RANGO
     this.load.spritesheet("flyingEnemy", "../img/enemies/reaperbot.png", {
       frameWidth: 384 / 9,
       frameHeight: 43,
     });
-    /* this.load.image("flyingEnemy", "../img/enemies/beholder.png");*/
     this.load.image("fire","../img/enemies/ball.png",{
       frameWidth: 92,
       frameHeight: 211
     })
+
+    //BOSS
+    this.load.spritesheet("bossIdleSprite", "../img/bossOne/Idle.png", {
+      frameWidth: 1999 /8,
+      frameHeight: 105,
+    });
+    this.load.spritesheet("bossDeathSprite", "../img/bossOne/Death.png", {
+      frameWidth: 1999 /8,
+      frameHeight: 105,
+    });
+
+    
   } 
 
   //*********************** ELEMENTOS ***********************
@@ -67,6 +85,11 @@ export default class Scene extends Phaser.Scene {
 
     //flying enemy
     this.createFlyingEnemy();
+
+    //boss
+    this.boss = new Boss(this,200,200,this.player,1);
+    this.add.existing(this.boss);
+    this.boss.setVisible(true);
 
     //console.log("Enemigo agregado correctamente");
 
@@ -195,7 +218,7 @@ export default class Scene extends Phaser.Scene {
       this.flyingEnemy.update(time, delta);
     }
 
-
+    this.boss.update(time, delta);
   }//cierre update
 
   backgroundAnimationY() {
