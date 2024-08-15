@@ -34,13 +34,14 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     this.scene = scene;
     this.player = player;
     this.dificulty = dificulty;
-    this.HP = 100; //VIDA DEL BOSS (ya veremos como ajustamos valores y daño)
+    this.HP = 10; //VIDA DEL BOSS (ya veremos como ajustamos valores y daño)
     this.speed = 0.1;
     this.setVisible(true);
     this.setDepth(1);
     //this.setTexture("spriteBoss");
     this.setPosition(x, y);
-    this.setScale(2);
+    this.setScale(3);
+  
     this.velocityX = 0;
     this.velocityY = 0;
     this.amplitude = 3;
@@ -68,7 +69,7 @@ export default class Boss extends Phaser.GameObjects.Sprite {
         start: 0,
         end: 6,
       }),
-      frameRate: 10,
+      frameRate: 5,
       repeat: 0,
     });
 
@@ -106,10 +107,10 @@ export default class Boss extends Phaser.GameObjects.Sprite {
       key: "bossRunAnim",
       frames: this.anims.generateFrameNumbers("bossRunSprite", {
         start: 0,
-        end: 6,
+        end: 7,
       }),
       frameRate: 10,
-      repeat: 0,
+      repeat: -1,
     });
 
     this.anims.create({
@@ -154,12 +155,15 @@ export default class Boss extends Phaser.GameObjects.Sprite {
   }
 
   clonePlayer() {
-    //Crear un enemigo Melee con el sprite que esté usando el player y le persiga
-    //Añadir a la clase meleeEnemy un metodo que haga explotar al enemigo estando cerca del player
+    //*Crear un enemigo Melee con el sprite que esté usando el player y le persiga
+    //this.scene.cloneEnemy = new meleeEnemy(x,y,this.scene.player.texture);
+    //*Añadir a la clase meleeEnemy un metodo que haga explotar al enemigo estando cerca del player
+    //this.scene.cloneEnemy.seekAndDestroy();
   }
 
   root() {
-    //Llamada a metodo 'root' de player durante 1*dificultad segundos    
+    //Llamada a metodo 'root' de player durante 1*dificultad segundos
+    this.scene.player.root(1000*this.dificulty)
   } 
 
   mirror() {
@@ -181,6 +185,7 @@ export default class Boss extends Phaser.GameObjects.Sprite {
   }  
 
   debuffDPS() {
+    //*Cuando la clase player ya tenga daño
     //this.scene.player.damage = this.scene.player.damage/2
   } 
 
@@ -215,14 +220,28 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
   bossDeath(){
     this.anims.play("bossDeathAnim");
-    console.log("Boss muriendo")
+    this.timedEvent = this.scene.time.delayedCall(5000, this.destroy, [], this);
   }
+
   update(time, delta) {
-    /* //? DESTRUIR BOSS CUANDO SU VIDA LLEGA A 0
-        if (this.HP <= 0){
-        this.destroy();
-        console.log("Boss killed");
-        }
-    */
+    //CONTROL DE DAÑOS - Abria que controlar el GAME OVER
+    /*if (this.HP <= 0){
+      this.bossDeath()
+    }*/
+
+    //BOSS MIRANDO AL PLAYER SIEMPRE
+    if(this.scene.player.x>=this.x){
+      this.flipX=false
+    }else{
+      this.flipX=true
+    }
+
+    //MOVIMIENTO DEL BOSS
+    if(!this.flipX && this.x>=50){
+      this.x-=1
+    }
+    if(this.flipX && this.x<=this.scene.game.config.width-50){
+      this.x+=1
+    }
   }
 }

@@ -6,7 +6,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.x = x;
     this.y = y;
     this.texture = texture;
-
+    this.isPlayerMovable=true;
     this.coins = 0;
 
     this.scene.physics.add.existing(this); //cargar el jugador a la scene
@@ -35,6 +35,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.isAttacking = false;
     //this.scene.beamGroup = this.scene.physics.add.group()
  
+  }
+  root(delay){
+    this.isPlayerMovable = false			
+		this.scene.time.delayedCall(delay, () => {this.isPlayerMovable = true}, [], this);
   }
 
   createAnimation() {
@@ -72,10 +76,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: 0,
     });
   }
-  //cambiamos el create por shoot ya que debe crearse en scene, aquí solo lo llamamos.
-  // shootBeam(){
-  //     this.scene.createBeam(this.x + 80, this.y -22, -800, 1500)
-  // }
 
   update() {
     if (this.scene.isPaused) {
@@ -93,10 +93,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     // Movimiento lateral
-    if (this.scene.keys.D.isDown) {
+    if (this.scene.keys.D.isDown && this.isPlayerMovable) {
         this.scene.player.setVelocityX(180);
         this.scene.player.flipX = false;
-    } else if (this.scene.keys.A.isDown) {
+    } else if (this.scene.keys.A.isDown && this.isPlayerMovable) {
         this.scene.player.setVelocityX(-180);
         this.scene.player.flipX = true;
     } else {
@@ -107,29 +107,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     //*SALTO
     if (
       (this.scene.cursors.space.isDown || this.scene.keys.W.isDown) &&
-      this.scene.player.body.touching.down
+      this.scene.player.body.touching.down && this.isPlayerMovable
     ) {
       this.scene.player.setVelocityY(-450);
       this.anims.play("jump");
-      this.scene.boss.bossDeath()
-    } /*else if (
-      !this.body.touching.down &&
-      Phaser.Input.Keyboard.JustDown(this.scene.keys.z)
-    ) {
-      this.isAttacking = true;
-      this.x -= 35;
-      this.anims.play("jumpAttack", true).on("animationcomplete", () => {
-        this.isAttacking = false;
-      });
-
-      const direction = this.flipX ? "left" : "right";
-      const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
-
-      this.scene.createBeam(this.x + offsetX, this.y - 22, direction);
-      if (direction === "left") {
-        this.x += 70;
-      }
-    } */else if (!this.body.touching.down && !this.isAttacking) {
+      //this.scene.boss.bossDeath()//PRUEBA DE QUE SE PUEDE LLAMAR A METODOS DE OTRAS CLASES
+    } else if (!this.body.touching.down && !this.isAttacking) {
       this.anims.play("jump", true);
     } else {
       if (!this.isAttacking) {
@@ -137,26 +120,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
     }
     //*attack
-
-    /*if (
-      Phaser.Input.Keyboard.JustDown(this.scene.keys.z) &&
-      !this.isAttacking
-    ) {
-      this.isAttacking = true;
-      this.x -= 35;
-      this.anims.play("attack", true).on("animationcomplete", () => {
-        this.isAttacking = false;
-      });
-
-      const direction = this.flipX ? "left" : "right";
-      const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
-
-      this.scene.createBeam(this.x + offsetX, this.y - 22, direction);
-
-      if (direction === "left") {
-        this.x += 70;
-      }
-    }*/
     if (
       (this.scene.keys.Z.isDown || this.scene.keys.E.isDown) &&
       !this.isAttacking
@@ -166,6 +129,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.anims.play("attack", true).on("animationcomplete", () => {
         this.isAttacking = false;
       });
+      //!PRUEBA DAÑOS AL BOSS CON CADA DISPARO
+      this.scene.boss.HP-=1;
+      console.log(this.scene.boss.HP)
+      //!
 
       const direction = this.flipX ? "left" : "right";
       const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
@@ -176,11 +143,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.x += 70;
       }
     }
-
-    // if (this.body.touching.down && this.scene.cursors.down.isDown) {
-    //     this.physics.add.collider(this.platforms, this.player)===false
-
-    //     }
   }
 
 }

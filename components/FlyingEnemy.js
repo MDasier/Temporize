@@ -111,7 +111,7 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
 
     if (this.x < 0 || this.x > this.scene.game.config.width) {
       this.destroy();
-      console.log("destruido enemigo");
+      //console.log("destruido enemigo");
       this.sceneRef.createFlyingEnemy();
     }
 
@@ -145,8 +145,5 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
             this.shoot();
         } */
   }
-  
- 
-  //TODO Hacer el disparo
-  //TODO que ronde un poco por la pantalla, se pare y dispare, etc.
+
 }

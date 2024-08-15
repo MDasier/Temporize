@@ -66,6 +66,10 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 1999 /8,
       frameHeight: 105,
     });
+    this.load.spritesheet("bossRunSprite", "../img/bossOne/Run.png", {
+      frameWidth: 2000 /8,
+      frameHeight: 73,
+    });
 
     
   } 
@@ -87,15 +91,12 @@ export default class Scene extends Phaser.Scene {
     this.createFlyingEnemy();
 
     //boss
-    this.boss = new Boss(this,200,200,this.player,1);
+    this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
     this.add.existing(this.boss);
-    this.boss.setVisible(true);
-
-    //console.log("Enemigo agregado correctamente");
+    //this.boss.setVisible(true);
 
     //colisiones
-    this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
-    
+    this.physics.add.collider(this.platforms, this.player); // detecta las colisiones    
 
     //disparos!!
     this.beamGroup = this.physics.add.group();
@@ -106,7 +107,7 @@ export default class Scene extends Phaser.Scene {
     //iniciar timer
     if (data.initialTimerValue) {
       this.initialTimerValue = data.initialTimerValue; //esto es para la logica de tiempo del boss.
-      console.log(data.initialTimerValue);
+      //console.log(data.initialTimerValue);
       this.timer = this.initialTimerValue;
     }
     //texto del timer
@@ -130,16 +131,6 @@ export default class Scene extends Phaser.Scene {
   this.physics.add.collider(  this.ground,this.player)
   }
   
-
-  // //crear disparos reutilizables
-  // createBeam(x, y, gravity, speed) {
-  //   const beam = new Beam(this, x, y, "beam", 0, gravity, speed);
-  //   console.log(gravity);
-  //   console.log(speed);
-
-  //   this.beamGroup.add(beam);
-  //   //this.physics.add.existing(this.beamGroup)
-  // }
 //------------------------------------parametros del beam funcionales-------
   createBeam(x, y, direction) {
     // crea un nuevo beam en la escena usando los parametros establecidos en la clase 
@@ -217,8 +208,9 @@ export default class Scene extends Phaser.Scene {
     if (this.flyingEnemy) {
       this.flyingEnemy.update(time, delta);
     }
-
-    this.boss.update(time, delta);
+    if(this.boss){
+      this.boss.update(time, delta);
+    }
   }//cierre update
 
   backgroundAnimationY() {
@@ -254,8 +246,6 @@ export default class Scene extends Phaser.Scene {
           5,
           0.5
         );
-        console.log("plataforma creada")
-        console.log(this.keys)
       },
       loop: true,
     });
@@ -281,10 +271,6 @@ export default class Scene extends Phaser.Scene {
     this.flyingEnemy.setVisible(true);
 
     this.flyingEnemy.alpha = 1;
-
-    //TODO destruir el enemigo y crear otro en otra parte aleatoria
-
-    //TODO limitar la creación aleatoria a mitad de pantalla hacia arriba
   }
   isWithinCameraBounds(x, y, camera) {
     return (
@@ -379,14 +365,8 @@ export default class Scene extends Phaser.Scene {
       //función reanudar
       this.physics.resume();
       this.anims.resumeAll();
-
-
-
       pauseButton.setText("Pause");
       this.isPaused = false;
-
-      
-
 
       //quitar elementos de pausa.
       this.pauseOverlay.destroy();
