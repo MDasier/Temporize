@@ -18,14 +18,14 @@ export default class Scene extends Phaser.Scene {
     this.timer = 60;
     this.timerText = null;
     this.floor = null;
-   
+    this.fogOfWar=false;
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
   preload() {
 
     this.load.image("background", "../img/background/mountain.png");
-    this.load.image("platform", ".//assets/grass.png"); //plataforma //TODO NO CARGA IMAGEN PORQUE NO EXISTE(REVISAR RUTA)
+    this.load.image("platform", ".//assets/grass.png"); //plataforma //TODO Necesitamos imagen para las plataformas
 
     //JUGADOR
     this.load.spritesheet("player", "../img/mage/Run.png", {
@@ -69,14 +69,12 @@ export default class Scene extends Phaser.Scene {
     this.load.spritesheet("bossRunSprite", "../img/bossOne/Run.png", {
       frameWidth: 2000 /8,
       frameHeight: 73,
-    });
-
-    
+    });    
   } 
 
   //*********************** ELEMENTOS ***********************
   create(data) {
-
+    
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
@@ -123,12 +121,54 @@ export default class Scene extends Phaser.Scene {
       loop: true,
     });
     //********ground *///****************************************** */
-  this.ground=this.physics.add.staticGroup()
-  this.ground.create(500,550,"ground")
-  .setScale(50,1)
-  .setSize(1100)
-  .setOffset(-500,0)
-  this.physics.add.collider(  this.ground,this.player)
+    this.ground=this.physics.add.staticGroup()
+    this.ground.create(500,550,"ground")
+    .setScale(50,1)
+    .setSize(1100)
+    .setOffset(-500,0)
+    this.physics.add.collider(  this.ground,this.player)
+
+
+    //!RENDER-TEXTURE
+    //const width = this.scale.width
+    //const height = this.scale.height
+    const width = this.cameras.main.worldView.right*2//TODO hay que conseguir el tamaño exacto de la pantalla de juego, no sé por que no lo pilla
+    const height = this.cameras.main.worldView.bottom*2
+
+    // make a RenderTexture that is the size of the screen
+    this.rt = this.make.renderTexture({
+      width,
+      height
+    }, !this.fogOfWar)
+
+    // fill it with black
+    this.rt.fill(0x000000, 0.95)//0=transparente, 1=oscuro
+    //TODO hay que añadir plataformas, enemigos, boss etc al RenderTexture
+    this.rt.draw(this.ground)
+    this.rt.draw(this.menuOpciones)
+    this.rt.draw(this.platformGroup)
+    this.rt.draw(this.boss)
+
+    // set a dark blue tint
+    this.rt.setTint(0x0a2948)
+
+   // Crear un gráfico circular para usar como textura
+    this.circleGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    this.circleGraphics.fillStyle(0xffffff, 1);//color y opacidad
+    this.circleGraphics.fillCircle(50, 50, 50); // Radio del círculo (x,y,%radius)
+    // Convertir el gráfico en una textura
+    this.circleGraphics.generateTexture('vision', 100, 100);
+
+    this.vision = this.make.image({
+      x: this.player.x,
+      y: this.player.y,
+      key: 'vision',
+      add: false
+    })
+    this.vision.scale = 3
+
+    this.rt.mask = new Phaser.Display.Masks.BitmapMask(this, this.vision)
+    this.rt.mask.invertAlpha = true
   }
   
 //------------------------------------parametros del beam funcionales-------
@@ -191,6 +231,8 @@ export default class Scene extends Phaser.Scene {
     const enemyPosition = this.flyingEnemy.getCenter();
 
     this.player.update();
+    this.vision.x = this.player.x;
+    this.vision.y = this.player.y;
 
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
@@ -200,17 +242,33 @@ export default class Scene extends Phaser.Scene {
       beam.update();
   });
 
-    //le da movimientos y acciones AL FONDO
+    //MOVIMIENTO Y 'ACCION' DEL FONDO
     this.background.tilePositionX += 0.5; //velocidad de fondo
     this.backgroundAnimationY();
 
+    //MOVIMIENTO DE PLATAFORMAS
     this.platforms.movePlatforms();
+
+    //ACCION DEL ENEMIGO VOLADOR
     if (this.flyingEnemy) {
       this.flyingEnemy.update(time, delta);
     }
+    //ACCION DEL BOSS
     if(this.boss){
       this.boss.update(time, delta);
     }
+
+    //ACTIVAR Y DESACTIVAR EL 'FOG OF WAR'
+    if(this.fogOfWar){
+      this.rt.setVisible(true)
+      this.rt.setDepth(1000);
+      this.rt.fill(0x000000, 0.95)
+    }else{
+      this.rt.setVisible(false)
+      //this.rt.clear()
+    }
+    
+    
   }//cierre update
 
   backgroundAnimationY() {
@@ -337,7 +395,7 @@ export default class Scene extends Phaser.Scene {
         font: "30px Arial",
         fill: "#fff",
       });
-      this.menu2 = this.add.text(390, 300, "MENU 2", {
+      this.menu2 = this.add.text(390, 300, "FOG OF WAR TEST", {
         font: "30px Arial",
         fill: "#fff",
       });
@@ -351,7 +409,8 @@ export default class Scene extends Phaser.Scene {
       });
       this.menu2.setInteractive({ useHandCursor: true });
       this.menu2.on("pointerdown", () => {
-        console.log("MENU 2 CLICK");
+        this.boss.fogOfWar();
+        this.resume();
       });
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {

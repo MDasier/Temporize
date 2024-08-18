@@ -129,10 +129,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.anims.play("attack", true).on("animationcomplete", () => {
         this.isAttacking = false;
       });
-      //!PRUEBA DAÑOS AL BOSS CON CADA DISPARO
-      this.scene.boss.HP-=1;
-      console.log(this.scene.boss.HP)
-      //!
 
       const direction = this.flipX ? "left" : "right";
       const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección

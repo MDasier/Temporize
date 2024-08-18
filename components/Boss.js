@@ -33,7 +33,7 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
     this.scene = scene;
     this.player = player;
-    this.dificulty = dificulty;
+    this.dificulty = 1; //dificulty
     this.HP = 10; //VIDA DEL BOSS (ya veremos como ajustamos valores y daño)
     this.speed = 0.1;
     this.setVisible(true);
@@ -141,7 +141,6 @@ export default class Boss extends Phaser.GameObjects.Sprite {
   //? MEDIO 2 -> godmode, callminion, cloneplayer, root, shootBeam, xyRay
   //? FÁCIL 1 -> callminion, cloneplayer, shootBeam, charge
 
-  //Limitar field of view del player
   
   godMode() {
     //Añadir un escudo o algo que proteja al Boss
@@ -163,7 +162,7 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
   root() {
     //Llamada a metodo 'root' de player durante 1*dificultad segundos
-    this.scene.player.root(1000*this.dificulty)
+    this.scene.player.root(1500*this.dificulty)
   } 
 
   mirror() {
@@ -180,13 +179,18 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     //Rayo que ocupa la parte izquierda o derecha de la pantalla en vertical
   }
 
+  fogOfWar(){
+    this.scene.fogOfWar = true;
+    this.scene.time.delayedCall(3000*this.dificulty, ()=>{this.scene.fogOfWar = false}, [], this);
+  }
+
   debuffCoin() {
     this.scene.player.coins -= 1
   }  
 
   debuffDPS() {
-    //*Cuando la clase player ya tenga daño
-    //this.scene.player.damage = this.scene.player.damage/2
+    this.scene.player.damage = this.scene.player.damage/2
+		this.scene.time.delayedCall(3000*this.dificulty, () => {this.scene.player.damage = this.scene.player.damage*2}, [], this);
   } 
 
   shootBeam() {
@@ -220,7 +224,7 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
   bossDeath(){
     this.anims.play("bossDeathAnim");
-    this.timedEvent = this.scene.time.delayedCall(5000, this.destroy, [], this);
+    this.timedEvent = this.scene.time.delayedCall(5000, this.destroy, [], this);//!bugueado, bloquea datos del player
   }
 
   update(time, delta) {
@@ -238,10 +242,10 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
     //MOVIMIENTO DEL BOSS
     if(!this.flipX && this.x>=50){
-      this.x-=1
+      this.x-=1.2
     }
     if(this.flipX && this.x<=this.scene.game.config.width-50){
-      this.x+=1
+      this.x+=1.2
     }
   }
 }
