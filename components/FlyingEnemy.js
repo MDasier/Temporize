@@ -122,28 +122,6 @@ export default class FlyingEnemy extends Phaser.GameObjects.Sprite {
     } else {
       shootTimer -= delta;
     }
-
-
-//TODO ahora mismo no tiene sentido, para más tarde
-    /* //delta tiempo transcurrido desde el ultimo frame en milisec
-    if (this.isFloating) {
-      //si el enemigo está flotando incrementa el tiempo de flotacion en milisecs
-      this.floatTime += delta;
-      if (this.floatTime >= 3000) {
-        //cuando alcanza los 3 segundos la flotacion acaba y se va hacia la izquierda
-        this.isFloating = false;
-        this.floatTime = 0;
-      }
-    } else {
-      this.x -= this.speed * delta;
-      if (this.x < -this.width) {
-        this.destroy();
-      }
-    } */
-    /* if (time - this.lastShootTime >= this.shootInterval){
-            this.lastShootTime = time;
-            this.shoot();
-        } */
   }
 
 }

@@ -18,7 +18,8 @@ export default class Scene extends Phaser.Scene {
     this.timer = 60;
     this.timerText = null;
     this.floor = null;
-    this.fogOfWar=false;
+
+
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
@@ -129,50 +130,12 @@ export default class Scene extends Phaser.Scene {
     .setOffset(-500,0)
     this.physics.add.collider(  this.ground,this.player)
 
+    //!
 
-    //!RENDER-TEXTURE
-    //const width = this.scale.width
-    //const height = this.scale.height
-    const width = this.cameras.main.worldView.right*2//TODO hay que conseguir el tamaño exacto de la pantalla de juego, no sé por que no lo pilla
-    const height = this.cameras.main.worldView.bottom*2
-
-    // make a RenderTexture that is the size of the screen
-    this.rt = this.make.renderTexture({
-      width,
-      height
-    }, !this.fogOfWar)
-
-    // fill it with black
-    this.rt.fill(0x000000, 0.95)//0=transparente, 1=oscuro
-    //TODO hay que añadir plataformas, enemigos, boss etc al RenderTexture
-    this.rt.draw(this.ground)
-    this.rt.draw(this.menuOpciones)
-    this.rt.draw(this.platformGroup)
-    this.rt.draw(this.boss)
-
-    // set a dark blue tint
-    this.rt.setTint(0x0a2948)
-
-   // Crear un gráfico circular para usar como textura
-    this.circleGraphics = this.make.graphics({ x: 0, y: 0, add: false });
-    this.circleGraphics.fillStyle(0xffffff, 1);//color y opacidad
-    this.circleGraphics.fillCircle(50, 50, 50); // Radio del círculo (x,y,%radius)
-    // Convertir el gráfico en una textura
-    this.circleGraphics.generateTexture('vision', 100, 100);
-
-    this.vision = this.make.image({
-      x: this.player.x,
-      y: this.player.y,
-      key: 'vision',
-      add: false
-    })
-    this.vision.scale = 3
-
-    this.rt.mask = new Phaser.Display.Masks.BitmapMask(this, this.vision)
-    this.rt.mask.invertAlpha = true
   }
   
 //------------------------------------parametros del beam funcionales-------
+
   createBeam(x, y, direction) {
     // crea un nuevo beam en la escena usando los parametros establecidos en la clase 
     const beam = new Beam(this, x, y, 'beam', direction === 'left',1000,1,1000,25,20);
@@ -233,8 +196,11 @@ export default class Scene extends Phaser.Scene {
     const enemyPosition = this.flyingEnemy.getCenter();
 
     this.player.update();
-    this.vision.x = this.player.x;
-    this.vision.y = this.player.y;
+    
+    if (this.boss.FOWvision) {
+      this.boss.FOWvision.x = this.player.x;
+      this.boss.FOWvision.y = this.player.y;
+    }
 
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
@@ -259,17 +225,6 @@ export default class Scene extends Phaser.Scene {
     if(this.boss){
       this.boss.update(time, delta);
     }
-
-    //ACTIVAR Y DESACTIVAR EL 'FOG OF WAR'
-    if(this.fogOfWar){
-      this.rt.setVisible(true)
-      this.rt.setDepth(1000);
-      this.rt.fill(0x000000, 0.95)
-    }else{
-      this.rt.setVisible(false)
-      //this.rt.clear()
-    }
-    
     
   }//cierre update
 
@@ -362,8 +317,6 @@ export default class Scene extends Phaser.Scene {
       this.physics.pause();
      
       this.anims.pauseAll();
-      
-
  
       pauseButton.setText("Resume");
       this.isPaused = true;
@@ -412,7 +365,7 @@ export default class Scene extends Phaser.Scene {
       });
       this.menu2.setInteractive({ useHandCursor: true });
       this.menu2.on("pointerdown", () => {
-        this.boss.fogOfWar();
+        this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
         this.resume();
       });
       this.menu3.setInteractive({ useHandCursor: true });

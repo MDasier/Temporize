@@ -1,38 +1,9 @@
 export default class Boss extends Phaser.GameObjects.Sprite {
-  /* PARA LAS COLISIONES (EN SCENE)
-    this.physics.add.collider(ATAQUEJUGADOR, [ENEMIGOS], function (ATAQUEJUGADOR, [ENEMIGOS]) {
-        if(facil){
-            ENEMIGO.play("HIT");
-            ENEMIGO.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
-                ENEMIGO.destroy();
-            });
-        }else if(medio){
-            hit++
-            if(hit>=3){
-                ENEMIGO.play("HIT");
-                ENEMIGO.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
-                ENEMIGO.destroy();
-                });
-            }
-        }else if(dificil){
-            hit++
-            if(hit>=5){
-                ENEMIGO.play("HIT");
-                ENEMIGO.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
-                ENEMIGO.destroy();
-                });
-            }
-        }
-    });
-*/
-
-  //! NECESITO EL TIMER PARA CONTROLAR ACCIONES (O RECIBIR EL TIEMPO DE JUEGO QUE QUEDA Y ORGANIZAR LA IA)
-  constructor(scene, x, y, player, dificulty) {
+  constructor(scene, x, y) {
     super(scene, x, y, "spriteBoss");
     this.sceneRef = scene;
 
     this.scene = scene;
-    this.player = player;
     this.dificulty = 1; //dificulty
     this.HP = 10; //VIDA DEL BOSS (ya veremos como ajustamos valores y daño)
     this.speed = 0.1;
@@ -50,6 +21,9 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     this.createAnimation = this.createAnimation.bind(this);
     this.createAnimation();
     this.anims.play("bossIdleAnim");
+
+    this.fogOfWarOpaqueLvl = 0.9 // 0=transparente, 1=oscuro
+    this.isFogOfWarActive = false
   }
 
   createAnimation() {
@@ -141,7 +115,6 @@ export default class Boss extends Phaser.GameObjects.Sprite {
   //? MEDIO 2 -> godmode, callminion, cloneplayer, root, shootBeam, xyRay
   //? FÁCIL 1 -> callminion, cloneplayer, shootBeam, charge
 
-  
   godMode() {
     //Añadir un escudo o algo que proteja al Boss
     this.anims.play("godMode"); //animacion blur?
@@ -173,15 +146,56 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     //Sprint del boss por la pantalla que arroya al player si no lo esquiva
   }
 
-  xyRay() {
+  rayOfDoom() {
     //Un segundo de 'carga' de rayo y aviso para el jugador
     //Rayo que ocupa la parte baja o alta de la pantalla en horizontal
     //Rayo que ocupa la parte izquierda o derecha de la pantalla en vertical
   }
 
+  //TODO preguntar a Asier
   fogOfWar(){
-    this.scene.fogOfWar = true;
-    this.scene.time.delayedCall(3000*this.dificulty, ()=>{this.scene.fogOfWar = false}, [], this);
+
+    const width = this.scene.game.config.width
+    const height = this.scene.game.config.height
+
+    const rt = this.scene.make.renderTexture({
+      x: width/2,
+      y: height/2,
+      width ,
+      height
+    }, !this.isFogOfWarActive) // variable local para que no consuma recursos al terminar
+
+    rt.fill(0x000000, this.fogOfWarOpaqueLvl) 
+    rt.draw(this.scene.ground)
+    // rt.draw(this.scene.menuOpciones) //! descomentar cuando el boss lance el ataque y solo al estar en pause
+    rt.draw(this.scene.platformGroup)
+
+    rt.setDepth(1000); // para que los enemigos tambien se opaquen
+
+    // Crear un gráfico circular para usar como textura
+    this.circleGraphics = this.scene.make.graphics({ x: 0, y: 0, add: false });
+    this.circleGraphics.fillStyle(0xffffff, 1);//color y opacidad
+    this.circleGraphics.fillCircle(50, 50, 50); // Radio del círculo (x,y,%radius)
+    
+    // Convertir el gráfico en una textura
+    this.circleGraphics.generateTexture('vision', 100, 100);
+
+    this.FOWvision = this.scene.make.image({
+      x: this.scene.player.x,
+      y: this.scene.player.y,
+      key: 'vision',
+      add: false
+    })
+    this.FOWvision.scale = 3
+
+    rt.mask = new Phaser.Display.Masks.BitmapMask(this, this.FOWvision)
+    rt.mask.invertAlpha = true
+
+    this.isFogOfWarActive = true;
+    this.scene.time.delayedCall(3000 * this.dificulty, ()=>{
+      this.isFogOfWarActive = false // el booleano ayuda a funcionalidades que dependen del FOW
+      rt.setVisible(false) // remover el FOW actual
+    }, [], this);
   }
 
   debuffCoin() {
@@ -222,13 +236,14 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     });
   }
 
-  bossDeath(){
+  death(){
     this.anims.play("bossDeathAnim");
-    this.timedEvent = this.scene.time.delayedCall(5000, this.destroy, [], this);//!bugueado, bloquea datos del player
+    //TODO aqui se va a la pantalla de puntuación.
   }
 
   update(time, delta) {
     //CONTROL DE DAÑOS - Abria que controlar el GAME OVER
+    //TODO hacer este check cuando falten entre 10 y 15 segundos del timer.
     /*if (this.HP <= 0){
       this.bossDeath()
     }*/
