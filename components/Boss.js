@@ -120,12 +120,14 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     this.anims.play("godMode"); //animacion blur?
   }
 
+  //* category: attack
   callMinion() {
     let enemyAmount = Phaser.Math.Between(1, 5);
     let enemyTipe = Phaser.Math.Between(0, 1);
     return enemyAmount, enemyTipe;
   }
 
+  //* category: attack
   clonePlayer() {
     //*Crear un enemigo Melee con el sprite que esté usando el player y le persiga
     //this.scene.cloneEnemy = new meleeEnemy(x,y,this.scene.player.texture);
@@ -133,11 +135,13 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     //this.scene.cloneEnemy.seekAndDestroy();
   }
 
+  //* category: debuff
   root() {
     //Llamada a metodo 'root' de player durante 1*dificultad segundos
     this.scene.player.root(1500*this.dificulty)
   } 
 
+  //* category: debuff
   mirror() {
     //En funcion de la dificultad cambiar las teclas de direccion o la rotacion de pantalla en modo espejo.
     this.scene.keys.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
@@ -170,17 +174,19 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
   }   
 
+  //* category: attack
   charge() {
     //Sprint del boss por la pantalla que arroya al player si no lo esquiva
   }
 
+  //* category: attack
   rayOfDoom() {
     //Un segundo de 'carga' de rayo y aviso para el jugador
     //Rayo que ocupa la parte baja o alta de la pantalla en horizontal
     //Rayo que ocupa la parte izquierda o derecha de la pantalla en vertical
   }
 
-  //TODO preguntar a Asier
+  //* category: debuff
   fogOfWar(){
 
     const width = this.scene.game.config.width
@@ -226,15 +232,18 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     }, [], this);
   }
 
+  //* category: attack
   debuffCoin() {
     this.scene.player.coins -= 1
   }  
 
+  //* category: debuff
   debuffDPS() {
     this.scene.player.damage = this.scene.player.damage/2
 		this.scene.time.delayedCall(3000*this.dificulty, () => {this.scene.player.damage = this.scene.player.damage*2}, [], this);
   } 
 
+  //* category: attack
   shootBeam() {
     //* Lo he copiado de 'FlyingEnemy'
 
