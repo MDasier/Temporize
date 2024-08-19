@@ -18,8 +18,6 @@ export default class Scene extends Phaser.Scene {
     this.timer = 60;
     this.timerText = null;
     this.floor = null;
-
-
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
@@ -49,9 +47,9 @@ export default class Scene extends Phaser.Scene {
     });
 
     //ENEMIGO RANGO
-    this.load.spritesheet("flyingEnemy", "../img/enemies/reaperbot.png", {
-      frameWidth: 384 / 9,
-      frameHeight: 43,
+    this.load.spritesheet("flyingEnemy", "../img/enemies/0-beholder.png", {
+      frameWidth: 100 / 1,
+      frameHeight: 86,
     });
     this.load.image("fire","../img/enemies/ball.png",{
       frameWidth: 92,

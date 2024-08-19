@@ -148,11 +148,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   //* category: debuff
   root() {
     //Llamada a metodo 'root' de player durante 1*dificultad segundos
-
     this.scene.player.root(1500*this.dificulty)
-
-
-
   } 
 
   //* category: debuff
