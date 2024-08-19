@@ -1,7 +1,8 @@
+import GroundEnemy from "../components/GroundEnemy.js";
+
 export default class Boss extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "spriteBoss");
-    this.sceneRef = scene;
 
     this.scene = scene;
     this.dificulty = 1; //dificulty
@@ -34,6 +35,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.body.setOffset(100, 45); //tamaño del hitbox
 
     this.body.setAllowGravity(false);
+
+    this.groundEnemyClone = null;
   }
 
   createAnimation() {
@@ -139,9 +142,15 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   //* category: attack
   clonePlayer() {
     //*Crear un enemigo Melee con el sprite que esté usando el player y le persiga
-    // this.scene.cloneEnemy = new meleeEnemy(x,y,this.scene.player.texture);
+    /*this.scene.groundEnemyClone = new GroundEnemy(500,450,this.scene.player);
+    this.scene.add.existing(this.groundEnemyClone)*/
     //*Añadir a la clase meleeEnemy un metodo que haga explotar al enemigo estando cerca del player
-    // this.scene.cloneEnemy.seekAndDestroy();
+    if(this.scene.groundEnemy){
+      this.scene.groundEnemy.seekAndDestroy();
+    }else{
+      this.groundEnemy = new GroundEnemy(this.scene, this.cameras.main.worldView.right, 450, this.scene.player)
+      this.scene.groundEnemy.setVisible(true)
+    }
   }
 
   //* category: debuff

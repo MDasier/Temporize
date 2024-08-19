@@ -32,6 +32,8 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     this.canAttack = false;
     this.isAttacking = false;
     this.isDying = false;
+    this.isBerserkMode = false;
+    this.HP=2;
   }
 
   createAnimation() {
@@ -58,11 +60,39 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  update(time, delta) {
-    //movimiento horizontgital
-    this.x += this.velocityX;
+  seekAndDestroy(){
+    this.isBerserkMode = true;
+    this.HP=5;
+  }
 
-    if (!this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
+  update(time, delta) {
+    if(!this.isBerserkMode){
+      this.x += this.velocityX;
+    }else{
+      if(this.x>=this.player.x+80){
+        this.flipX = true;
+        this.x += this.velocityX;
+      }else if(this.x<=this.player.x-80){
+        this.flipX = false;
+        this.x -= this.velocityX;
+      }
+
+      if (this.isBerserkMode && this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
+        this.isAttacking = true
+        this.anims.play("attack");
+        this.velocityX = -1;
+        this.scene.time.delayedCall(1500, () => {
+          if (!this.isDying) {
+            this.isAttacking = false
+            this.anims.play("run");
+            this.velocityX = -3;
+          }
+        }
+        );
+      }
+    }
+
+    if (!this.isBerserkMode && this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
       this.isAttacking = true
       this.anims.play("attack");
       this.velocityX = -1;
@@ -72,7 +102,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
           this.anims.play("run");
           this.velocityX = -3;
         }
-        }
+      }
       );
     }
 

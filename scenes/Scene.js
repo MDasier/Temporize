@@ -398,7 +398,7 @@ export default class Scene extends Phaser.Scene {
         font: "30px Arial",
         fill: "#fff",
       });
-      this.menu2 = this.add.text(390, 300, "FOG OF WAR TEST", {
+      this.menu2 = this.add.text(390, 300, "TEST", {
         font: "30px Arial",
         fill: "#fff",
       });
