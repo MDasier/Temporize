@@ -4,6 +4,7 @@ import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
 import Beam from "../components/Beam.js";
 import Boss from "../components/Boss.js";
+import GroundEnemy from "../components/GroundEnemy.js";
 //variables timer
 let warningAppeared = false;
 
@@ -18,6 +19,9 @@ export default class Scene extends Phaser.Scene {
     this.timer = 60;
     this.timerText = null;
     this.floor = null;
+
+    this.flyingEnemy;
+    this.groundEnemy;
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
@@ -68,7 +72,29 @@ export default class Scene extends Phaser.Scene {
     this.load.spritesheet("bossRunSprite", "../img/bossOne/Run.png", {
       frameWidth: 2000 /8,
       frameHeight: 73,
-    });    
+    });
+    
+    // GROUND ENEMY
+    this.load.spritesheet("groundEnemyIdle", "../img/enemies/ground-enemy-idle.png", {
+      frameWidth: 720 / 9,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyRun", "../img/enemies/ground-enemy-run.png", {
+      frameWidth: 480 / 6,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyAttack", "../img/enemies/ground-enemy-attack.png", {
+      frameWidth: 960 / 12,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyHit", "../img/enemies/ground-enemy-hit.png", {
+      frameWidth: 400 / 5,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyDeath", "../img/enemies/ground-enemy-death.png", {
+      frameWidth: 1840 / 23,
+      frameHeight: 80,
+    });
   } 
 
   //*********************** ELEMENTOS ***********************
@@ -77,6 +103,13 @@ export default class Scene extends Phaser.Scene {
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
+
+    //********ground *///****************************************** */
+    this.ground=this.physics.add.staticGroup()
+    this.ground.create(500,550,"ground")
+    .setScale(50,1)
+    .setSize(1100)
+     .setOffset(-500,0)
 
     //plataformas
     this.createPlatforms();
@@ -87,6 +120,9 @@ export default class Scene extends Phaser.Scene {
     
     //flying enemy
     this.createFlyingEnemy();
+
+    //ground enemy
+    this.createGroundEnemy();
     
     //boss
     this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
@@ -118,12 +154,6 @@ export default class Scene extends Phaser.Scene {
       callback: () => this.decrementTimer(),
       loop: true,
     });
-    //********ground *///****************************************** */
-    this.ground=this.physics.add.staticGroup()
-    this.ground.create(500,550,"ground")
-    .setScale(50,1)
-    .setSize(1100)
-    .setOffset(-500,0)
     
     this.addColliders()
 
@@ -132,6 +162,7 @@ export default class Scene extends Phaser.Scene {
 //------------------------------------parametros del beam funcionales-------
 
   addColliders() {
+    // colisiones estaticas
     this.physics.add.collider(this.ground, this.player)
     this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
 
@@ -223,6 +254,12 @@ export default class Scene extends Phaser.Scene {
     if (this.flyingEnemy) {
       this.flyingEnemy.update(time, delta);
     }
+
+    //ACCION DEL ENEMIGO GROUND
+    if (this.groundEnemy) {
+      this.groundEnemy.update(time, delta);
+
+    }
     //ACCION DEL BOSS
     if(this.boss){
       this.boss.update(time, delta);
@@ -286,9 +323,16 @@ export default class Scene extends Phaser.Scene {
     this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
     this.add.existing(this.flyingEnemy);
 
-    this.flyingEnemy.setVisible(true);
+    // this.flyingEnemy.setVisible(true);
 
-    this.flyingEnemy.alpha = 1;
+    // this.flyingEnemy.alpha = 1;
+  }
+
+  createGroundEnemy() {
+    const x = this.cameras.main.worldView.right;
+
+    this.groundEnemy = new GroundEnemy(this, x, 450);
+    this.physics.add.collider(this.ground, this.groundEnemy)
   }
   
   isWithinCameraBounds(x, y, camera) {

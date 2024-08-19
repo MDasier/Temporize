@@ -1,42 +1,51 @@
 
 export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
-    super(scene, x, y, "groundEnemy");
-
+    super(scene, x, y, "groundEnemyRun");
+    
     this.scene = scene;
     this.speed = 0.1; //velocidad de movimiento, probando
 
     this.setDepth(1);
-    this.setTexture("groundEnemy");
+    this.setTexture("groundEnemyRun");
     this.setPosition(x, y);
-    this.setScale(1);
+    this.setScale(2.5);
 
     //para moverlo
     this.velocityX = -3; //mov horizontal, negativa izquierda
     this.amplitude = 3;
     this.frequency = 1000;
 
-    this.w = 100;
-    this.h = 86;
+    this.w = 30;
+    this.h = 30;
 
-    // this.createAnimation();
-    // this.anims.play("walk");
+    this.createAnimation();
+    this.anims.play("run");
 
-    this.scene.physics.add.existing(this); 
+    this.scene.physics.add.existing(this)  ; 
     this.scene.add.existing(this); 
     this.body.setSize(this.w, this.h, true);
-    this.body.setOffset(0, 0);
+    this.body.setOffset(26, 35);
+
+    this.flipX = true;
+    this.canAttack = false;
   }
 
   createAnimation() {
     this.anims.create({
-      key: "fly",
+      key: "run",
       frames: this.anims.generateFrameNumbers(this.texture.key, {
         start: 0,
-        end: 7,
+        end: 5,
       }),
       frameRate: 10,
       repeat: -1,
+    });
+    this.anims.create({
+      key: "death",
+      frames: this.anims.generateFrameNumbers("groundEnemyDeath", { start: 0, end: 22 }),
+      frameRate: 10,
+      repeat: 0,
     });
   }
 
