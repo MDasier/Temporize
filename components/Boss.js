@@ -140,6 +140,34 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
   mirror() {
     //En funcion de la dificultad cambiar las teclas de direccion o la rotacion de pantalla en modo espejo.
+    this.scene.keys.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+    this.scene.keys.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+
+    // const mirrorGlow = this.scene.add.sprite(this.x, this.y, "fire");
+    this.scene.player.preFX.setPadding(32);
+    const mirrowGlow = this.scene.player.preFX.addGlow(0xed3efa); // color, 
+
+    //  For PreFX Glow the quality and distance are set in the Game Configuration
+
+    this.scene.tweens.add({
+      targets: mirrowGlow,
+      outerStrength: 6,
+      innerStrength: 1,
+      yoyo: true,
+      loop: -1,
+      ease: 'sine.inout',
+      duration: 200
+    });
+
+    this.scene.time.delayedCall(3000 * this.dificulty, ()=>{
+      this.scene.keys.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+      this.scene.keys.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+
+      // this.scene.tweens.remove()
+      mirrowGlow.setActive(false)
+
+    }, [], this);
+
   }   
 
   charge() {

@@ -18,6 +18,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.createAnimation();
     this.anims.play("run");
 
+    
 
     this.scene.cursors = this.scene.input.keyboard.createCursorKeys();
     //this.scene.keys = this.scene.input.keyboard.addKeys("z");
@@ -29,8 +30,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       E: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
       Z: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
       Q: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q)
-
-  };
+    };
 
     this.isAttacking = false;
     //this.scene.beamGroup = this.scene.physics.add.group()

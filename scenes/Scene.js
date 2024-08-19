@@ -365,7 +365,8 @@ export default class Scene extends Phaser.Scene {
       });
       this.menu2.setInteractive({ useHandCursor: true });
       this.menu2.on("pointerdown", () => {
-        this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
+        // this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
+        this.boss.mirror()
         this.resume();
       });
       this.menu3.setInteractive({ useHandCursor: true });
