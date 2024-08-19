@@ -63,6 +63,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
                 enemy.body.checkCollision.up = false;
                 // enemy.body.checkCollision.down = false; // NO QUITAR, solo probar descomentar cuando haya que reir
                 enemy.anims.play("death");
+                enemy.isDying = true;
                 enemy.velocityX = -1; // para que animacion sea a velocidad estatico
 
                 

@@ -12,7 +12,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     //this.setTexture("spriteBoss");
     this.setPosition(x, y);
     this.setScale(3);
-  
+
     this.velocityX = 0;
     this.velocityY = 0;
     this.amplitude = 3;
@@ -22,8 +22,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.createAnimation();
     this.anims.play("bossIdleAnim");
 
-    this.fogOfWarOpaqueLvl = 0.9 // 0=transparente, 1=oscuro
-    this.isFogOfWarActive = false
+    this.fogOfWarOpaqueLvl = 0.9; // 0=transparente, 1=oscuro
+    this.isFogOfWarActive = false;
 
     this.w = 40;
     this.h = 60;
@@ -33,7 +33,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.body.setSize(this.w, this.h, true);
     this.body.setOffset(100, 45); //tamaño del hitbox
 
-    this.body.setAllowGravity(false)
+    this.body.setAllowGravity(false);
   }
 
   createAnimation() {
@@ -116,7 +116,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       frameRate: 10,
       repeat: 0,
     });
-
   }
 
   //! FUNCIONES LOCAS DEL BOSS. necesitaré MUCHA ayuda. Estoy contanto con RNG total para esto
@@ -148,18 +147,22 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   //* category: debuff
   root() {
     //Llamada a metodo 'root' de player durante 1*dificultad segundos
-    this.scene.player.root(1500*this.dificulty)
-  } 
+    this.scene.player.root(1500 * this.dificulty);
+  }
 
   //* category: debuff
   mirror() {
     //En funcion de la dificultad cambiar las teclas de direccion o la rotacion de pantalla en modo espejo.
-    this.scene.keys.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
-    this.scene.keys.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+    this.scene.keys.A = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.D
+    );
+    this.scene.keys.D = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.A
+    );
 
     // const mirrorGlow = this.scene.add.sprite(this.x, this.y, "fire");
     this.scene.player.preFX.setPadding(32);
-    const mirrowGlow = this.scene.player.preFX.addGlow(0xed3efa); // color, 
+    const mirrowGlow = this.scene.player.preFX.addGlow(0xed3efa); // color,
 
     //  For PreFX Glow the quality and distance are set in the Game Configuration
 
@@ -169,20 +172,27 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       innerStrength: 1,
       yoyo: true,
       loop: -1,
-      ease: 'sine.inout',
-      duration: 200
+      ease: "sine.inout",
+      duration: 200,
     });
 
-    this.scene.time.delayedCall(3000 * this.dificulty, ()=>{
-      this.scene.keys.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
-      this.scene.keys.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+    this.scene.time.delayedCall(
+      3000 * this.dificulty,
+      () => {
+        this.scene.keys.A = this.scene.input.keyboard.addKey(
+          Phaser.Input.Keyboard.KeyCodes.A
+        );
+        this.scene.keys.D = this.scene.input.keyboard.addKey(
+          Phaser.Input.Keyboard.KeyCodes.D
+        );
 
-      // this.scene.tweens.remove()
-      mirrowGlow.setActive(false)
-
-    }, [], this);
-
-  }   
+        // this.scene.tweens.remove()
+        mirrowGlow.setActive(false);
+      },
+      [],
+      this
+    );
+  }
 
   //* category: attack
   charge() {
@@ -197,61 +207,75 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   }
 
   //* category: debuff
-  fogOfWar(){
+  fogOfWar() {
+    const width = this.scene.game.config.width;
+    const height = this.scene.game.config.height;
 
-    const width = this.scene.game.config.width
-    const height = this.scene.game.config.height
+    const rt = this.scene.make.renderTexture(
+      {
+        x: width / 2,
+        y: height / 2,
+        width,
+        height,
+      },
+      !this.isFogOfWarActive
+    ); // variable local para que no consuma recursos al terminar
 
-    const rt = this.scene.make.renderTexture({
-      x: width/2,
-      y: height/2,
-      width ,
-      height
-    }, !this.isFogOfWarActive) // variable local para que no consuma recursos al terminar
-
-    rt.fill(0x000000, this.fogOfWarOpaqueLvl) 
-    rt.draw(this.scene.ground)
+    rt.fill(0x000000, this.fogOfWarOpaqueLvl);
+    rt.draw(this.scene.ground);
     // rt.draw(this.scene.menuOpciones) //! descomentar cuando el boss lance el ataque y solo al estar en pause
-    rt.draw(this.scene.platformGroup)
+    rt.draw(this.scene.platformGroup);
 
     rt.setDepth(1000); // para que los enemigos tambien se opaquen
 
     // Crear un gráfico circular para usar como textura
     this.circleGraphics = this.scene.make.graphics({ x: 0, y: 0, add: false });
-    this.circleGraphics.fillStyle(0xffffff, 1);//color y opacidad
+    this.circleGraphics.fillStyle(0xffffff, 1); //color y opacidad
     this.circleGraphics.fillCircle(50, 50, 50); // Radio del círculo (x,y,%radius)
-    
+
     // Convertir el gráfico en una textura
-    this.circleGraphics.generateTexture('vision', 100, 100);
+    this.circleGraphics.generateTexture("vision", 100, 100);
 
     this.FOWvision = this.scene.make.image({
       x: this.scene.player.x,
       y: this.scene.player.y,
-      key: 'vision',
-      add: false
-    })
-    this.FOWvision.scale = 3
+      key: "vision",
+      add: false,
+    });
+    this.FOWvision.scale = 3;
 
-    rt.mask = new Phaser.Display.Masks.BitmapMask(this, this.FOWvision)
-    rt.mask.invertAlpha = true
+    rt.mask = new Phaser.Display.Masks.BitmapMask(this, this.FOWvision);
+    rt.mask.invertAlpha = true;
 
     this.isFogOfWarActive = true;
-    this.scene.time.delayedCall(3000 * this.dificulty, ()=>{
-      this.isFogOfWarActive = false // el booleano ayuda a funcionalidades que dependen del FOW
-      rt.setVisible(false) // remover el FOW actual
-    }, [], this);
+    this.scene.time.delayedCall(
+      3000 * this.dificulty,
+      () => {
+        this.isFogOfWarActive = false; // el booleano ayuda a funcionalidades que dependen del FOW
+        rt.setVisible(false); // remover el FOW actual
+      },
+      [],
+      this
+    );
   }
 
   //* category: attack
   debuffCoin() {
-    this.scene.player.coins -= 1
-  }  
+    this.scene.player.coins -= 1;
+  }
 
   //* category: debuff
   debuffDPS() {
-    this.scene.player.damage = this.scene.player.damage/2
-		this.scene.time.delayedCall(3000*this.dificulty, () => {this.scene.player.damage = this.scene.player.damage*2}, [], this);
-  } 
+    this.scene.player.damage = this.scene.player.damage / 2;
+    this.scene.time.delayedCall(
+      3000 * this.dificulty,
+      () => {
+        this.scene.player.damage = this.scene.player.damage * 2;
+      },
+      [],
+      this
+    );
+  }
 
   //* category: attack
   shootBeam() {
@@ -283,7 +307,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  death(){
+  death() {
     this.anims.play("bossDeathAnim");
     //TODO aqui se va a la pantalla de puntuación.
   }
@@ -296,19 +320,19 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     }*/
 
     //BOSS MIRANDO AL PLAYER SIEMPRE
-    if(this.scene.player.x>=this.x){
-      this.flipX=false
-    }else{
-      this.flipX=true
+    if (this.scene.player.x >= this.x) {
+      this.flipX = false;
+    } else {
+      this.flipX = true;
     }
 
     //MOVIMIENTO DEL BOSS
     //TODO cambiar si se aleja o acerca dependiendo del tipo de jugador (melee o ranged)
-    if(!this.flipX && this.x>=50){
-      this.x-=1.2
+    if (!this.flipX && this.x >= 50) {
+      this.x -= 1.2;
     }
-    if(this.flipX && this.x<=this.scene.game.config.width-50){
-      this.x+=1.2
+    if (this.flipX && this.x <= this.scene.game.config.width - 50) {
+      this.x += 1.2;
     }
   }
 }

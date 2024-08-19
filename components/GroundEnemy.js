@@ -1,8 +1,9 @@
 
 export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y) {
+  constructor(scene, x, y, player) {
     super(scene, x, y, "groundEnemyRun");
     
+    this.player = player
     this.scene = scene;
     this.speed = 0.1; //velocidad de movimiento, probando
 
@@ -29,6 +30,8 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
 
     this.flipX = true;
     this.canAttack = false;
+    this.isAttacking = false;
+    this.isDying = false;
   }
 
   createAnimation() {
@@ -47,11 +50,31 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
       frameRate: 10,
       repeat: 0,
     });
+    this.anims.create({
+      key: "attack",
+      frames: this.anims.generateFrameNumbers("groundEnemyAttack", { start: 0, end: 11 }),
+      frameRate: 10,
+      repeat: 0,
+    });
   }
 
   update(time, delta) {
     //movimiento horizontgital
     this.x += this.velocityX;
+
+    if (!this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
+      this.isAttacking = true
+      this.anims.play("attack");
+      this.velocityX = -1;
+      this.scene.time.delayedCall(1500, () => {
+        if (!this.isDying) {
+          this.isAttacking = false
+          this.anims.play("run");
+          this.velocityX = -3;
+        }
+        }
+      );
+    }
 
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
     if (this.x < 0 || this.x > this.scene.game.config.width) {

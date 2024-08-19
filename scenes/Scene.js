@@ -257,7 +257,7 @@ export default class Scene extends Phaser.Scene {
 
     //ACCION DEL ENEMIGO GROUND
     if (this.groundEnemy) {
-      this.groundEnemy.update(time, delta);
+      this.groundEnemy.update(time, delta)
 
     }
     //ACCION DEL BOSS
@@ -331,7 +331,7 @@ export default class Scene extends Phaser.Scene {
   createGroundEnemy() {
     const x = this.cameras.main.worldView.right;
 
-    this.groundEnemy = new GroundEnemy(this, x, 450);
+    this.groundEnemy = new GroundEnemy(this, x, 450, this.player);
     this.physics.add.collider(this.ground, this.groundEnemy)
   }
   
