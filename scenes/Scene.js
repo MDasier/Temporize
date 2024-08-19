@@ -2,7 +2,7 @@ import PlatformGroup from "../components/PlatformGroup.js";
 import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
-import Beam from "../components/BeamX.js";
+import Beam from "../components/Beam.js";
 import Boss from "../components/Boss.js";
 //variables timer
 let warningAppeared = false;
@@ -251,7 +251,7 @@ export default class Scene extends Phaser.Scene {
     //   this.game.config.width,
     //   1
     // );
-    this.platforms.createPlatform(110, 250, "platform", 5, 0.5);
+    this.platforms.createPlatform(110, 250, "platform", 6, 0.5);
     this.platforms.createPlatform(680, 320, "platform", 6, 0.5);
     this.platforms.createPlatform(380, 420, "platform", 6, 0.5);
 
@@ -260,10 +260,10 @@ export default class Scene extends Phaser.Scene {
       callback: () => {
         this.platforms.createPlatform(
           this.game.config.width,
-          Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 100),
+          Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 50),
           "platform",
-          5,
-          0.
+          6,
+          0.5,
         );
       },
       loop: true,
