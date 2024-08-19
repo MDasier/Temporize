@@ -14,16 +14,39 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
         // configura el tamaño del cuerpo y que no se quede en la pantalla estancada
         this.setCollideWorldBounds(false);
         this.setScale(scale);
-        this.body.setSize(width, height, true);
+        this.body.setSize(width - 10, height, true);
 
         // destruye el beam después del tiempo especificado
         this.scene.time.delayedCall(this.lifetime, () => {
             this.destroy(); 
         });
+
     }
 
     update() {
         this.setVelocityY(0); // establece la velocidad en "y" a 0 para anular la gravedad
         this.setVelocityX(this.flipX ? -this.velocity : this.velocity); // establece la velocidad en X según flipX
+
+        this.scene.physics.add.collider(this, this.scene.boss, () => {
+            this.scene.boss.HP -= 1
+        }); // detecta las colisiones  
+
+        if (this.scene.flyingEnemy) {
+            this.scene.physics.add.overlap(this, this.scene.flyingEnemy, (beam, enemy) => {
+                this.scene.player.coins += 5
+                console.log(this.scene.player.coins)
+                beam.destroy()
+
+                //* chapuza para que el enemigo "desaparezca" aunque sigue existiendo y llega al final para causar que uno nuevo aparece.
+                enemy.setVisible(false)
+                enemy.canShoot = false;
+                enemy.body.checkCollision.right = false;
+                enemy.body.checkCollision.left = false;
+                enemy.body.checkCollision.up = false;
+                enemy.body.checkCollision.down = false;
+
+
+            })  
+        }
     }
 }

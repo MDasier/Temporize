@@ -2,7 +2,7 @@ import PlatformGroup from "../components/PlatformGroup.js";
 import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
-import Beam from "../components/beam.js";
+import Beam from "../components/BeamX.js";
 import Boss from "../components/Boss.js";
 //variables timer
 let warningAppeared = false;
@@ -83,20 +83,18 @@ export default class Scene extends Phaser.Scene {
     //plataformas
     this.createPlatforms();
 
+    
     //jugador
     this.player = new Player(this, 450, 250, "player");
-
+    
     //flying enemy
     this.createFlyingEnemy();
-
+    
     //boss
     this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
     this.add.existing(this.boss);
     //this.boss.setVisible(true);
-
-    //colisiones
-    this.physics.add.collider(this.platforms, this.player); // detecta las colisiones    
-
+    
     //disparos!!
     this.beamGroup = this.physics.add.group();
 
@@ -128,13 +126,19 @@ export default class Scene extends Phaser.Scene {
     .setScale(50,1)
     .setSize(1100)
     .setOffset(-500,0)
-    this.physics.add.collider(  this.ground,this.player)
-
-    //!
+    
+    this.addColliders()
 
   }
   
 //------------------------------------parametros del beam funcionales-------
+
+  addColliders() {
+    this.physics.add.collider(this.ground, this.player)
+    this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
+
+    //TODO mejorar grupo de beams y enemigos para hacer el collider aqui.
+  }
 
   createBeam(x, y, direction) {
     // crea un nuevo beam en la escena usando los parametros establecidos en la clase 
@@ -256,10 +260,10 @@ export default class Scene extends Phaser.Scene {
       callback: () => {
         this.platforms.createPlatform(
           this.game.config.width,
-          450,
+          Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 100),
           "platform",
           5,
-          0.5
+          0.
         );
       },
       loop: true,
@@ -267,6 +271,7 @@ export default class Scene extends Phaser.Scene {
   }
 
   createFlyingEnemy() {
+    console.log("enemy appear")
     const camera = this.cameras.main;
     const x = camera.worldView.right;
     /* const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
@@ -366,7 +371,9 @@ export default class Scene extends Phaser.Scene {
       this.menu2.setInteractive({ useHandCursor: true });
       this.menu2.on("pointerdown", () => {
         // this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
-        this.boss.mirror()
+        // this.boss.mirror()
+        // this.boss.root()
+        this.boss.clonePlayer()
         this.resume();
       });
       this.menu3.setInteractive({ useHandCursor: true });

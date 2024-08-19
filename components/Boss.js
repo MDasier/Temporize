@@ -1,4 +1,4 @@
-export default class Boss extends Phaser.GameObjects.Sprite {
+export default class Boss extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "spriteBoss");
     this.sceneRef = scene;
@@ -24,6 +24,16 @@ export default class Boss extends Phaser.GameObjects.Sprite {
 
     this.fogOfWarOpaqueLvl = 0.9 // 0=transparente, 1=oscuro
     this.isFogOfWarActive = false
+
+    this.w = 40;
+    this.h = 60;
+
+    this.scene.physics.add.existing(this); //cargar el jugador a la scene
+    this.scene.add.existing(this); //hitbox del jugador
+    this.body.setSize(this.w, this.h, true);
+    this.body.setOffset(100, 45); //tamaño del hitbox
+
+    this.body.setAllowGravity(false)
   }
 
   createAnimation() {
@@ -130,15 +140,19 @@ export default class Boss extends Phaser.GameObjects.Sprite {
   //* category: attack
   clonePlayer() {
     //*Crear un enemigo Melee con el sprite que esté usando el player y le persiga
-    //this.scene.cloneEnemy = new meleeEnemy(x,y,this.scene.player.texture);
+    // this.scene.cloneEnemy = new meleeEnemy(x,y,this.scene.player.texture);
     //*Añadir a la clase meleeEnemy un metodo que haga explotar al enemigo estando cerca del player
-    //this.scene.cloneEnemy.seekAndDestroy();
+    // this.scene.cloneEnemy.seekAndDestroy();
   }
 
   //* category: debuff
   root() {
     //Llamada a metodo 'root' de player durante 1*dificultad segundos
+
     this.scene.player.root(1500*this.dificulty)
+
+
+
   } 
 
   //* category: debuff
@@ -293,6 +307,7 @@ export default class Boss extends Phaser.GameObjects.Sprite {
     }
 
     //MOVIMIENTO DEL BOSS
+    //TODO cambiar si se aleja o acerca dependiendo del tipo de jugador (melee o ranged)
     if(!this.flipX && this.x>=50){
       this.x-=1.2
     }
