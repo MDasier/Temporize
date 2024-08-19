@@ -101,6 +101,7 @@ export default class Scene extends Phaser.Scene {
 
     //PAUSA
     this.createPauseButton();
+
     //*TIMER
     //iniciar timer
     if (data.initialTimerValue) {
@@ -217,6 +218,7 @@ export default class Scene extends Phaser.Scene {
       callback: () => warningBossText.destroy(),
     });
   }
+
   minutesTime(minutes, seconds) {
     let minuteString = minutes.toString().padStart(2, "0");
     let secondString = seconds.toString().padStart(2, "0");
@@ -330,6 +332,7 @@ export default class Scene extends Phaser.Scene {
 
     this.flyingEnemy.alpha = 1;
   }
+  
   isWithinCameraBounds(x, y, camera) {
     return (
       x >= camera.worldView.x &&
