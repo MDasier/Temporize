@@ -2,7 +2,9 @@ import PlatformGroup from "../components/PlatformGroup.js";
 import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
-import Beam from "../components/beam.js";
+import Beam from "../components/Beam.js";
+import Boss from "../components/Boss.js";
+import GroundEnemy from "../components/GroundEnemy.js";
 //variables timer
 let warningAppeared = false;
 
@@ -17,14 +19,18 @@ export default class Scene extends Phaser.Scene {
     this.timer = 60;
     this.timerText = null;
     this.floor = null;
-   
+
+    this.flyingEnemy;
+    this.groundEnemy;
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
   preload() {
-    //donde cargamos los assets
+
     this.load.image("background", "../img/background/mountain.png");
-    this.load.image("platform", ".//assets/grass.png"); //plataforma //TODO NO CARGA IMAGEN PORQUE NO EXISTE(REVISAR RUTA)
+    this.load.image("platform", ".//assets/grass.png"); //plataforma //TODO Necesitamos imagen para las plataformas
+
+    //JUGADOR
     this.load.spritesheet("player", "../img/mage/Run.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
@@ -37,53 +43,103 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     });
+
+    //DISPARO
     this.load.image("beam", "../img/mage/beam.png", {
       frameWidth: 127,
       frameHeight: 123,
     });
-    this.load.spritesheet("flyingEnemy", "../img/enemies/reaperbot.png", {
-      frameWidth: 384 / 9,
-      frameHeight: 43,
+
+    //ENEMIGO RANGO
+    this.load.spritesheet("flyingEnemy", "../img/enemies/0-beholder.png", {
+      frameWidth: 100 / 1,
+      frameHeight: 86,
     });
-    /* this.load.image("flyingEnemy", "../img/enemies/beholder.png");*/
     this.load.image("fire","../img/enemies/ball.png",{
       frameWidth: 92,
       frameHeight: 211
     })
+
+    //BOSS
+    this.load.spritesheet("bossIdleSprite", "../img/bossOne/Idle.png", {
+      frameWidth: 1999 /8,
+      frameHeight: 105,
+    });
+    this.load.spritesheet("bossDeathSprite", "../img/bossOne/Death.png", {
+      frameWidth: 1999 /8,
+      frameHeight: 105,
+    });
+    this.load.spritesheet("bossRunSprite", "../img/bossOne/Run.png", {
+      frameWidth: 2000 /8,
+      frameHeight: 73,
+    });
+    
+    // GROUND ENEMY
+    this.load.spritesheet("groundEnemyIdle", "../img/enemies/ground-enemy-idle.png", {
+      frameWidth: 720 / 9,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyRun", "../img/enemies/ground-enemy-run.png", {
+      frameWidth: 480 / 6,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyAttack", "../img/enemies/ground-enemy-attack.png", {
+      frameWidth: 960 / 12,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyHit", "../img/enemies/ground-enemy-hit.png", {
+      frameWidth: 400 / 5,
+      frameHeight: 80,
+    });
+    this.load.spritesheet("groundEnemyDeath", "../img/enemies/ground-enemy-death.png", {
+      frameWidth: 1840 / 23,
+      frameHeight: 80,
+    });
   } 
 
   //*********************** ELEMENTOS ***********************
   create(data) {
-
+    
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
 
+    //********ground *///****************************************** */
+    this.ground=this.physics.add.staticGroup()
+    this.ground.create(500,550,"ground")
+    .setScale(50,1)
+    .setSize(1100)
+     .setOffset(-500,0)
+
     //plataformas
     this.createPlatforms();
 
+    
     //jugador
     this.player = new Player(this, 450, 250, "player");
-
+    
     //flying enemy
     this.createFlyingEnemy();
 
-    //console.log("Enemigo agregado correctamente");
-
-    //colisiones
-    this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
+    //ground enemy
+    this.createGroundEnemy();
     
-
+    //boss
+    this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
+    this.add.existing(this.boss);
+    //this.boss.setVisible(true);
+    
     //disparos!!
     this.beamGroup = this.physics.add.group();
 
     //PAUSA
     this.createPauseButton();
+
     //*TIMER
     //iniciar timer
     if (data.initialTimerValue) {
       this.initialTimerValue = data.initialTimerValue; //esto es para la logica de tiempo del boss.
-      console.log(data.initialTimerValue);
+      //console.log(data.initialTimerValue);
       this.timer = this.initialTimerValue;
     }
     //texto del timer
@@ -98,26 +154,21 @@ export default class Scene extends Phaser.Scene {
       callback: () => this.decrementTimer(),
       loop: true,
     });
-    //********ground *///****************************************** */
-  this.ground=this.physics.add.staticGroup()
-  this.ground.create(500,550,"ground")
-  .setScale(50,1)
-  .setSize(1100)
-  .setOffset(-500,0)
-  this.physics.add.collider(  this.ground,this.player)
+    
+    this.addColliders()
+
   }
   
-
-  // //crear disparos reutilizables
-  // createBeam(x, y, gravity, speed) {
-  //   const beam = new Beam(this, x, y, "beam", 0, gravity, speed);
-  //   console.log(gravity);
-  //   console.log(speed);
-
-  //   this.beamGroup.add(beam);
-  //   //this.physics.add.existing(this.beamGroup)
-  // }
 //------------------------------------parametros del beam funcionales-------
+
+  addColliders() {
+    // colisiones estaticas
+    this.physics.add.collider(this.ground, this.player)
+    this.physics.add.collider(this.platforms, this.player); // detecta las colisiones
+
+    //TODO mejorar grupo de beams y enemigos para hacer el collider aqui.
+  }
+
   createBeam(x, y, direction) {
     // crea un nuevo beam en la escena usando los parametros establecidos en la clase 
     const beam = new Beam(this, x, y, 'beam', direction === 'left',1000,1,1000,25,20);
@@ -163,6 +214,7 @@ export default class Scene extends Phaser.Scene {
       callback: () => warningBossText.destroy(),
     });
   }
+
   minutesTime(minutes, seconds) {
     let minuteString = minutes.toString().padStart(2, "0");
     let secondString = seconds.toString().padStart(2, "0");
@@ -177,6 +229,11 @@ export default class Scene extends Phaser.Scene {
     const enemyPosition = this.flyingEnemy.getCenter();
 
     this.player.update();
+    
+    if (this.boss.FOWvision) {
+      this.boss.FOWvision.x = this.player.x;
+      this.boss.FOWvision.y = this.player.y;
+    }
 
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
@@ -186,16 +243,28 @@ export default class Scene extends Phaser.Scene {
       beam.update();
   });
 
-    //le da movimientos y acciones AL FONDO
+    //MOVIMIENTO Y 'ACCION' DEL FONDO
     this.background.tilePositionX += 0.5; //velocidad de fondo
     this.backgroundAnimationY();
 
+    //MOVIMIENTO DE PLATAFORMAS
     this.platforms.movePlatforms();
+
+    //ACCION DEL ENEMIGO VOLADOR
     if (this.flyingEnemy) {
       this.flyingEnemy.update(time, delta);
     }
 
+    //ACCION DEL ENEMIGO GROUND
+    if (this.groundEnemy) {
+      this.groundEnemy.update(time, delta)
 
+    }
+    //ACCION DEL BOSS
+    if(this.boss){
+      this.boss.update(time, delta);
+    }
+    
   }//cierre update
 
   backgroundAnimationY() {
@@ -217,7 +286,7 @@ export default class Scene extends Phaser.Scene {
     //   this.game.config.width,
     //   1
     // );
-    this.platforms.createPlatform(110, 250, "platform", 5, 0.5);
+    this.platforms.createPlatform(110, 250, "platform", 6, 0.5);
     this.platforms.createPlatform(680, 320, "platform", 6, 0.5);
     this.platforms.createPlatform(380, 420, "platform", 6, 0.5);
 
@@ -226,19 +295,18 @@ export default class Scene extends Phaser.Scene {
       callback: () => {
         this.platforms.createPlatform(
           this.game.config.width,
-          450,
+          Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 50),
           "platform",
-          5,
-          0.5
+          6,
+          0.5,
         );
-        console.log("plataforma creada")
-        console.log(this.keys)
       },
       loop: true,
     });
   }
 
   createFlyingEnemy() {
+    console.log("enemy appear")
     const camera = this.cameras.main;
     const x = camera.worldView.right;
     /* const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
@@ -255,14 +323,18 @@ export default class Scene extends Phaser.Scene {
     this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
     this.add.existing(this.flyingEnemy);
 
-    this.flyingEnemy.setVisible(true);
+    // this.flyingEnemy.setVisible(true);
 
-    this.flyingEnemy.alpha = 1;
-
-    //TODO destruir el enemigo y crear otro en otra parte aleatoria
-
-    //TODO limitar la creación aleatoria a mitad de pantalla hacia arriba
+    // this.flyingEnemy.alpha = 1;
   }
+
+  createGroundEnemy() {
+    const x = this.cameras.main.worldView.right;
+
+    this.groundEnemy = new GroundEnemy(this, x, 450, this.player);
+    this.physics.add.collider(this.ground, this.groundEnemy)
+  }
+  
   isWithinCameraBounds(x, y, camera) {
     return (
       x >= camera.worldView.x &&
@@ -292,8 +364,6 @@ export default class Scene extends Phaser.Scene {
       this.physics.pause();
      
       this.anims.pauseAll();
-      
-
  
       pauseButton.setText("Resume");
       this.isPaused = true;
@@ -328,7 +398,7 @@ export default class Scene extends Phaser.Scene {
         font: "30px Arial",
         fill: "#fff",
       });
-      this.menu2 = this.add.text(390, 300, "MENU 2", {
+      this.menu2 = this.add.text(390, 300, "FOG OF WAR TEST", {
         font: "30px Arial",
         fill: "#fff",
       });
@@ -342,7 +412,11 @@ export default class Scene extends Phaser.Scene {
       });
       this.menu2.setInteractive({ useHandCursor: true });
       this.menu2.on("pointerdown", () => {
-        console.log("MENU 2 CLICK");
+        // this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
+        // this.boss.mirror()
+        // this.boss.root()
+        this.boss.clonePlayer()
+        this.resume();
       });
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
@@ -356,14 +430,8 @@ export default class Scene extends Phaser.Scene {
       //función reanudar
       this.physics.resume();
       this.anims.resumeAll();
-
-
-
       pauseButton.setText("Pause");
       this.isPaused = false;
-
-      
-
 
       //quitar elementos de pausa.
       this.pauseOverlay.destroy();
