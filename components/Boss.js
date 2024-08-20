@@ -1,7 +1,8 @@
+import GroundEnemy from "../components/GroundEnemy.js";
+
 export default class Boss extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "spriteBoss");
-    this.sceneRef = scene;
 
     this.scene = scene;
     this.dificulty = 1; //dificulty
@@ -28,12 +29,14 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.w = 40;
     this.h = 60;
 
-    this.scene.physics.add.existing(this); //cargar el jugador a la scene
-    this.scene.add.existing(this); //hitbox del jugador
+    this.scene.physics.add.existing(this); 
+    this.scene.add.existing(this); 
     this.body.setSize(this.w, this.h, true);
-    this.body.setOffset(100, 45); //tamaño del hitbox
+    this.body.setOffset(100, 45);
 
     this.body.setAllowGravity(false);
+
+    this.groundEnemyClone = null;
   }
 
   createAnimation() {
@@ -138,10 +141,17 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   //* category: attack
   clonePlayer() {
+    console.log(this.scene.groundEnemy)
     //*Crear un enemigo Melee con el sprite que esté usando el player y le persiga
-    // this.scene.cloneEnemy = new meleeEnemy(x,y,this.scene.player.texture);
+    /*this.scene.groundEnemyClone = new GroundEnemy(500,450,this.scene.player);
+    this.scene.add.existing(this.groundEnemyClone)*/
     //*Añadir a la clase meleeEnemy un metodo que haga explotar al enemigo estando cerca del player
-    // this.scene.cloneEnemy.seekAndDestroy();
+    if(this.scene.groundEnemy){
+      this.scene.groundEnemy.seekAndDestroy();
+    }else{
+      this.scene.createGroundEnemy()
+      this.scene.groundEnemy.seekAndDestroy();
+    }
   }
 
   //* category: debuff
@@ -309,9 +319,29 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   death() {
     this.anims.play("bossDeathAnim");
-    //TODO aqui se va a la pantalla de puntuación.
-  }
+    //TODO Después de la animación, se va a la pantalla de puntuación.
+    //TODO en momento de la animación, meter algún efecto reshulón, parar spawn de bichos
+     this.scene.player.coins*=5 //! Cambiar según pongamos precio items, cosas
+        this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
 
+
+  }
+  gameOver(){
+     //TODO Después de la animación(de tu derrota/victoria maloso), se va a la pantalla de puntuación.
+      this.scene.player.coins/=3 //! Cambiar según pongamos precio items, cosas
+        this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
+
+      console.log("El boss está vivo, ganó, te pegó una paliza y media.");
+
+  }
+  checkIfDied(){
+    if(this.HP <= 0){
+      this.death()
+      
+    }else{
+    this.gameOver()
+    }
+  }
   update(time, delta) {
     //CONTROL DE DAÑOS - Abria que controlar el GAME OVER
     //TODO hacer este check cuando falten entre 10 y 15 segundos del timer.

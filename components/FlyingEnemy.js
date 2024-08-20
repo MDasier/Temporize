@@ -1,4 +1,4 @@
-
+import EnemyBeam from "./EnemyBeam.js";
 export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "flyingEnemy");
@@ -53,7 +53,7 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  shootBeam() {
+  shootBeam() {/*
     const beam = this.scene.add.sprite(this.x, this.y, "fire");
     beam.setScale(0.8);
 
@@ -77,7 +77,8 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
       duration: 100,
       yoyo: true,
       repeat: -1,
-    });
+    });*/
+    new EnemyBeam(this.scene,this.x,this.y,"fire",10,0.8,1000,50,50)
   }
 
   update(time, delta) {
@@ -101,14 +102,16 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
     if (this.x < 0 || this.x > this.scene.game.config.width) {
       this.scene.createFlyingEnemy(); // se llama antes de destruir el objeto
+      //this.scene.flyingEnemy = null
       this.destroy();
       console.log("destruido enemigo");
       this.sceneRef.createFlyingEnemy();
     }
 
-    //disparo enemigo
-    if (this.canShoot && this.shootTimer <= 0) {
-      this.shootTimer = Phaser.Math.Between(2000, 5000); // 2-5 segundos en milisegundos
+    //*Disparo enemigo 
+    //TODO Comprobar si podemos sacarlo del update
+    if (this.canShoot && this.shootTimer <= 0 && this.scene.flyingEnemy) {
+      this.shootTimer = Phaser.Math.Between(2500, 5000); // 2-5 segundos en milisegundos
       this.shootBeam();
     } else {
       this.shootTimer -= delta;

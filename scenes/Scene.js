@@ -5,12 +5,10 @@ import FlyingEnemy from "../components/FlyingEnemy.js";
 import Beam from "../components/Beam.js";
 import Boss from "../components/Boss.js";
 import GroundEnemy from "../components/GroundEnemy.js";
-//variables timer
-let warningAppeared = false;
 
 export default class Scene extends Phaser.Scene {
   constructor() {
-    super("level1"); //siempre se mantiene la estructura
+    super({key: "level1"}); //siempre se mantiene la estructura
 
     this.isPaused = false;
     this.player = null;
@@ -18,6 +16,7 @@ export default class Scene extends Phaser.Scene {
     this.cursors = null;
     this.timer = 60;
     this.timerText = null;
+    this.scoreText = null;
     this.floor = null;
 
     this.flyingEnemy;
@@ -28,7 +27,10 @@ export default class Scene extends Phaser.Scene {
   preload() {
 
     this.load.image("background", "../img/background/mountain.png");
-    this.load.image("platform", ".//assets/grass.png"); //plataforma //TODO Necesitamos imagen para las plataformas
+    this.load.image("platform", "../img/platforms/platform4.png",{
+      frameHeight: 60,
+      frameWidth: 120
+    }); 
 
     //JUGADOR
     this.load.spritesheet("player", "../img/mage/Run.png", {
@@ -99,49 +101,64 @@ export default class Scene extends Phaser.Scene {
 
   //*********************** ELEMENTOS ***********************
   create(data) {
+
     
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
-
+    
     //********ground *///****************************************** */
     this.ground=this.physics.add.staticGroup()
     this.ground.create(500,550,"ground")
     .setScale(50,1)
     .setSize(1100)
-     .setOffset(-500,0)
-
+    .setOffset(-500,0)
+    
     //plataformas
     this.createPlatforms();
-
+    
+    
     
     //jugador
     this.player = new Player(this, 450, 250, "player");
-    
+    //! AQUI FALLA ALGO
     //flying enemy
     this.createFlyingEnemy();
+    //! 
 
     //ground enemy
     this.createGroundEnemy();
     
     //boss
-    this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
-    this.add.existing(this.boss);
+    
     //this.boss.setVisible(true);
     
     //disparos!!
     this.beamGroup = this.physics.add.group();
-
+    
     //PAUSA
     this.createPauseButton();
+    
+    
+    this.addColliders()
+    this.initializateScore()
+    this.initializateTimer(data)
+    
 
-    //*TIMER
+  }
+
+  bossAppear(){
+    this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
+  }
+
+  initializateTimer(data){
     //iniciar timer
     if (data.initialTimerValue) {
       this.initialTimerValue = data.initialTimerValue; //esto es para la logica de tiempo del boss.
       //console.log(data.initialTimerValue);
       this.timer = this.initialTimerValue;
     }
+    
     //texto del timer
     this.timerText = this.add.text(10, 10, "", {
       fontSize: "20px",
@@ -154,12 +171,14 @@ export default class Scene extends Phaser.Scene {
       callback: () => this.decrementTimer(),
       loop: true,
     });
-    
-    this.addColliders()
-
   }
-  
-//------------------------------------parametros del beam funcionales-------
+
+  initializateScore(){
+    this.scoreText = this.add.text(this.game.config.width-150, 10, "Score:0", {
+      fontSize: "20px",
+      fill: "#ffffff",
+    });
+  }
 
   addColliders() {
     // colisiones estaticas
@@ -179,6 +198,17 @@ export default class Scene extends Phaser.Scene {
     if (this.timer > 0) {
       let minutes = Math.floor(this.timer / 60);
       let seconds = this.timer % 60;
+      if(seconds%5==0){
+        this.player.coins+=10
+        this.scoreText.text = `Score: ${this.player.coins}`
+      }
+      if(minutes===0 && seconds === 40){//! Modificarlo a 2
+        this.bossAppear()
+      }
+      if(minutes===0 && seconds === 15){
+        this.boss.checkIfDied()
+
+      }
       if (minutes > 59) {
         minutes = 59;
         seconds = 59;
@@ -186,13 +216,11 @@ export default class Scene extends Phaser.Scene {
       this.timer -= 1;
       this.timerText.text = "Time:" + this.minutesTime(minutes, seconds);
 
-      //calcular el tiempo restante para el boss
-      let warningTime = this.initialTimerValue * 0.2;
+     
 
       //tiempo restante para el aviso del boss.
-      if (this.timer <= warningTime && !warningAppeared) {
+      if (minutes===2 && seconds ===10) {
         this.showBossWarning();
-        warningAppeared = true;
         console.log("se te van a quemar las lentejas como sigas así");
       }
     } else {
@@ -225,12 +253,12 @@ export default class Scene extends Phaser.Scene {
   update(time, delta) {
 
     const camera = this.cameras.main;
-    const cameraBounds = camera.worldView;
-    const enemyPosition = this.flyingEnemy.getCenter();
+    //const cameraBounds = camera.worldView;
+    //const enemyPosition = this.flyingEnemy.getCenter();
 
     this.player.update();
     
-    if (this.boss.FOWvision) {
+    if (this.boss && this.boss.FOWvision) {
       this.boss.FOWvision.x = this.player.x;
       this.boss.FOWvision.y = this.player.y;
     }
@@ -277,28 +305,21 @@ export default class Scene extends Phaser.Scene {
   }
 
   createPlatforms() {
-    //this.platforms = this.physics.add.staticGroup(); //hijos de platformas
+    
     this.platforms = new PlatformGroup(this);
-    // this.platforms.createPlatform(
-    //   -1,
-    //   this.game.config.height - 10,
-    //   "ground",
-    //   this.game.config.width,
-    //   1
-    // );
-    this.platforms.createPlatform(110, 250, "platform", 6, 0.5);
-    this.platforms.createPlatform(680, 320, "platform", 6, 0.5);
-    this.platforms.createPlatform(380, 420, "platform", 6, 0.5);
+    this.platforms.createPlatform(110, 250, "platform", 0.8, 0.3);
+    this.platforms.createPlatform(680, 320, "platform", 0.8, 0.3);
+    this.platforms.createPlatform(380, 420, "platform", 0.8, 0.3);
 
     this.time.addEvent({
-      delay: 3000,
+      delay: Phaser.Math.Between(3000, 5000),
       callback: () => {
         this.platforms.createPlatform(
           this.game.config.width,
           Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 50),
           "platform",
-          6,
-          0.5,
+          0.8,
+          0.3,
         );
       },
       loop: true,
@@ -306,7 +327,7 @@ export default class Scene extends Phaser.Scene {
   }
 
   createFlyingEnemy() {
-    console.log("enemy appear")
+    //console.log("enemy appear")
     const camera = this.cameras.main;
     const x = camera.worldView.right;
     /* const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.
@@ -314,11 +335,7 @@ export default class Scene extends Phaser.Scene {
     const minY = camera.worldView.y + 100; //lo mismo borde superior
     const maxY = camera.worldView.bottom - camera.worldView.height /2; //mitad pantalla
 
-    let y;
-    do {
-     /*  x = Phaser.Math.Between(minX, maxX); */
-      y = Phaser.Math.Between(minY, maxY);
-    } while (!this.isWithinCameraBounds(x, y, camera));
+    let y = Phaser.Math.Between(minY, maxY);
 
     this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
     this.add.existing(this.flyingEnemy);
@@ -398,7 +415,7 @@ export default class Scene extends Phaser.Scene {
         font: "30px Arial",
         fill: "#fff",
       });
-      this.menu2 = this.add.text(390, 300, "FOG OF WAR TEST", {
+      this.menu2 = this.add.text(390, 300, "TEST", {
         font: "30px Arial",
         fill: "#fff",
       });
@@ -421,8 +438,15 @@ export default class Scene extends Phaser.Scene {
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
         console.log("EXIT CLICK");
-        this.resume();
-        this.scene.start("initialScene");
+        /* this.time.removeAllEvents(); */
+        /* this.resume() */
+       //this.scene.stop("level1") 
+       //this.scene.start("initialScene");
+      /*  this.registry.destroy();
+       this.events.off();
+       this.scene.restart(); */
+       window.location.reload() //! POR AHORA SE QUEDO ASI
+
       });
     };
 

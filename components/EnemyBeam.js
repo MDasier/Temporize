@@ -1,10 +1,9 @@
-export default class Beam extends Phaser.Physics.Arcade.Sprite {
+export default class EnemyBeam extends Phaser.Physics.Arcade.Sprite {
   constructor(
     scene,
     x,
     y,
     texture,
-    flipX,
     velocity,
     scale,
     lifetime,
@@ -13,10 +12,12 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
   ) {
     super(scene, x, y, texture);
     this.scene = scene;
-    this.flipX = flipX;
     this.velocity = velocity;
     this.lifetime = lifetime;
-
+    this.enemyBeamCollider=null;
+    this.velocityX = this.scene.player.x-this.x//Si lo queremos más fácil multiplicamos los valores por 0.5
+    this.velocityY = this.scene.player.y-this.y
+    
     // agrega el objeto Beam al sistema de físicas y a la escena
     this.scene.physics.add.existing(this);
     this.scene.add.existing(this);
@@ -24,51 +25,42 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
     // configura el tamaño del cuerpo y que no se quede en la pantalla estancada
     this.setCollideWorldBounds(false);
     this.setScale(scale);
-    this.body.setSize(width - 10, height, true);
-
+    this.body.setSize(width, height, true);
+    this.setVelocityY(this.velocityY); // establece la velocidad en "y" a 0 para anular la gravedad
+    this.setVelocityX(this.velocityX);
     // destruye el beam después del tiempo especificado
     this.scene.time.delayedCall(this.lifetime, () => {
       this.destroy();
     });
+    this.checkCollisionWithPlayer()
+  }
+
+  checkCollisionWithPlayer(){
+    this.enemyBeamCollider = this.scene.physics.add.overlap(this, this.scene.player,(enemyBeam,player)=>{
+
+      if(!player.isInvencible){
+        player.isInvencible = true;
+
+        player.preFX.setPadding(32);
+        const damageGlow = player.preFX.addGlow(0xff0000,6,1,false); 
+        player.coins -= 5
+        if(player.coins<0){
+          player.coins=0
+        }
+        this.scene.scoreText.text = `Score: ${player.coins}`
+
+        this.scene.time.delayedCall(300, () => {
+          player.isInvencible = false;
+          player.preFX.remove(damageGlow)
+        });
+      }
+
+    })
   }
 
   update() {
-    this.setVelocityY(0); // establece la velocidad en "y" a 0 para anular la gravedad
-    this.setVelocityX(this.flipX ? -this.velocity : this.velocity); // establece la velocidad en X según flipX
-
-    this.scene.physics.add.overlap(this, this.scene.boss, (beam, boss) => {
-      boss.HP -= 1;
-     /*  boss.preFX.setPadding(10); */ //! NO HACE NADA!
-        const damageGlow = boss.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
-      this.scene.time.delayedCall(100, () => {
-          boss.preFX.remove(damageGlow)
-        });
-      beam.destroy()
-      console.log("ouch eso duele");
-    }); // detecta las colisiones
-
-    if (this.scene.flyingEnemy) {
-      this.scene.physics.add.overlap(
-        this,
-        this.scene.flyingEnemy,
-        (beam, enemy) => {
-          this.scene.player.coins += 5;
-          this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-          
-          beam.destroy();
-
-          //* chapuza para que el enemigo "desaparezca" aunque sigue existiendo y llega al final para causar que uno nuevo aparece.
-          enemy.setVisible(false);
-          enemy.canShoot = false;
-          enemy.body.checkCollision.right = false;
-          enemy.body.checkCollision.left = false;
-          enemy.body.checkCollision.up = false;
-          enemy.body.checkCollision.down = false;
-          
-        }
-      );
-    }
-
+     
+/*
     if (this.scene.groundEnemy) {
       this.scene.physics.add.overlap(
         this,
@@ -100,6 +92,6 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
           beam.destroy();
         }
       );
-    }
+    }*/
   }
 }

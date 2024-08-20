@@ -1,3 +1,5 @@
+import Scene from "./Scene.js";
+
 export default class InitialScene extends Phaser.Scene {
   constructor() {
     super({ key: "initialScene" });
@@ -15,24 +17,18 @@ export default class InitialScene extends Phaser.Scene {
     const inputMinutes = document.createElement("input");
     inputMinutes.type = "number"; //solo acepta números
     inputMinutes.max = 59; //cap de tiempo en las flechitas
-    inputMinutes.min = 1; //no se puede poner menos de 1 minuto(jamás cero)
-    inputMinutes.value = 10
+    inputMinutes.min = 3; //el mínimo siempre será cero para que el boss dure almenos 2 minutos.
+    inputMinutes.value = 3
     inputMinutes.addEventListener("keyup", () => {
       console.log("keydown en campo");
       if (Number(inputMinutes.value) > 59) {
         inputMinutes.value = 59;
       }
-      if (Number(inputMinutes.value) <= 0) {
-        inputMinutes.value = 1;
+      if (Number(inputMinutes.value) <= 3) {
+        inputMinutes.value = 3;
       }
 
-      //TODO ajustar que al cambiar valor no se vea el cambio previo
     });
-    inputMinutes.addEventListener("change", () => {
-      if (Number(inputMinutes.value) > 59) {
-        inputMinutes.value = 59;
-      }
-    }); //condicional para que no se añada por teclado más de 59 min.
     inputMinutes.style.fontSize = "30px";
     inputMinutes.style.color = "#ffffff";
 
@@ -55,8 +51,18 @@ export default class InitialScene extends Phaser.Scene {
       if (event.key === "Enter") {
         const inputValue = parseInt(inputMinutes.value, 10);
         if (!isNaN(inputValue)) {
+          /* this.scene.get("level1") */
+
+          //this.scene.restart("level1")
+          //this.scene.remove("level1")
+          //this.scene.add("level1",  new Scene())
+
           this.scene.start("level1", { initialTimerValue: inputValue * 60 });
+         /*  if(this.scene.isPaused == true){
+            this.scene.resume()
+          } */
           inputMinutes.remove();
+          
         }
       }
     });
