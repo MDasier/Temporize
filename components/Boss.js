@@ -141,6 +141,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   //* category: attack
   clonePlayer() {
+    console.log(this.scene.groundEnemy)
     //*Crear un enemigo Melee con el sprite que esté usando el player y le persiga
     /*this.scene.groundEnemyClone = new GroundEnemy(500,450,this.scene.player);
     this.scene.add.existing(this.groundEnemyClone)*/
@@ -148,8 +149,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     if(this.scene.groundEnemy){
       this.scene.groundEnemy.seekAndDestroy();
     }else{
-      this.groundEnemy = new GroundEnemy(this.scene, this.cameras.main.worldView.right, 450, this.scene.player)
-      this.scene.groundEnemy.setVisible(true)
+      this.scene.createGroundEnemy()
+      this.scene.groundEnemy.seekAndDestroy();
     }
   }
 

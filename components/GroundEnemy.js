@@ -18,7 +18,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     this.frequency = 1000;
 
     this.w = 30;
-    this.h = 30;
+    this.h = 40;
 
     this.createAnimation();
     this.anims.play("run");
@@ -26,14 +26,16 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.add.existing(this)  ; 
     this.scene.add.existing(this); 
     this.body.setSize(this.w, this.h, true);
-    this.body.setOffset(26, 35);
+    this.body.setOffset(26, 25);
 
     this.flipX = true;
     this.canAttack = false;
     this.isAttacking = false;
+    this.isDamaging = false;
     this.isDying = false;
     this.isBerserkMode = false;
     this.HP=2;
+    this.checkCollisions()
   }
 
   createAnimation() {
@@ -65,25 +67,57 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     this.HP=5;
   }
 
+  checkCollisions(){
+    this.attackCollider = this.scene.physics.add.overlap(this, this.player,()=>{
+      if(!this.player.isInvencible){
+        console.log("colision enemigo jugador")
+        this.player.isInvencible = true;
+
+        this.player.preFX.setPadding(32);
+        const damageGlow = this.player.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
+
+        this.scene.time.delayedCall(300, () => {
+          this.player.isInvencible = false;
+          this.player.preFX.remove(damageGlow)
+        });
+      }      
+    })
+    this.attackCollider.active = false
+  }
+
   update(time, delta) {
+
+    
+
     if(!this.isBerserkMode){
       this.x += this.velocityX;
     }else{
-      if(this.x>=this.player.x+80){
+      if(this.x>=this.player.x+80 && !this.isAttacking){
         this.flipX = true;
         this.x += this.velocityX;
-      }else if(this.x<=this.player.x-80){
+      }else if(this.x<=this.player.x-80 && !this.isAttacking){
         this.flipX = false;
         this.x -= this.velocityX;
       }
 
       if (this.isBerserkMode && this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
         this.isAttacking = true
+        //MAYOR HITBOX MIENTRAS ATACA
+        this.body.setSize(60, 40, true);
+        this.body.setOffset(this.flipX ? 0:20, 25);
         this.anims.play("attack");
         this.velocityX = -1;
+        this.scene.time.delayedCall(900,()=>{
+          this.attackCollider.active=true
+        })
+        this.scene.time.delayedCall(1200,()=>{
+          this.attackCollider.active=false
+        })
         this.scene.time.delayedCall(1500, () => {
           if (!this.isDying) {
             this.isAttacking = false
+            this.body.setSize(this.w, this.h, true);
+            this.body.setOffset(26, 25);
             this.anims.play("run");
             this.velocityX = -3;
           }

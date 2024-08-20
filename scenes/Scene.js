@@ -225,8 +225,8 @@ export default class Scene extends Phaser.Scene {
   update(time, delta) {
 
     const camera = this.cameras.main;
-    const cameraBounds = camera.worldView;
-    const enemyPosition = this.flyingEnemy.getCenter();
+    //const cameraBounds = camera.worldView;
+    //const enemyPosition = this.flyingEnemy.getCenter();
 
     this.player.update();
     
@@ -306,7 +306,7 @@ export default class Scene extends Phaser.Scene {
   }
 
   createFlyingEnemy() {
-    console.log("enemy appear")
+    //console.log("enemy appear")
     const camera = this.cameras.main;
     const x = camera.worldView.right;
     /* const minX = camera.worldView.x + 100; //dejar margen de 100 pixeles borde izq.

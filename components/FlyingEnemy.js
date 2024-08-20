@@ -101,11 +101,13 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
     if (this.x < 0 || this.x > this.scene.game.config.width) {
       this.scene.createFlyingEnemy(); // se llama antes de destruir el objeto
+      //this.scene.flyingEnemy = null
       this.destroy();
     }
 
-    //disparo enemigo
-    if (this.canShoot && this.shootTimer <= 0) {
+    //*Disparo enemigo 
+    //TODO Comprobar si podemos sacarlo del update
+    if (this.canShoot && this.shootTimer <= 0 && this.scene.flyingEnemy) {
       this.shootTimer = Phaser.Math.Between(2000, 5000); // 2-5 segundos en milisegundos
       this.shootBeam();
     } else {

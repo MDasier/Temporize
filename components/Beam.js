@@ -50,26 +50,27 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
         if (this.scene.groundEnemy) {
             this.scene.physics.add.overlap(this, this.scene.groundEnemy, (beam, enemy) => {
                 this.scene.player.coins += 5
-                enemy.HP-=1
-
-                this.scene.time.delayedCall(2000, () => {
-                    enemy.setVisible(false)
-                    enemy.velocityX = -3; // para que no tarde demasiado en salir nuevo enemigo
-                });
+                enemy.HP-=1                
                 //beam.destroy()
 
                 if(enemy.HP<=0){
-                    //* chapuza para que el enemigo "desaparezca" aunque sigue existiendo y llega al final para causar que uno nuevo aparece.
-                    enemy.canAttack = false;
-                    enemy.body.checkCollision.right = false;
-                    enemy.body.checkCollision.left = false;
-                    enemy.body.checkCollision.up = false;
-                    // enemy.body.checkCollision.down = false; // NO QUITAR, solo probar descomentar cuando haya que reir
+
                     enemy.anims.play("death");
                     enemy.isDying = true;
                     enemy.velocityX = -1; // para que animacion sea a velocidad estatico
-                }
-                
+
+                          
+                    if(this.scene.groundEnemy.isBerserkMode){
+                        enemy.destroy()
+                        this.scene.groundEnemy=null
+                    }else{
+                        this.scene.time.delayedCall(2000, () => {
+                            enemy.disableInteractive()
+                            enemy.setVisible(false)  
+                            enemy.velocityX = -3;                      
+                        });   
+                    }
+                }                
 
                 beam.destroy()
             })  

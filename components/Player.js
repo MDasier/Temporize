@@ -9,6 +9,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.isPlayerMovable=true;
     this.coins = 0;
 
+    this.isInvencible=false;
+    
     this.scene.physics.add.existing(this); //cargar el jugador a la scene
     this.scene.add.existing(this); //hitbox del jugador
     this.setCollideWorldBounds(true); //limites para el jugador
