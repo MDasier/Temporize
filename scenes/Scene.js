@@ -27,7 +27,7 @@ export default class Scene extends Phaser.Scene {
   preload() {
 
     this.load.image("background", "../img/background/mountain.png");
-    this.load.image("platform", "../img/platforms/platform1.png",{
+    this.load.image("platform", "../img/platforms/platform4.png",{
       frameHeight: 60,
       frameWidth: 120
     }); 

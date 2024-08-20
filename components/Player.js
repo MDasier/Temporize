@@ -111,7 +111,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     //*SALTO Y DOBLE SALTO: No debería funcionar pero aquí estamos
     if (
-      Phaser.Input.Keyboard.JustDown(this.scene.keys.W) &&
+      (Phaser.Input.Keyboard.JustDown(this.scene.keys.W) || Phaser.Input.Keyboard.JustDown(this.scene.cursors.space)) &&
       this.isPlayerMovable && (this.jumpCount === 0 /*|| this.jumpCount === 1*/)
     ) {
       this.jumpCount += 1;
