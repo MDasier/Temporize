@@ -5,12 +5,10 @@ import FlyingEnemy from "../components/FlyingEnemy.js";
 import Beam from "../components/Beam.js";
 import Boss from "../components/Boss.js";
 import GroundEnemy from "../components/GroundEnemy.js";
-//variables timer
-let warningAppeared = false;
 
 export default class Scene extends Phaser.Scene {
   constructor() {
-    super("level1"); //siempre se mantiene la estructura
+    super({key: "level1"}); //siempre se mantiene la estructura
 
     this.isPaused = false;
     this.player = null;
@@ -103,43 +101,43 @@ export default class Scene extends Phaser.Scene {
 
   //*********************** ELEMENTOS ***********************
   create(data) {
+
     
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
-
+    
     //********ground *///****************************************** */
     this.ground=this.physics.add.staticGroup()
     this.ground.create(500,550,"ground")
     .setScale(50,1)
     .setSize(1100)
-     .setOffset(-500,0)
-
+    .setOffset(-500,0)
+    
     //plataformas
     this.createPlatforms();
-
+    
     
     
     //jugador
     this.player = new Player(this, 450, 250, "player");
-    
+    //! AQUI FALLA ALGO
     //flying enemy
     this.createFlyingEnemy();
+    //! 
 
     //ground enemy
     this.createGroundEnemy();
     
     //boss
-    this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
-    this.add.existing(this.boss);
+    
     //this.boss.setVisible(true);
     
     //disparos!!
     this.beamGroup = this.physics.add.group();
-
+    
     //PAUSA
     this.createPauseButton();
-
     
     
     this.addColliders()
@@ -147,6 +145,10 @@ export default class Scene extends Phaser.Scene {
     this.initializateTimer(data)
     
 
+  }
+
+  bossAppear(){
+    this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
   }
 
   initializateTimer(data){
@@ -200,6 +202,13 @@ export default class Scene extends Phaser.Scene {
         this.player.coins+=10
         this.scoreText.text = `Score: ${this.player.coins}`
       }
+      if(minutes===0 && seconds === 40){//! Modificarlo a 2
+        this.bossAppear()
+      }
+      if(minutes===0 && seconds === 15){
+        this.boss.checkIfDied()
+
+      }
       if (minutes > 59) {
         minutes = 59;
         seconds = 59;
@@ -207,13 +216,11 @@ export default class Scene extends Phaser.Scene {
       this.timer -= 1;
       this.timerText.text = "Time:" + this.minutesTime(minutes, seconds);
 
-      //calcular el tiempo restante para el boss
-      let warningTime = this.initialTimerValue * 0.2;
+     
 
       //tiempo restante para el aviso del boss.
-      if (this.timer <= warningTime && !warningAppeared) {
+      if (minutes===2 && seconds ===10) {
         this.showBossWarning();
-        warningAppeared = true;
         console.log("se te van a quemar las lentejas como sigas así");
       }
     } else {
@@ -251,7 +258,7 @@ export default class Scene extends Phaser.Scene {
 
     this.player.update();
     
-    if (this.boss.FOWvision) {
+    if (this.boss && this.boss.FOWvision) {
       this.boss.FOWvision.x = this.player.x;
       this.boss.FOWvision.y = this.player.y;
     }
@@ -328,11 +335,7 @@ export default class Scene extends Phaser.Scene {
     const minY = camera.worldView.y + 100; //lo mismo borde superior
     const maxY = camera.worldView.bottom - camera.worldView.height /2; //mitad pantalla
 
-    let y;
-    do {
-     /*  x = Phaser.Math.Between(minX, maxX); */
-      y = Phaser.Math.Between(minY, maxY);
-    } while (!this.isWithinCameraBounds(x, y, camera));
+    let y = Phaser.Math.Between(minY, maxY);
 
     this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
     this.add.existing(this.flyingEnemy);
@@ -435,8 +438,15 @@ export default class Scene extends Phaser.Scene {
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
         console.log("EXIT CLICK");
-        this.resume();
-        this.scene.start("initialScene");
+        /* this.time.removeAllEvents(); */
+        /* this.resume() */
+       //this.scene.stop("level1") 
+       //this.scene.start("initialScene");
+      /*  this.registry.destroy();
+       this.events.off();
+       this.scene.restart(); */
+       window.location.reload() //! POR AHORA SE QUEDO ASI
+
       });
     };
 

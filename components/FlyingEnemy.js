@@ -109,7 +109,7 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
     //*Disparo enemigo 
     //TODO Comprobar si podemos sacarlo del update
     if (this.canShoot && this.shootTimer <= 0 && this.scene.flyingEnemy) {
-      this.shootTimer = Phaser.Math.Between(1000, 1000); // 2-5 segundos en milisegundos
+      this.shootTimer = Phaser.Math.Between(2500, 5000); // 2-5 segundos en milisegundos
       this.shootBeam();
     } else {
       this.shootTimer -= delta;

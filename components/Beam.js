@@ -36,8 +36,15 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityY(0); // establece la velocidad en "y" a 0 para anular la gravedad
     this.setVelocityX(this.flipX ? -this.velocity : this.velocity); // establece la velocidad en X según flipX
 
-    this.scene.physics.add.collider(this, this.scene.boss, () => {
-      this.scene.boss.HP -= 1;
+    this.scene.physics.add.overlap(this, this.scene.boss, (beam, boss) => {
+      boss.HP -= 1;
+     /*  boss.preFX.setPadding(10); */ //! NO HACE NADA!
+        const damageGlow = boss.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
+      this.scene.time.delayedCall(100, () => {
+          boss.preFX.remove(damageGlow)
+        });
+      beam.destroy()
+      console.log("ouch eso duele");
     }); // detecta las colisiones
 
     if (this.scene.flyingEnemy) {

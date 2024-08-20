@@ -29,10 +29,10 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.w = 40;
     this.h = 60;
 
-    this.scene.physics.add.existing(this); //cargar el jugador a la scene
-    this.scene.add.existing(this); //hitbox del jugador
+    this.scene.physics.add.existing(this); 
+    this.scene.add.existing(this); 
     this.body.setSize(this.w, this.h, true);
-    this.body.setOffset(100, 45); //tamaño del hitbox
+    this.body.setOffset(100, 45);
 
     this.body.setAllowGravity(false);
 
@@ -319,9 +319,29 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   death() {
     this.anims.play("bossDeathAnim");
-    //TODO aqui se va a la pantalla de puntuación.
-  }
+    //TODO Después de la animación, se va a la pantalla de puntuación.
+    //TODO en momento de la animación, meter algún efecto reshulón, parar spawn de bichos
+     this.scene.player.coins*=5 //! Cambiar según pongamos precio items, cosas
+        this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
 
+
+  }
+  gameOver(){
+     //TODO Después de la animación(de tu derrota/victoria maloso), se va a la pantalla de puntuación.
+      this.scene.player.coins/=3 //! Cambiar según pongamos precio items, cosas
+        this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
+
+      console.log("El boss está vivo, ganó, te pegó una paliza y media.");
+
+  }
+  checkIfDied(){
+    if(this.HP <= 0){
+      this.death()
+      
+    }else{
+    this.gameOver()
+    }
+  }
   update(time, delta) {
     //CONTROL DE DAÑOS - Abria que controlar el GAME OVER
     //TODO hacer este check cuando falten entre 10 y 15 segundos del timer.
