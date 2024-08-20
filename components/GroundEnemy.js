@@ -75,6 +75,11 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
 
         this.player.preFX.setPadding(32);
         const damageGlow = this.player.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
+        this.player.coins -= 5
+        if(this.player.coins<0){
+          this.player.coins=0
+        }
+        this.scene.scoreText.text = `Score: ${this.player.coins}`
 
         this.scene.time.delayedCall(300, () => {
           this.player.isInvencible = false;
@@ -99,33 +104,32 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
         this.flipX = false;
         this.x -= this.velocityX;
       }
-
-      if (this.isBerserkMode && this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
-        this.isAttacking = true
-        //MAYOR HITBOX MIENTRAS ATACA
-        this.body.setSize(60, 40, true);
-        this.body.setOffset(this.flipX ? 0:20, 25);
-        this.anims.play("attack");
-        this.velocityX = -1;
-        this.scene.time.delayedCall(900,()=>{
-          this.attackCollider.active=true
-        })
-        this.scene.time.delayedCall(1200,()=>{
-          this.attackCollider.active=false
-        })
-        this.scene.time.delayedCall(1500, () => {
-          if (!this.isDying) {
-            this.isAttacking = false
-            this.body.setSize(this.w, this.h, true);
-            this.body.setOffset(26, 25);
-            this.anims.play("run");
-            this.velocityX = -3;
-          }
-        }
-        );
-      }
     }
-
+    if (this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
+      this.isAttacking = true
+      //MAYOR HITBOX MIENTRAS ATACA
+      this.body.setSize(60, 40, true);
+      this.body.setOffset(this.flipX ? 0:20, 25);
+      this.anims.play("attack");
+      this.velocityX = -1;
+      this.scene.time.delayedCall(900,()=>{
+        this.attackCollider.active=true
+      })
+      this.scene.time.delayedCall(1200,()=>{
+        this.attackCollider.active=false
+      })
+      this.scene.time.delayedCall(1500, () => {
+        if (!this.isDying) {
+          this.isAttacking = false
+          this.body.setSize(this.w, this.h, true);
+          this.body.setOffset(26, 25);
+          this.anims.play("run");
+          this.velocityX = -3;
+        }
+      }
+      );
+    }
+/*
     if (!this.isBerserkMode && this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
       this.isAttacking = true
       this.anims.play("attack");
@@ -139,7 +143,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
       }
       );
     }
-
+*/
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
     if (this.x < 0 || this.x > this.scene.game.config.width) {
       this.scene.createGroundEnemy();

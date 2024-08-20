@@ -18,6 +18,7 @@ export default class Scene extends Phaser.Scene {
     this.cursors = null;
     this.timer = 60;
     this.timerText = null;
+    this.scoreText = null;
     this.floor = null;
 
     this.flyingEnemy;
@@ -118,6 +119,7 @@ export default class Scene extends Phaser.Scene {
     this.createPlatforms();
 
     
+    
     //jugador
     this.player = new Player(this, 450, 250, "player");
     
@@ -138,13 +140,23 @@ export default class Scene extends Phaser.Scene {
     //PAUSA
     this.createPauseButton();
 
-    //*TIMER
+    
+    
+    this.addColliders()
+    this.initializateScore()
+    this.initializateTimer(data)
+    
+
+  }
+
+  initializateTimer(data){
     //iniciar timer
     if (data.initialTimerValue) {
       this.initialTimerValue = data.initialTimerValue; //esto es para la logica de tiempo del boss.
       //console.log(data.initialTimerValue);
       this.timer = this.initialTimerValue;
     }
+    
     //texto del timer
     this.timerText = this.add.text(10, 10, "", {
       fontSize: "20px",
@@ -157,12 +169,14 @@ export default class Scene extends Phaser.Scene {
       callback: () => this.decrementTimer(),
       loop: true,
     });
-    
-    this.addColliders()
-
   }
-  
-//------------------------------------parametros del beam funcionales-------
+
+  initializateScore(){
+    this.scoreText = this.add.text(this.game.config.width-150, 10, "Score:0", {
+      fontSize: "20px",
+      fill: "#ffffff",
+    });
+  }
 
   addColliders() {
     // colisiones estaticas
@@ -182,6 +196,10 @@ export default class Scene extends Phaser.Scene {
     if (this.timer > 0) {
       let minutes = Math.floor(this.timer / 60);
       let seconds = this.timer % 60;
+      if(seconds%5==0){
+        this.player.coins+=10
+        this.scoreText.text = `Score: ${this.player.coins}`
+      }
       if (minutes > 59) {
         minutes = 59;
         seconds = 59;
