@@ -28,7 +28,10 @@ export default class Scene extends Phaser.Scene {
   preload() {
 
     this.load.image("background", "../img/background/mountain.png");
-    this.load.image("platform", ".//assets/grass.png"); //plataforma //TODO Necesitamos imagen para las plataformas
+    this.load.image("platform", "../img/platforms/platform1.png",{
+      frameHeight: 60,
+      frameWidth: 120
+    }); 
 
     //JUGADOR
     this.load.spritesheet("player", "../img/mage/Run.png", {
@@ -277,28 +280,21 @@ export default class Scene extends Phaser.Scene {
   }
 
   createPlatforms() {
-    //this.platforms = this.physics.add.staticGroup(); //hijos de platformas
+    
     this.platforms = new PlatformGroup(this);
-    // this.platforms.createPlatform(
-    //   -1,
-    //   this.game.config.height - 10,
-    //   "ground",
-    //   this.game.config.width,
-    //   1
-    // );
-    this.platforms.createPlatform(110, 250, "platform", 6, 0.5);
-    this.platforms.createPlatform(680, 320, "platform", 6, 0.5);
-    this.platforms.createPlatform(380, 420, "platform", 6, 0.5);
+    this.platforms.createPlatform(110, 250, "platform", 0.8, 0.3);
+    this.platforms.createPlatform(680, 320, "platform", 0.8, 0.3);
+    this.platforms.createPlatform(380, 420, "platform", 0.8, 0.3);
 
     this.time.addEvent({
-      delay: 3000,
+      delay: Phaser.Math.Between(3000, 5000),
       callback: () => {
         this.platforms.createPlatform(
           this.game.config.width,
           Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 50),
           "platform",
-          6,
-          0.5,
+          0.8,
+          0.3,
         );
       },
       loop: true,

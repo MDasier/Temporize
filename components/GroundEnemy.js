@@ -142,7 +142,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
 
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
     if (this.x < 0 || this.x > this.scene.game.config.width) {
-      this.scene.createGroundEnemy(); 
+      this.scene.createGroundEnemy();
       this.destroy();
     }
   }
