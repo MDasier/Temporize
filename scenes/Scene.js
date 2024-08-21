@@ -297,8 +297,8 @@ export default class Scene extends Phaser.Scene {
 
   backgroundAnimationY() {
     this.initialBackgroundPositionY = this.initialBackgroundPositionY || this.background.tilePositionY
-    const upperLimit = this.initialBackgroundPositionY - 10
-    const lowerLimit = this.initialBackgroundPositionY + 10
+    const upperLimit = this.initialBackgroundPositionY - 5
+    const lowerLimit = this.initialBackgroundPositionY + 5
     //Efecto 'PARALLAX' cuando nos movemos en vertical (Saltos/Gravedad)
     if (this.player.body.velocity.y > 0) {
       this.background.tilePositionY = Math.min(this.background.tilePositionY + 0.07, lowerLimit)
@@ -434,7 +434,7 @@ export default class Scene extends Phaser.Scene {
       this.menu2.on("pointerdown", () => {
         // this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
         // this.boss.mirror()
-        // this.boss.root()
+        this.boss.root()
         this.boss.clonePlayer()
         this.resume();
       });
