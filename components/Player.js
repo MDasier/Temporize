@@ -135,7 +135,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     //*attack
     if (
-      (this.scene.keys.Z.isDown || this.scene.keys.E.isDown) &&
+      (Phaser.Input.Keyboard.JustDown(this.scene.keys.Z) || Phaser.Input.Keyboard.JustDown(this.scene.keys.E)) &&
       !this.isAttacking
     ) {
       this.isAttacking = true;
