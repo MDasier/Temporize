@@ -6,7 +6,7 @@ import Beam from "../components/Beam.js";
 import Boss from "../components/Boss.js";
 import GroundEnemy from "../components/GroundEnemy.js";
 
-export default class Scene extends Phaser.Scene {
+export default class Level1 extends Phaser.Scene {
   constructor() {
     super({key: "level1"}); //siempre se mantiene la estructura
 
