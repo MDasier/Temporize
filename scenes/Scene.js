@@ -296,12 +296,15 @@ export default class Scene extends Phaser.Scene {
   }//cierre update
 
   backgroundAnimationY() {
+    this.initialBackgroundPositionY = this.initialBackgroundPositionY || this.background.tilePositionY
+    const upperLimit = this.initialBackgroundPositionY - 10
+    const lowerLimit = this.initialBackgroundPositionY + 10
     //Efecto 'PARALLAX' cuando nos movemos en vertical (Saltos/Gravedad)
     if (this.player.body.velocity.y > 0) {
-      this.background.tilePositionY += 0.07;
+      this.background.tilePositionY = Math.min(this.background.tilePositionY + 0.07, lowerLimit)
     } else if (this.player.body.velocity.y < 0) {
-      this.background.tilePositionY -= 0.07;
-    }
+      this.background.tilePositionY = Math.max(this.background.tilePositionY - 0.07, upperLimit)
+    }else if(this.player===this.player.body.velocity.y){ this.background.tilePositionY += (this.initialBackgroundPositionY - this.background.tilePositionY) * 0.1}
   }
 
   createPlatforms() {

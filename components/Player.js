@@ -100,7 +100,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Movimiento lateral
     if (this.scene.keys.D.isDown && this.isPlayerMovable) {
-      this.scene.player.setVelocityX(180);
+      this.scene.player.setVelocityX(125);
       this.scene.player.flipX = false;
     } else if (this.scene.keys.A.isDown && this.isPlayerMovable) {
       this.scene.player.setVelocityX(-180);
