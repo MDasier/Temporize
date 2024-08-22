@@ -1,12 +1,16 @@
 export default class Menu extends Phaser.Scene {
   constructor(scene) {
     super({ key: "menu" });
-    this.scorem=0
-    this.timem=0
   }
 
   preload() {
     //console.log("PRELOAD DE MENU");
+  }
+
+  init(data){
+    this.scorem=data.score
+    this.timem=data.time
+    this.ended=data.ended
   }
 
   create() {
@@ -16,7 +20,7 @@ export default class Menu extends Phaser.Scene {
      .setInteractive()
      .on('pointerover', () => this.startButtonOver() )
      .on('pointerout', () => this.startButtonOut() )
-     .on('pointerdown', () => this.scene.start("initialScene"))
+     .on('pointerdown', () => this.startButtonDown())
 
      this.storeButton = this.add.text(100, 150, 'STORE', { fill: '#0f0' })
      .setInteractive()
@@ -24,7 +28,7 @@ export default class Menu extends Phaser.Scene {
      .on('pointerout', () => this.storeButtonOut() )
      .on('pointerdown', () => this.storeButtonDown() )
 
-     this.resumeButton = this.add.text(100, 200, `RESUME - ${this.scorem} points - ${this.timem} time`, { fill: '#0f0' })
+     this.resumeButton = this.add.text(100, 200, `RESUME - points: ${this.scorem} - ${this.timem}`, { fill: '#0f0' })
      .setInteractive()
      .on('pointerover', () => this.resumeButtonOver() )
      .on('pointerout', () => this.resumeButtonOut() )
@@ -37,6 +41,15 @@ export default class Menu extends Phaser.Scene {
 
   startButtonOut() {
     this.startButton.setStyle({ fill: '#0f0' });
+  }
+
+  startButtonDown(){
+    if(this.scorem!==undefined){
+      this.scene.start("level1",{score:this.scorem,time:this.timem,ended:this.ended})
+      //this.scene.resume()//AUN SE VUELVE EN PAUSA
+    }else{
+      this.scene.start("initialScene")
+    }
   }
 
   storeButtonOver() {

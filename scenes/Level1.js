@@ -23,6 +23,9 @@ export default class Level1 extends Phaser.Scene {
     this.groundEnemy;
   }
 
+  init(data){
+    this.end=data.ended
+  }
   //*********************** ASSETS-SPRITES/IMAGES ***********************
   preload() {
 
@@ -144,7 +147,9 @@ export default class Level1 extends Phaser.Scene {
     this.initializateScore()
     this.initializateTimer(data)
     
-
+    if(!this.end){
+      console.log("resume hecho")
+    }
   }
 
   bossAppear(){
@@ -443,10 +448,12 @@ export default class Level1 extends Phaser.Scene {
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
         console.log("EXIT CLICK");
-        this.pause()
-        this.scene.start("menu")
-        this.scene.scorem=this.player.coins
-        this.scene.timem=this.time
+        
+        //this.pause()
+        //this.scene.stop("level1")
+        this.isPaused = true;
+        this.scene.start("menu",{score:this.player.coins,time:this.timer,ended:false})
+
         /* this.time.removeAllEvents(); */
         /* this.resume() */
        //this.scene.stop("level1") 

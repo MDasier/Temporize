@@ -3,6 +3,7 @@ export default class InitialScene extends Phaser.Scene {
   constructor() {
     super({ key: "initialScene" });
   }
+
   create() {
 
     this.backButton = this.add.text(100, 100, 'BACK', { fill: '#0f0' })
