@@ -1,6 +1,8 @@
 export default class Menu extends Phaser.Scene {
   constructor(scene) {
     super({ key: "menu" });
+    this.scorem=0
+    this.timem=0
   }
 
   preload() {
@@ -21,6 +23,12 @@ export default class Menu extends Phaser.Scene {
      .on('pointerover', () => this.storeButtonOver() )
      .on('pointerout', () => this.storeButtonOut() )
      .on('pointerdown', () => this.storeButtonDown() )
+
+     this.resumeButton = this.add.text(100, 200, `RESUME - ${this.scorem} points - ${this.timem} time`, { fill: '#0f0' })
+     .setInteractive()
+     .on('pointerover', () => this.resumeButtonOver() )
+     .on('pointerout', () => this.resumeButtonOut() )
+     .on('pointerdown', () => this.resumeButtonDown() )
   }
 
   startButtonOver() {
@@ -39,9 +47,18 @@ export default class Menu extends Phaser.Scene {
     this.storeButton.setStyle({ fill: '#0f0' });
   }
 
-  storeButtonDown(){
+  storeButtonDown(){/*
     this.storeButton.setText(`BOTON 'STORE' PULSADO`);
-    this.time.delayedCall(1000,()=>{this.storeButton.setText(`STORE`);})
+    this.time.delayedCall(1000,()=>{this.storeButton.setText(`STORE`);})*/
+    this.scene.start("store")
+  }
+
+  resumeButtonOver() {
+    this.resumeButton.setStyle({ fill: '#ff0'});
+  }
+
+  resumeButtonOut() {
+    this.resumeButton.setStyle({ fill: '#0f0' });
   }
 
 }

@@ -314,7 +314,7 @@ export default class Level1 extends Phaser.Scene {
     this.platforms.createPlatform(680, 320, "platform", 0.8, 0.3);
     this.platforms.createPlatform(380, 420, "platform", 0.8, 0.3);
 
-    this.time.addEvent({
+    this.platformEvent = this.time.addEvent({
       delay: Phaser.Math.Between(3000, 5000),
       callback: () => {
         this.platforms.createPlatform(
@@ -385,6 +385,8 @@ export default class Level1 extends Phaser.Scene {
      
       this.anims.pauseAll();
  
+      this.platformEvent.isPaused = true;
+
       pauseButton.setText("Resume");
       this.isPaused = true;
  
@@ -432,15 +434,19 @@ export default class Level1 extends Phaser.Scene {
       });
       this.menu2.setInteractive({ useHandCursor: true });
       this.menu2.on("pointerdown", () => {
-        // this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
+        this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
         // this.boss.mirror()
-        this.boss.root()
+        //this.boss.root()
         this.boss.clonePlayer()
         this.resume();
       });
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
         console.log("EXIT CLICK");
+        this.pause()
+        this.scene.start("menu")
+        this.scene.scorem=this.player.coins
+        this.scene.timem=this.time
         /* this.time.removeAllEvents(); */
         /* this.resume() */
        //this.scene.stop("level1") 
@@ -448,7 +454,7 @@ export default class Level1 extends Phaser.Scene {
       /*  this.registry.destroy();
        this.events.off();
        this.scene.restart(); */
-       window.location.reload() //! POR AHORA SE QUEDO ASI
+       //window.location.reload() //! POR AHORA SE QUEDO ASI
 
       });
     };
@@ -457,6 +463,9 @@ export default class Level1 extends Phaser.Scene {
       //función reanudar
       this.physics.resume();
       this.anims.resumeAll();
+
+      this.platformEvent.isPaused = false;
+
       pauseButton.setText("Pause");
       this.isPaused = false;
 
