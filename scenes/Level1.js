@@ -385,7 +385,7 @@ export default class Level1 extends Phaser.Scene {
      
       this.anims.pauseAll();
  
-      this.platformEvent.isPaused = true;
+      this.platformEvent.paused = true;
 
       pauseButton.setText("Resume");
       this.isPaused = true;
@@ -464,7 +464,7 @@ export default class Level1 extends Phaser.Scene {
       this.physics.resume();
       this.anims.resumeAll();
 
-      this.platformEvent.isPaused = false;
+      this.platformEvent.paused = false;
 
       pauseButton.setText("Pause");
       this.isPaused = false;
