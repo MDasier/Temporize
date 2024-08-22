@@ -117,8 +117,6 @@ export default class Scene extends Phaser.Scene {
     //plataformas
     this.createPlatforms();
     
-    
-    
     //jugador
     this.player = new Player(this, 450, 250, "player");
     //! AQUI FALLA ALGO
@@ -216,9 +214,8 @@ export default class Scene extends Phaser.Scene {
       this.timer -= 1;
       this.timerText.text = "Time:" + this.minutesTime(minutes, seconds);
 
-     
-
       //tiempo restante para el aviso del boss.
+
       if (minutes===2 && seconds ===10) {
         this.showBossWarning();
         console.log("se te van a quemar las lentejas como sigas así");
