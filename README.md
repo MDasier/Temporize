@@ -1,20 +1,11 @@
 
 
-TEMPORIZE by Testeo-games*
-> Primer proyecto en grupo.
+TEMPORIZE by Testeo-games
 
+> Primer proyecto en grupo de los cuatro jinetes: Asier Mimbrero, Xavi Valverde, Ronald Velez y Jorge Berrizbeitia.
+Este proyecto se empezó para el aprendizaje de Pasher y la creación de un minijuego. 
 
-
-# TODO list (e ideas): 
-
-- Añadir pantalla principal de opciones.
-- ¿Tienda de puntos?
-- Separar las clases: jugador, enemigos, obstáculos...
-- Añadir el cronómetro/temporizador.
-- Animación inicial de juego.
-- Controlar modo 'endless run' y modo 'arcade' en función del tiempo que quede.
-
-
+Actualmente en desarrollo 
 
 
 ## DIARIO:
@@ -23,12 +14,10 @@ TEMPORIZE by Testeo-games*
 >- Reunión de grupo para decidir el modo de trabajo, los días que se le dedica a cada parte del proyecto, la organización del grupo en general...
 
 
-
 ### 10/7/24 Trabajo realizado por el equipo:
 
 >- Inicia el proyecto 'Temporize' del grupo.
 >- Creación del repositorio y primer commit.
-
 
 
 ### 22/7/24 Trabajo realizado por el equipo:
@@ -40,9 +29,17 @@ TEMPORIZE by Testeo-games*
 >- Organizar y comentar el código para una mejor lectura.
 
 
-
 ### 24/7/24 Trabajo realizado por el equipo:
 
 >- Añadido Pausa y efectos de pausa.
 >- Añadido Menú de pausa.
 >- Añadido Temporizador.
+
+
+### 21/8/24 Trabajo realizado por el equipo:
+
+>- Empezadas nuevas escenas para un mejor "user flow".
+>- Control de tiempo de juego ajustado (min 3, max 59).
+>- Añadidos enemigos voladores, enemigos melees, disparos y sus colisiones/ataques.
+>- Empezada clase 'Boss' y sus ataques especiales. 
+>- Control de puntos en el juego por enemigos eliminados, golpes recibidos y por tiempo. 

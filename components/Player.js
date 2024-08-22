@@ -100,7 +100,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Movimiento lateral
     if (this.scene.keys.D.isDown && this.isPlayerMovable) {
-      this.scene.player.setVelocityX(180);
+      this.scene.player.setVelocityX(125);
       this.scene.player.flipX = false;
     } else if (this.scene.keys.A.isDown && this.isPlayerMovable) {
       this.scene.player.setVelocityX(-180);
@@ -135,7 +135,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     //*attack
     if (
-      (this.scene.keys.Z.isDown || this.scene.keys.E.isDown) &&
+      (Phaser.Input.Keyboard.JustDown(this.scene.keys.Z) || Phaser.Input.Keyboard.JustDown(this.scene.keys.E)) &&
       !this.isAttacking
     ) {
       this.isAttacking = true;
