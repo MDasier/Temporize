@@ -25,7 +25,7 @@ export default class InitialScene extends Phaser.Scene {
     this.inputMinutes.type = "number"; //solo acepta números
     this.inputMinutes.max = 59; //cap de tiempo en las flechitas
     this.inputMinutes.min = 3; //el mínimo siempre será cero para que el boss dure almenos 2 minutos.
-    this.inputMinutes.value = 3
+    this.inputMinutes.value = 3//!if VARIABLE LOCAL == 0 => 3 else VALOR DE LA VARIABLE LOCAL
     this.inputMinutes.addEventListener("keyup", () => {
       console.log("keydown en campo");
       if (Number(this.inputMinutes.value) > 59) {

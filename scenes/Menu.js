@@ -8,13 +8,13 @@ export default class Menu extends Phaser.Scene {
   }
 
   init(data){
-    this.scorem=data.score
+    /*this.scorem=data.score
     this.timem=data.time
-    this.ended=data.ended
+    this.ended=data.ended*/
+    this.test=data.test
   }
 
   create() {
-    //console.log("CREATE DE MENU");
 
     this.startButton = this.add.text(100, 100, 'START GAME', { fill: '#0f0' })
      .setInteractive()
@@ -44,12 +44,10 @@ export default class Menu extends Phaser.Scene {
   }
 
   startButtonDown(){
-    if(this.scorem!==undefined){
-      this.scene.start("level1",{score:this.scorem,time:this.timem,ended:this.ended})
-      //this.scene.resume()//AUN SE VUELVE EN PAUSA
-    }else{
-      this.scene.start("initialScene")
-    }
+    
+    //? Todas las escenas están creadas, switch solo las intercambia de posicion. Muestra la escena a la que se le hace referencia.
+    this.scene.switch('level1')
+    //!hay que controlar en que momento estamos clicando en 'START GAME'. Si es la primera vez deberia llevarnos a 'initialScene' y si no a 'level1'  
   }
 
   storeButtonOver() {

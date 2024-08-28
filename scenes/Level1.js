@@ -10,11 +10,11 @@ export default class Level1 extends Phaser.Scene {
   constructor() {
     super({key: "level1"}); //siempre se mantiene la estructura
 
-    this.isPaused = false;
+    this.isPaused = false;//para control de puntos en 'pausa'
     this.player = null;
     this.platforms = null;
     this.cursors = null;
-    this.timer = 60;
+    this.timer = 180;//probando con 3 minutos por defecto
     this.timerText = null;
     this.scoreText = null;
     this.floor = null;
@@ -23,9 +23,6 @@ export default class Level1 extends Phaser.Scene {
     this.groundEnemy;
   }
 
-  init(data){
-    this.end=data.ended
-  }
   //*********************** ASSETS-SPRITES/IMAGES ***********************
   preload() {
 
@@ -147,9 +144,6 @@ export default class Level1 extends Phaser.Scene {
     this.initializateScore()
     this.initializateTimer(data)
     
-    if(!this.end){
-      console.log("resume hecho")
-    }
   }
 
   bossAppear(){
@@ -385,6 +379,11 @@ export default class Level1 extends Phaser.Scene {
     });
 
     this.pause = function () {
+      //DESACTIVAR TECLADO
+      //PLAYER INMUNE
+      //PARAR ANIMACIONES DE ENEMIGOS Y BOSS
+
+
       //funcion para pausar
       this.physics.pause();
      
@@ -447,21 +446,8 @@ export default class Level1 extends Phaser.Scene {
       });
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
-        console.log("EXIT CLICK");
-        
-        //this.pause()
-        //this.scene.stop("level1")
-        this.isPaused = true;
-        this.scene.start("menu",{score:this.player.coins,time:this.timer,ended:false})
-
-        /* this.time.removeAllEvents(); */
-        /* this.resume() */
-       //this.scene.stop("level1") 
-       //this.scene.start("initialScene");
-      /*  this.registry.destroy();
-       this.events.off();
-       this.scene.restart(); */
-       //window.location.reload() //! POR AHORA SE QUEDO ASI
+        console.log("EXIT CLICK");        
+        this.scene.switch('menu')
 
       });
     };
