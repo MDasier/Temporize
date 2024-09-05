@@ -14,7 +14,7 @@ export default class Level1 extends Phaser.Scene {
     this.player = null;
     this.platforms = null;
     this.cursors = null;
-    this.timer = 180;//probando con 3 minutos por defecto
+    this.timer = 70;//probando con 3 minutos por defecto
     this.timerText = null;
     this.scoreText = null;
     this.floor = null;
@@ -215,17 +215,29 @@ export default class Level1 extends Phaser.Scene {
       this.timer -= 1;
       this.timerText.text = "Time:" + this.minutesTime(minutes, seconds);
 
+      if(seconds%5==0 && this.boss && this.boss.HP>0){
+        this.bossAttack = Phaser.Math.Between(1,5)
+        if(this.bossAttack==1){
+          this.boss.fogOfWar()
+        }else if(this.bossAttack==2){
+          this.boss.mirror()
+        }else if(this.bossAttack==3){
+          this.boss.root()
+        }else if(this.bossAttack){
+          this.boss.debuffCoin()
+        }
+      }
      
 
       //tiempo restante para el aviso del boss.
-      if (minutes===2 && seconds ===10) {
+      if (minutes===1 && seconds ===10) {
         this.showBossWarning();
-        console.log("se te van a quemar las lentejas como sigas así");
       }
     } else {
       console.log("Se acabó el tiempo");
       this.time.removeAllEvents();
     }
+
   }
 
   showBossWarning() {
@@ -374,7 +386,8 @@ export default class Level1 extends Phaser.Scene {
       if (this.isPaused) {
         this.resume(); //reanudar
       } else {
-        this.pause(); //pausar
+        //this.pause(); //pausar
+        this.scene.switch('menu')
       }
     });
 
@@ -415,7 +428,7 @@ export default class Level1 extends Phaser.Scene {
 
       //*PRUEBAS PARA EL MENU EN PAUSA
       //menu = new Menu(this.scene)
-      this.menuOpciones = this.add.sprite(500, 350, "background");
+      /*this.menuOpciones = this.add.sprite(500, 350, "background");
       this.menuLabel = this.add.text(370, 200, "OPCIONES MENU", {
         font: "30px Arial",
         fill: "#fff",
@@ -450,7 +463,7 @@ export default class Level1 extends Phaser.Scene {
         this.scene.switch('menu')
 
       });
-    };
+    };*/
 
     this.resume = function () {
       //función reanudar
@@ -469,11 +482,12 @@ export default class Level1 extends Phaser.Scene {
 
       //*PRUEBAS PARA EL MENU EN PAUSA
       //eliminamos el menu y el label
-      this.menuOpciones.destroy();
+      /*this.menuOpciones.destroy();
       this.menu1.destroy();
       this.menu2.destroy();
       this.menu3.destroy();
-      this.menuLabel.destroy();
+      this.menuLabel.destroy();*/
     };
   }
+}
 }
