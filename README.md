@@ -7,6 +7,14 @@ Este proyecto se empezó para el aprendizaje de Pasher y la creación de un mini
 
 Actualmente en desarrollo 
 
+## TAREAS:
+### Algunas tareas pendientes:
+
+>- En pausa los elementos siguen moviendose.
+>- En pause, los puntos por tiempo no deberían aumentar ni disminuir y las colisiones del jugador deberían estar desactivadas (o añadir modo invulnerable).
+>- Revisar y borrar todos los setPadding de las animaciones de glow, parece que no están afectando.
+>- Revisar animación de enemigo melee en modo "berserk"
+
 
 ## DIARIO:
 ### 1/7/24 El grupo se junta para empezar con la idea de proyecto

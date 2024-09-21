@@ -119,7 +119,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
         this.attackCollider.active=false
       })
       this.scene.time.delayedCall(1500, () => {
-        if (!this.isDying) {
+        if (!this.isDying && (this.x-100)>0) {
           this.isAttacking = false
           this.body.setSize(this.w, this.h, true);
           this.body.setOffset(26, 25);

@@ -10,11 +10,11 @@ export default class Level1 extends Phaser.Scene {
   constructor() {
     super({key: "level1"}); //siempre se mantiene la estructura
 
-    this.isPaused = false;
+    this.isPaused = false;//para control de puntos en 'pausa'
     this.player = null;
     this.platforms = null;
     this.cursors = null;
-    this.timer = 60;
+    this.timer = 70;//probando con 3 minutos por defecto
     this.timerText = null;
     this.scoreText = null;
     this.floor = null;
@@ -142,7 +142,6 @@ export default class Level1 extends Phaser.Scene {
     this.initializateScore()
     this.initializateTimer(data)
     
-
   }
 
   bossAppear(){
@@ -214,16 +213,17 @@ export default class Level1 extends Phaser.Scene {
       this.timer -= 1;
       this.timerText.text = "Time:" + this.minutesTime(minutes, seconds);
 
-      //tiempo restante para el aviso del boss.
+     
 
+      //tiempo restante para el aviso del boss.
       if (minutes===2 && seconds ===10) {
         this.showBossWarning();
-        console.log("se te van a quemar las lentejas como sigas así");
       }
     } else {
       console.log("Se acabó el tiempo");
       this.time.removeAllEvents();
     }
+
   }
 
   showBossWarning() {
@@ -311,7 +311,7 @@ export default class Level1 extends Phaser.Scene {
     this.platforms.createPlatform(680, 320, "platform", 0.8, 0.3);
     this.platforms.createPlatform(380, 420, "platform", 0.8, 0.3);
 
-    this.time.addEvent({
+    this.platformEvent = this.time.addEvent({
       delay: Phaser.Math.Between(3000, 5000),
       callback: () => {
         this.platforms.createPlatform(
@@ -372,16 +372,24 @@ export default class Level1 extends Phaser.Scene {
       if (this.isPaused) {
         this.resume(); //reanudar
       } else {
-        this.pause(); //pausar
+        //this.pause(); //pausar
+        this.scene.switch('menu')
       }
     });
 
     this.pause = function () {
+      //DESACTIVAR TECLADO
+      //PLAYER INMUNE
+      //PARAR ANIMACIONES DE ENEMIGOS Y BOSS
+
+
       //funcion para pausar
       this.physics.pause();
      
       this.anims.pauseAll();
  
+      this.platformEvent.paused = true;
+
       pauseButton.setText("Resume");
       this.isPaused = true;
  
@@ -406,7 +414,7 @@ export default class Level1 extends Phaser.Scene {
 
       //*PRUEBAS PARA EL MENU EN PAUSA
       //menu = new Menu(this.scene)
-      this.menuOpciones = this.add.sprite(500, 350, "background");
+      /*this.menuOpciones = this.add.sprite(500, 350, "background");
       this.menuLabel = this.add.text(370, 200, "OPCIONES MENU", {
         font: "30px Arial",
         fill: "#fff",
@@ -429,31 +437,27 @@ export default class Level1 extends Phaser.Scene {
       });
       this.menu2.setInteractive({ useHandCursor: true });
       this.menu2.on("pointerdown", () => {
-        // this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
+        this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
         // this.boss.mirror()
-        this.boss.root()
+        //this.boss.root()
         this.boss.clonePlayer()
         this.resume();
       });
       this.menu3.setInteractive({ useHandCursor: true });
       this.menu3.on("pointerdown", () => {
-        console.log("EXIT CLICK");
-        /* this.time.removeAllEvents(); */
-        /* this.resume() */
-       //this.scene.stop("level1") 
-       //this.scene.start("initialScene");
-      /*  this.registry.destroy();
-       this.events.off();
-       this.scene.restart(); */
-       window.location.reload() //! POR AHORA SE QUEDO ASI
+        console.log("EXIT CLICK");        
+        this.scene.switch('menu')
 
       });
-    };
+    };*/
 
     this.resume = function () {
       //función reanudar
       this.physics.resume();
       this.anims.resumeAll();
+
+      this.platformEvent.paused = false;
+
       pauseButton.setText("Pause");
       this.isPaused = false;
 
@@ -464,11 +468,12 @@ export default class Level1 extends Phaser.Scene {
 
       //*PRUEBAS PARA EL MENU EN PAUSA
       //eliminamos el menu y el label
-      this.menuOpciones.destroy();
+      /*this.menuOpciones.destroy();
       this.menu1.destroy();
       this.menu2.destroy();
       this.menu3.destroy();
-      this.menuLabel.destroy();
+      this.menuLabel.destroy();*/
     };
   }
+}
 }
