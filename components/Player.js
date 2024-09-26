@@ -13,9 +13,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.isInvencible = false;
     this.jumpCount = 0;
 
-    this.shotX;
-    this.shotY;
-
     this.scene.physics.add.existing(this); //cargar el jugador a la scene
     this.scene.add.existing(this); //hitbox del jugador
     this.setCollideWorldBounds(true); //limites para el jugador
@@ -92,20 +89,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   blockOrBlink() {
     const blockOrBlinkGlow = this.scene.player.preFX.addGlow(this.playerType==1?0x000000:0xffffff);
+    this.isInvencible=true
     if(this.playerType==1){
-      this.isPlayerMovable = false;
+      //this.isPlayerMovable = false;
       this.scene.time.addEvent({
         delay: 2000,
         callback: () => {
           this.isInvencible=false
-          this.isPlayerMovable = true;
+          //this.isPlayerMovable = true;
           blockOrBlinkGlow.setActive(false);
         }
       });
     }
     if(this.playerType==0){
-      this.isInvencible=true
-
       this.scene.tweens.add({
         targets: this,
         x: this.x+=this.flipX?-250:250,

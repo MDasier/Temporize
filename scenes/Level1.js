@@ -161,21 +161,32 @@ export default class Level1 extends Phaser.Scene {
     
     //*Eventos del raton
     this.input.on('pointerdown', function (pointer) {
-      if (pointer.leftButtonDown()) {
+      if(pointer.leftButtonDown()){
         //Guardamos la posicion donde hemos clicado.
-          //this.scene.player.shotX=pointer.x 
-          //this.scene.player.shotY=pointer.y
-          if(this.scene.player.playerType==0 && this.scene.player.isPlayerMovable){
-            //CREAR DISPARO DEL MAGO
-            const offsetX = this.scene.player.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
-            this.scene.createMageBeam(this.scene.player.x + offsetX, this.scene.player.y - 22, this.scene.player.flipX ? "left" : "right",pointer.x,pointer.y);
-            /*const mageBeam=new MageBeam(this,this.scene.player.x,this.scene.player.y,"beam",10,0.8,1000,50,50)
-            mageBeam.fire(this.scene.player.x,this.scene.player.y,pointer.x,pointer.y)*/
-          }
-          
+          //this.scene.player.cursorX=pointer.x 
+          //this.scene.player.cursorY=pointer.y
 
-      } else if (pointer.rightButtonDown()) {
+          if(this.scene.player.x<pointer.x){
+            this.scene.player.setFlipX(false)
+          }else{
+            this.scene.player.setFlipX(true)
+          }
+
+          if(this.scene.player.playerType==0 && this.scene.player.isPlayerMovable && !this.scene.player.isAttacking){
+            //CREAR DISPARO DEL MAGO
+            this.scene.createMageBeam(this.scene.player.x + (this.scene.player.flipX ? -40 : 40), this.scene.player.y, this.scene.player.flipX ? "left" : "right",pointer.x,pointer.y);
+            this.scene.player.isAttacking = true;
+            this.scene.player.isPlayerMovable=false;            
+            this.scene.player.anims.play("attack", true).on("animationcomplete", () => {              
+              this.scene.player.isAttacking = false;
+              this.scene.player.isPlayerMovable=true;
+            });
+            
+          }
+      }else if(pointer.rightButtonDown()){
         if(this.scene.player.isPlayerMovable){
+          const playerDirection=this.scene.player.x>pointer.x//guardo la diferencia entre la posicion y el click en forma de booleano
+          this.scene.player.setFlipX(playerDirection)
           this.scene.player.blockOrBlink()
         }
       }
@@ -231,6 +242,11 @@ export default class Level1 extends Phaser.Scene {
   }
   createMageBeam(x, y, direction,pointerX,pointerY) {
     const mageBeam = new MageBeam(this, x, y, 'beam', direction === 'left',1500,1,500,25,20,pointerX,pointerY);
+
+    const angle = Phaser.Math.Angle.Between(x, y, pointerX, pointerY);
+    // Establece el ángulo del sprite según el ángulo calculado
+    mageBeam.angle = Phaser.Math.RadToDeg(angle);
+
     this.beamGroup.add(mageBeam);
   }
 
