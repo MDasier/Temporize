@@ -51,3 +51,14 @@ Actualmente en desarrollo
 >- Añadidos enemigos voladores, enemigos melees, disparos y sus colisiones/ataques.
 >- Empezada clase 'Boss' y sus ataques especiales. 
 >- Control de puntos en el juego por enemigos eliminados, golpes recibidos y por tiempo. 
+
+
+## ANOTACIONES:
+### Nota "cambios de escena"
+
+>- this.scene.bringToTop("nombreEscena" ó this.)//Mueve la escena a la capa más alta.
+>- this.scene.sendToBack("nombreEscena" ó this.)//mueve la escena a la capa más baja.
+>- this.scene.moveUp("nombreEscena" ó this.)//mueve esta escena una capa hacia arriba. "nombreEscena" o this.
+>- this.scene.moveDown("nombreEscena" ó this.)//mueve esta escena una capa hacia abajo.
+>- this.scene.moveAbove("a","b")//mueve escena "b" justo encima de "a".
+>- this.scene.moveBelow("a","b")//mueve escena "b" justo debajo de "a".

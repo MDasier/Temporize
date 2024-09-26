@@ -104,8 +104,8 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
       this.scene.createFlyingEnemy(); // se llama antes de destruir el objeto
       //this.scene.flyingEnemy = null
       this.destroy();
-      console.log("destruido enemigo");
-      this.sceneRef.createFlyingEnemy();
+      //console.log("destruido enemigo");
+      //this.sceneRef.createFlyingEnemy();
     }
 
     //*Disparo enemigo 

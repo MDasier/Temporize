@@ -64,13 +64,13 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
 
   seekAndDestroy(){
     this.isBerserkMode = true;
-    this.HP=5;
+    this.HP+=5;
   }
 
   checkCollisions(){
     this.attackCollider = this.scene.physics.add.overlap(this, this.player,()=>{
       if(!this.player.isInvencible){
-        console.log("colision enemigo jugador")
+        //console.log("Melee golpea Jugador")
         this.player.isInvencible = true;
 
         this.player.preFX.setPadding(32);
@@ -92,8 +92,6 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
 
   update(time, delta) {
 
-    
-
     if(!this.isBerserkMode){
       this.x += this.velocityX;
     }else{
@@ -105,7 +103,9 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
         this.x -= this.velocityX;
       }
     }
-    if (this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
+
+
+    if (this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 80) <= this.player.x && (this.x + 80) >= this.player.x) ) {
       this.isAttacking = true
       //MAYOR HITBOX MIENTRAS ATACA
       this.body.setSize(60, 40, true);
@@ -119,7 +119,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
         this.attackCollider.active=false
       })
       this.scene.time.delayedCall(1500, () => {
-        if (!this.isDying && (this.x-100)>0) {
+        if (!this.isDying && (this.x-80)>0) {
           this.isAttacking = false
           this.body.setSize(this.w, this.h, true);
           this.body.setOffset(26, 25);
@@ -129,21 +129,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
       }
       );
     }
-/*
-    if (!this.isBerserkMode && this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 160) <= this.player.x && (this.x + 100) >= this.player.x) ) {
-      this.isAttacking = true
-      this.anims.play("attack");
-      this.velocityX = -1;
-      this.scene.time.delayedCall(1500, () => {
-        if (!this.isDying) {
-          this.isAttacking = false
-          this.anims.play("run");
-          this.velocityX = -3;
-        }
-      }
-      );
-    }
-*/
+
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
     if (this.x < 0 || this.x > this.scene.game.config.width) {
       this.scene.createGroundEnemy();

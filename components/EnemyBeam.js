@@ -59,39 +59,5 @@ export default class EnemyBeam extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-     
-/*
-    if (this.scene.groundEnemy) {
-      this.scene.physics.add.overlap(
-        this,
-        this.scene.groundEnemy,
-        (beam, enemy) => {
-          
-          enemy.HP -= 1;
-          //beam.destroy()
-
-          if (enemy.HP <= 0) {
-            this.scene.player.coins += 5;
-            this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-            enemy.body.checkCollision.right = false;
-            enemy.body.checkCollision.left = false;
-            enemy.body.checkCollision.up = false;
-            enemy.anims.play("death").on("animationcomplete",() => {
-              enemy.setVisible(false);
-              enemy.velocityX = -3;
-            });
-            enemy.isDying = true;
-            enemy.velocityX = -1; // para que animacion sea a velocidad estatico
-
-            if (this.scene.groundEnemy.isBerserkMode) {
-              enemy.destroy();
-              this.scene.groundEnemy = null;
-            }
-          }
-
-          beam.destroy();
-        }
-      );
-    }*/
   }
 }

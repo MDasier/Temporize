@@ -5,6 +5,7 @@ import FlyingEnemy from "../components/FlyingEnemy.js";
 import Beam from "../components/Beam.js";
 import Boss from "../components/Boss.js";
 import GroundEnemy from "../components/GroundEnemy.js";
+import MageBeam from "../components/MageBeam.js";
 
 export default class Level1 extends Phaser.Scene {
   constructor() {
@@ -14,7 +15,7 @@ export default class Level1 extends Phaser.Scene {
     this.player = null;
     this.platforms = null;
     this.cursors = null;
-    this.timer = 70;//probando con 3 minutos por defecto
+    this.timer = 60;//Tiempo total de juego fijo para pruebas
     this.timerText = null;
     this.scoreText = null;
     this.floor = null;
@@ -36,7 +37,7 @@ export default class Level1 extends Phaser.Scene {
     this.load.spritesheet("player", "../img/mage/Run.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
-    }); //para añadir al jugador se t oman las medidas del sprite el ancho se divide por la cantidad de imagenes del personaje
+    }); //para añadir al jugador se toman las medidas del sprite el ancho se divide por la cantidad de imagenes del personaje
     this.load.spritesheet("jump", "../img/mage/Jump.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
@@ -50,6 +51,12 @@ export default class Level1 extends Phaser.Scene {
     this.load.image("beam", "../img/mage/beam.png", {
       frameWidth: 127,
       frameHeight: 123,
+    });
+
+    //DISPARO BOSS
+    this.load.image("bossBeam", "../img/bossOne/bossBeam.png", {
+      frameWidth: 56,
+      frameHeight: 71,
     });
 
     //ENEMIGO RANGO
@@ -66,6 +73,14 @@ export default class Level1 extends Phaser.Scene {
     this.load.spritesheet("bossIdleSprite", "../img/bossOne/Idle.png", {
       frameWidth: 1999 /8,
       frameHeight: 105,
+    });
+    this.load.spritesheet("bossAttack1Sprite", "../img/bossOne/Attack1.png", {
+      frameWidth: 1874 /8,
+      frameHeight: 149,
+    });
+    this.load.spritesheet("bossAttack2Sprite", "../img/bossOne/Attack2.png", {
+      frameWidth: 1820 /8,
+      frameHeight: 154,
     });
     this.load.spritesheet("bossDeathSprite", "../img/bossOne/Death.png", {
       frameWidth: 1999 /8,
@@ -101,7 +116,9 @@ export default class Level1 extends Phaser.Scene {
 
   //*********************** ELEMENTOS ***********************
   create(data) {
-
+    window.addEventListener('contextmenu', function (e) {
+      e.preventDefault(); // Esto evita que aparezca el menú contextual
+    });
     
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
@@ -118,34 +135,57 @@ export default class Level1 extends Phaser.Scene {
     this.createPlatforms();
     
     //jugador
-    this.player = new Player(this, 450, 250, "player");
-    //! AQUI FALLA ALGO
+    //this.player = new Player(this, 450, 250, "player");//Así iniciabamos el player antes
+    this.player = new Player(this, -50, 250, "player");//Ahora creamos el player "fuera de la pantalla" para que aparezca corriendo
+    //!Hay que añadir control de invulnerabilidad etc
+    this.player.playerInitialMove()//Animacion inicial para que el player aparezca corriendo desde fuera
+
+    //?refix-asier: creo que he solucionado el error que salia en consola.
+    //!FALTA PROBARLO
     //flying enemy
     this.createFlyingEnemy();
-    //! 
+   
 
     //ground enemy
     this.createGroundEnemy();
-    
-    //boss
-    
-    //this.boss.setVisible(true);
     
     //disparos!!
     this.beamGroup = this.physics.add.group();
     
     //PAUSA
-    this.createPauseButton();
-    
+    this.createPauseButton();    
     
     this.addColliders()
     this.initializateScore()
     this.initializateTimer(data)
     
-  }
+    //*Eventos del raton
+    this.input.on('pointerdown', function (pointer) {
+      if (pointer.leftButtonDown()) {
+        //Guardamos la posicion donde hemos clicado.
+          //this.scene.player.shotX=pointer.x 
+          //this.scene.player.shotY=pointer.y
+          if(this.scene.player.playerType==0 && this.scene.player.isPlayerMovable){
+            //CREAR DISPARO DEL MAGO
+            const offsetX = this.scene.player.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
+            this.scene.createMageBeam(this.scene.player.x + offsetX, this.scene.player.y - 22, this.scene.player.flipX ? "left" : "right",pointer.x,pointer.y);
+            /*const mageBeam=new MageBeam(this,this.scene.player.x,this.scene.player.y,"beam",10,0.8,1000,50,50)
+            mageBeam.fire(this.scene.player.x,this.scene.player.y,pointer.x,pointer.y)*/
+          }
+          
+
+      } else if (pointer.rightButtonDown()) {
+        if(this.scene.player.isPlayerMovable){
+          this.scene.player.blockOrBlink()
+        }
+      }
+    });
+
+  }//create
 
   bossAppear(){
     this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
+    //this.boss.METODOATAQUE()//PARA PROBAR ATAQUES DIRECTAMENTE
   }
 
   initializateTimer(data){
@@ -186,23 +226,70 @@ export default class Level1 extends Phaser.Scene {
   }
 
   createBeam(x, y, direction) {
-    // crea un nuevo beam en la escena usando los parametros establecidos en la clase 
     const beam = new Beam(this, x, y, 'beam', direction === 'left',1000,1,1000,25,20);
     this.beamGroup.add(beam);
-}
+  }
+  createMageBeam(x, y, direction,pointerX,pointerY) {
+    const mageBeam = new MageBeam(this, x, y, 'beam', direction === 'left',1500,1,500,25,20,pointerX,pointerY);
+    this.beamGroup.add(mageBeam);
+  }
 
   decrementTimer() {
     if (this.timer > 0) {
       let minutes = Math.floor(this.timer / 60);
       let seconds = this.timer % 60;
+
+      //! CONTROL DE LA IA DEL BOSS - ATAQUES     
+      if(this.timer>6&&seconds%3==0&&this.boss){//Probando cada 3 segundos
+        
+        this.bossSkillsArr = [
+          this.boss.shootBeam,
+          this.boss.clonePlayer,
+          this.boss.root,
+          this.boss.mirror,
+          this.boss.charge,
+          this.boss.fogOfWar,
+          this.boss.debuffCoin,
+          this.boss.debuffDPS
+        ];
+        let rngBossSkill = Phaser.Math.Between(0, this.bossSkillsArr.length - 1);
+        //! PARA HACER PRUEBAS this.bossSkillsArr[x].call(this.boss)
+        //this.bossSkillsArr[0].call(this.boss)
+
+        if(rngBossSkill==0){
+          this.boss.body.setSize(this.boss.w+50, this.boss.h+5, true);
+          this.boss.body.setOffset(150, 50);
+
+          this.bossSkillsArr[rngBossSkill].call(this.boss)
+          //!ME GUSTARIA HACER UNA SEGUNDA LLAMADA PARA QUE PAREZCA QUE SUELTA FANTASMAS QUE TE SIGUEN
+          //*QUIERO COPIAR/MODIFICAR EL CODIGO DEL ENEMYBEAM PARA QUE EN ESTE CASO PAREZCA UN FANTASMA QUE TE SIGUE Y EXPLOTA
+          this.boss.anims.play("bossAttack2Anim").on("animationcomplete", () => {
+            this.boss.anims.play("bossIdleAnim");
+            this.boss.body.setSize(this.boss.w, this.boss.h, true);
+            this.boss.body.setOffset(100, 45);
+          });
+        }else if(rngBossSkill==6||rngBossSkill==7){
+
+          this.boss.body.setSize(this.boss.w+50, this.boss.h+5, true);
+          this.boss.body.setOffset(150, 50);
+          this.bossSkillsArr[rngBossSkill].call(this.boss)
+          this.boss.anims.play("bossAttack1Anim").on("animationcomplete", () => {
+            this.boss.anims.play("bossIdleAnim");
+            this.boss.body.setSize(this.boss.w, this.boss.h, true);
+            this.boss.body.setOffset(100, 45);
+          });
+        }else{this.bossSkillsArr[rngBossSkill].call(this.boss)}
+      }
+      
+
       if(seconds%5==0){
         this.player.coins+=10
         this.scoreText.text = `Score: ${this.player.coins}`
       }
-      if(minutes===0 && seconds === 40){//! Modificarlo a 2
+      if(minutes===0 && seconds === 50){//! Modificarlo a 2
         this.bossAppear()
       }
-      if(minutes===0 && seconds === 15){
+      if(minutes===0 && seconds === 9){
         this.boss.checkIfDied()
 
       }
@@ -289,7 +376,7 @@ export default class Level1 extends Phaser.Scene {
     if(this.boss){
       this.boss.update(time, delta);
     }
-    
+
   }//cierre update
 
   backgroundAnimationY() {
@@ -362,118 +449,79 @@ export default class Level1 extends Phaser.Scene {
   }
 
   createPauseButton() {
-    let pauseButton = this.add.text(this.cameras.main.centerX, 20, "Pause", {
-      fontFamily: "comic-sans",
-      fontSize: 20,
-      fill: "white",
-    });
-    pauseButton.setInteractive({ useHandCursor: true }); //agrega evento onclick
-    pauseButton.on("pointerdown", () => {
-      if (this.isPaused) {
-        this.resume(); //reanudar
-      } else {
-        //this.pause(); //pausar
-        this.scene.switch('menu')
-      }
-    });
+      let pauseButton = this.add.text(this.cameras.main.centerX, 20, "Pause", {
+        fontFamily: "comic-sans",
+        fontSize: 20,
+        fill: "white",
+      });
+      pauseButton.setInteractive({ useHandCursor: true }); //agrega evento onclick
+      pauseButton.on("pointerdown", () => {
+        if (this.isPaused) {
+          this.resume(); //reanudar
+        } else {
+          //this.pause(); //pausar
+          this.cameras.main.fadeOut(500, 0, 0, 0)
+          this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+            //? Todas las escenas están creadas, switch solo las intercambia de posicion. Muestra la escena a la que se le hace referencia.
+            this.scene.switch('menu')
+            this.cameras.main.fadeIn(500, 0, 0, 0)
+          //!hay que controlar en que momento estamos clicando en 'START GAME'. Si es la primera vez deberia llevarnos a 'initialScene' y si no a 'level1'  
+          })
+          
+        }
+      });
 
-    this.pause = function () {
-      //DESACTIVAR TECLADO
-      //PLAYER INMUNE
-      //PARAR ANIMACIONES DE ENEMIGOS Y BOSS
+      this.pause = function () {
+        //DESACTIVAR TECLADO
+        //PLAYER INMUNE
+        //PARAR ANIMACIONES DE ENEMIGOS Y BOSS
 
 
-      //funcion para pausar
-      this.physics.pause();
-     
-      this.anims.pauseAll();
- 
-      this.platformEvent.paused = true;
+        //funcion para pausar
+        this.physics.pause();
+      
+        this.anims.pauseAll();
+  
+        this.platformEvent.paused = true;
 
-      pauseButton.setText("Resume");
-      this.isPaused = true;
- 
-      //oscuridad en la pantalla cuando se pause.
-      this.pauseOverlay = this.add.rectangle(2, 2, 2, 2, 0x000000, 0.5);
-      this.pauseOverlay.setScale(
-        this.cameras.main.width,
-        this.cameras.main.height
-      );
-      this.pauseOverlay.setDepth(1000);
+        pauseButton.setText("Resume");
+        this.isPaused = true;
+  
+        //oscuridad en la pantalla cuando se pause.
+        this.pauseOverlay = this.add.rectangle(2, 2, 2, 2, 0x000000, 0.5);
+        this.pauseOverlay.setScale(
+          this.cameras.main.width,
+          this.cameras.main.height
+        );
+        this.pauseOverlay.setDepth(1000);
 
-      const pauseAnimation = {
-        targets: pauseButton,
-        alpha: { from: 1, to: 0.5 },
-        duration: 800,
-        yoyo: true, //hace que la animacions e repita en sentido inverso, le da mas fluidez
-        repeat: -1,
+        const pauseAnimation = {
+          targets: pauseButton,
+          alpha: { from: 1, to: 0.5 },
+          duration: 800,
+          yoyo: true, //hace que la animacions e repita en sentido inverso, le da mas fluidez
+          repeat: -1,
+        };
+
+        //animación para que Resume parpadee
+        this.tweens.add(pauseAnimation);
+
+
+      this.resume = function () {
+        //función reanudar
+        this.physics.resume();
+        this.anims.resumeAll();
+
+        this.platformEvent.paused = false;
+
+        pauseButton.setText("Pause");
+        this.isPaused = false;
+
+        //quitar elementos de pausa.
+        this.pauseOverlay.destroy();
+        this.pauseAnimation = null;
+        //con destroy da fallo y se queda en gris la "pausa"
       };
-
-      //animación para que Resume parpadee
-      this.tweens.add(pauseAnimation);
-
-      //*PRUEBAS PARA EL MENU EN PAUSA
-      //menu = new Menu(this.scene)
-      /*this.menuOpciones = this.add.sprite(500, 350, "background");
-      this.menuLabel = this.add.text(370, 200, "OPCIONES MENU", {
-        font: "30px Arial",
-        fill: "#fff",
-      });
-      this.menu1 = this.add.text(390, 250, "MENU 1", {
-        font: "30px Arial",
-        fill: "#fff",
-      });
-      this.menu2 = this.add.text(390, 300, "TEST", {
-        font: "30px Arial",
-        fill: "#fff",
-      });
-      this.menu3 = this.add.text(390, 350, "EXIT", {
-        font: "30px Arial",
-        fill: "#fff",
-      });
-      this.menu1.setInteractive({ useHandCursor: true });
-      this.menu1.on("pointerdown", () => {
-        console.log("MENU 1 CLICK");
-      });
-      this.menu2.setInteractive({ useHandCursor: true });
-      this.menu2.on("pointerdown", () => {
-        this.boss.fogOfWar(); //! esto se moverá a cuando el boss active poder
-        // this.boss.mirror()
-        //this.boss.root()
-        this.boss.clonePlayer()
-        this.resume();
-      });
-      this.menu3.setInteractive({ useHandCursor: true });
-      this.menu3.on("pointerdown", () => {
-        console.log("EXIT CLICK");        
-        this.scene.switch('menu')
-
-      });
-    };*/
-
-    this.resume = function () {
-      //función reanudar
-      this.physics.resume();
-      this.anims.resumeAll();
-
-      this.platformEvent.paused = false;
-
-      pauseButton.setText("Pause");
-      this.isPaused = false;
-
-      //quitar elementos de pausa.
-      this.pauseOverlay.destroy();
-      this.pauseAnimation = null;
-      //con destroy da fallo y se queda en gris la "pausa"
-
-      //*PRUEBAS PARA EL MENU EN PAUSA
-      //eliminamos el menu y el label
-      /*this.menuOpciones.destroy();
-      this.menu1.destroy();
-      this.menu2.destroy();
-      this.menu3.destroy();
-      this.menuLabel.destroy();*/
-    };
+    }
   }
-}
 }

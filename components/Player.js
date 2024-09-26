@@ -8,14 +8,21 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.texture = texture;
     this.isPlayerMovable = true;
     this.coins = 0;
+    this.playerType=0;//0 para mago, 1 para caballero//!hay que añadir el dato al crear el player
     this.isJumping = false;
     this.isInvencible = false;
     this.jumpCount = 0;
+
+    this.shotX;
+    this.shotY;
+
     this.scene.physics.add.existing(this); //cargar el jugador a la scene
     this.scene.add.existing(this); //hitbox del jugador
     this.setCollideWorldBounds(true); //limites para el jugador
     this.body.setSize(25, 75, true);
     this.body.setOffset(100, 70); //tamaño del hitbox
+
+
 
     this.createAnimation();
     this.anims.play("run");
@@ -35,16 +42,88 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.isAttacking = false;
     //this.scene.beamGroup = this.scene.physics.add.group()
   }
+
+  playerInitialMove(){
+    this.isInvencible=true
+    this.isPlayerMovable=false
+    // const mirrorGlow = this.scene.add.sprite(this.x, this.y, "fire");
+    this.preFX.setPadding(32);
+    const initialGlow = this.scene.player.preFX.addGlow(0xffffff); 
+
+    this.scene.tweens.add({
+      targets: initialGlow,
+      outerStrength: 6,
+      innerStrength: 1,
+      yoyo: true,
+      loop: -1,
+      ease: "sine.inout",
+      duration: 200,
+    });
+
+    // Configura la animación o el tween para que el jugador corra hacia la mitad de la pantalla
+    this.scene.tweens.add({
+      targets: this,
+      x: 450, // Mueve al jugador a la posicion inicial
+      duration: 3000, // Duración de la animación en milisegundos
+      ease: 'Power2', // Tipo de easing
+      onComplete: () => {
+        initialGlow.setActive(false);
+        
+        this.isInvencible=false
+        this.isPlayerMovable=true
+      }
+    });
+  }
+
   root(delay) {
     this.isPlayerMovable = false;
-    this.scene.time.delayedCall(
-      delay,
-      () => {
-        this.isPlayerMovable = true;
-      },
-      [],
-      this
-    );
+    const mirrowGlow = this.scene.player.preFX.addGlow(0xdcdcdc);
+    this.scene.tweens.add({
+      targets: this,
+      duration: delay, // Duración de la animación en milisegundos
+      ease: 'Power2', // Tipo de easing
+      onComplete: () => {
+        mirrowGlow.setActive(false);
+        this.isPlayerMovable=true
+      }
+    });
+  }
+
+
+  blockOrBlink() {
+    const blockOrBlinkGlow = this.scene.player.preFX.addGlow(this.playerType==1?0x000000:0xffffff);
+    if(this.playerType==1){
+      this.isPlayerMovable = false;
+      this.scene.time.addEvent({
+        delay: 2000,
+        callback: () => {
+          this.isInvencible=false
+          this.isPlayerMovable = true;
+          blockOrBlinkGlow.setActive(false);
+        }
+      });
+    }
+    if(this.playerType==0){
+      this.isInvencible=true
+
+      this.scene.tweens.add({
+        targets: this,
+        x: this.x+=this.flipX?-250:250,
+        y: this.y-=5,
+        alpha: 0, // Reduce la opacidad a 0 para que parezca que desaparece
+        scaleY: 0.5, // Reduce la altura a la mitad
+        scaleX: 0.5, // Reduce la anchura a la mitad
+        duration: 200, 
+        ease: 'Power2', 
+        onComplete: () => {          
+          this.isInvencible=false
+          this.setAlpha(1); // Restaura la opacidad
+          this.setScale(1); // Restaura la escala       
+          blockOrBlinkGlow.setActive(false);
+        }
+      });
+    }
+   
   }
 
   createAnimation() {
@@ -98,7 +177,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.scene.player.setVelocityX(0);
     }
 
-    // Movimiento lateral
+    //* MOVIMIENTO LATERAL
     if (this.scene.keys.D.isDown && this.isPlayerMovable) {
       this.scene.player.setVelocityX(125);
       this.scene.player.flipX = false;
@@ -133,13 +212,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.jumpCount = 0;
     }
 
-    //*attack
+    //* ATAQUES CON TECLADO
     if (
       (Phaser.Input.Keyboard.JustDown(this.scene.keys.Z) || Phaser.Input.Keyboard.JustDown(this.scene.keys.E)) &&
       !this.isAttacking
     ) {
       this.isAttacking = true;
-      this.x -= 35;
+
+      //*Movemos al player cuando dispara si es mago y estamos en la fase final
+      //if(this.scene.isFinalBattle && this.isMage){this.x -= this.flipX ? -35 : 35;}
+      
       this.anims.play("attack", true).on("animationcomplete", () => {
         this.isAttacking = false;
       });
@@ -147,11 +229,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       const direction = this.flipX ? "left" : "right";
       const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
 
-      this.scene.createBeam(this.x + offsetX, this.y - 22, direction);
+      this.scene.createBeam(this.x + offsetX, this.y - 22, this.flipX ? "left" : "right");
 
       if (direction === "left") {
         this.x += 70;
       }
     }
-  }
+
+  }//update()
 }

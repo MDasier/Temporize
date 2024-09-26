@@ -1,5 +1,5 @@
 import GroundEnemy from "../components/GroundEnemy.js";
-
+import EnemyBeam from "./EnemyBeam.js";
 export default class Boss extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "spriteBoss");
@@ -8,6 +8,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.dificulty = 1; //dificulty
     this.HP = 10; //VIDA DEL BOSS (ya veremos como ajustamos valores y daño)
     this.speed = 0.1;
+    this.isInvencible=false
     this.setVisible(true);
     this.setDepth(1);
     //this.setTexture("spriteBoss");
@@ -73,7 +74,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.anims.create({
       key: "bossAttack2Anim",
       frames: this.anims.generateFrameNumbers("bossAttack2Sprite", {
-        start: 0,
+        start: 4,
         end: 6,
       }),
       frameRate: 10,
@@ -207,6 +208,43 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   //* category: attack
   charge() {
     //Sprint del boss por la pantalla que arroya al player si no lo esquiva
+    //?Si le ponemos brillo se ralentiza el juego :/
+
+    // Define las posiciones para las animaciones
+    const positionY1 = this.y; //Posición inicial y final en Y
+    const positionX1 = this.x; //Posición inicial en X
+    const positionX2 = positionX1>350?50:this.scene.game.config.width-50; // Posición final en X
+    
+    this.isInvencible=true//? Añadirlo a godmode() PRINCIPIOS SOLID CHICOS!
+    //!godmode()
+
+    this.scene.tweens.add({
+      targets: this,
+      y: 380,
+      duration: 1500,
+      ease: 'sine.inout',
+      onComplete: () => {
+          this.scene.tweens.add({
+              targets: this,
+              y: 380,
+              x: positionX2, //Hasta donde va
+              duration: 1500, //Duración de la animación
+              ease: 'Power2', //Tipo de animacion
+              onComplete: () => {
+                  this.scene.tweens.add({
+                    targets: this,
+                    y: positionY1, //volver al punto inicial en Y
+                    x: positionX1, //Vuelve al punto inicial en X
+                    duration: 2500, 
+                    ease: 'Power2', 
+                    onComplete: () => {
+                      this.isInvencible=false
+                    }
+                  });
+              }
+          });
+      }
+    });
   }
 
   //* category: attack
@@ -229,14 +267,12 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
         height,
       },
       !this.isFogOfWarActive
-    ); // variable local para que no consuma recursos al terminar
+    );
 
     rt.fill(0x000000, this.fogOfWarOpaqueLvl);
     rt.draw(this.scene.ground);
-    // rt.draw(this.scene.menuOpciones) //! descomentar cuando el boss lance el ataque y solo al estar en pause
     rt.draw(this.scene.platformGroup);
-
-    rt.setDepth(1000); // para que los enemigos tambien se opaquen
+    rt.setDepth(1000); // Da profundidad para que todo esté oscuro
 
     // Crear un gráfico circular para usar como textura
     this.circleGraphics = this.scene.make.graphics({ x: 0, y: 0, add: false });
@@ -261,8 +297,8 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.scene.time.delayedCall(
       3000 * this.dificulty,
       () => {
-        this.isFogOfWarActive = false; // el booleano ayuda a funcionalidades que dependen del FOW
-        rt.setVisible(false); // remover el FOW actual
+        this.isFogOfWarActive = false;
+        rt.setVisible(false); // FOW 'desactivado'
       },
       [],
       this
@@ -271,7 +307,21 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   //* category: attack
   debuffCoin() {
-    this.scene.player.coins -= 1;
+    this.scene.scoreText.setStyle({ fill: '#800000'});
+    this.scene.player.coins -= 10*this.dificulty;
+
+    //!falta añadir alguna animacion al texto (tipo efecto combo en cualquier arcade/lucha)
+
+    this.scene.time.delayedCall(
+      3000 * this.dificulty,
+      () => {
+        this.scene.scoreText.setStyle({ fill: '#ffffff'});
+      },
+      [],
+      this
+    );
+
+    
   }
 
   //* category: debuff
@@ -289,32 +339,22 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   //* category: attack
   shootBeam() {
-    //* Lo he copiado de 'FlyingEnemy'
-
-    const beam = this.scene.add.sprite(this.x, this.y, "fire");
-    beam.setScale(1);
-
-    const player = this.scene.player;
-    const beamSpeed = 800;
-
-    this.scene.tweens.add({
-      targets: beam,
-      x: player.x,
-      y: player.y,
-      duration: beamSpeed,
-      onComplete: () => {
-        beam.destroy();
+    this.scene.time.delayedCall(
+      500,
+      () => {
+        new EnemyBeam(this.scene,this.x,this.y,"bossBeam",100,0.8,1000,50,50)
       },
-    });
-
-    this.scene.tweens.add({
-      targets: beam,
-      scaleX: 0.6,
-      scaleY: 0.6,
-      duration: 100,
-      yoyo: true,
-      repeat: -1,
-    });
+      [],
+      this
+    );
+    this.scene.time.delayedCall(
+      1000,
+      () => {
+        new EnemyBeam(this.scene,this.x,this.y,"bossBeam",50,0.8,1000,50,50)
+      },
+      [],
+      this
+    );
   }
 
   death() {

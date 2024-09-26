@@ -1,24 +1,24 @@
 export default class Store extends Phaser.Scene {
   constructor(scene) {
-    super({ key: "store" });
+    super({ key: "howToPlay" });
   }
 
   preload() {
-    
+    this.load.image("htp", "../img/background/htp.png");
+    this.load.image("background", "../img/background/background.png");
   }
 
   create() {
-    this.menuButton = this.add.text(100, 100, 'MENU', { fill: '#0f0' })
+    
+    this.background = this.add.tileSprite(500, 280, 0, 150, "htp");
+    this.background.setScale(1.1);
+
+    this.menuButton = this.add.text(10, 500, 'VOLVER AL MENU', { fill: '#000' })
      .setInteractive()
      .on('pointerover', () => this.menuButtonOver() )
      .on('pointerout', () => this.menuButtonOut() )
      .on('pointerdown', () => this.menuButtonDown())
-
-    this.lbl = this.add.text(100, 150, 'GASTA TUS PUNTOS', { fill: '#0f0' })
-    .setInteractive()
-    .on('pointerover', () => this.lblOver() )
-    .on('pointerout', () => this.lblOut() )
-    .on('pointerdown', () => this.lblDown())
+     this.menuButton.setScale(2);
   }
 
   menuButtonOver() {
@@ -26,7 +26,7 @@ export default class Store extends Phaser.Scene {
   }
 
   menuButtonOut() {
-    this.menuButton.setStyle({ fill: '#0f0' });
+    this.menuButton.setStyle({ fill: '#000' });
   }
 
   menuButtonDown(){
@@ -36,17 +36,4 @@ export default class Store extends Phaser.Scene {
       this.cameras.main.fadeIn(500, 0, 0, 0)
     })
   }
-
-  lblOver() {
-    this.lbl.setStyle({ fill: '#ff0'});
-  }
-
-  lblOut() {
-    this.lbl.setStyle({ fill: '#0f0' });
-  }
-
-  lblDown() {
-    this.lbl.text='JAJAJAJA NO TIENES PUNTOS ERES MALISIMO!'
-  }
-
 }
