@@ -107,43 +107,18 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
       );
     }
 
-    //this.scene.physics.moveTo(this, this.pointerX, this.pointerY, this.velocity);
+    //Si el mageBeam no ha llegado a donde hemos hecho click
     if (!this.reachedDestination) {
       this.scene.physics.moveTo(this, this.pointerX, this.pointerY, this.velocity);
       const distanceToPointer = Phaser.Math.Distance.Between(this.x, this.y, this.pointerX, this.pointerY);
-      if (distanceToPointer < 50) {
+      if (distanceToPointer < 50) {//Cuando está apunto de llegar al click
         this.reachedDestination = true;
       }
-    } else {
+    } else {//Si el mageBeam llega a donde hemos hecho click - Matematicas de IA
       const angle = Phaser.Math.Angle.Between(this.x, this.y, this.x + this.body.velocity.x, this.y + this.body.velocity.y);
       this.setRotation(angle);
       this.setVelocity(this.velocity * Math.cos(angle), this.velocity * Math.sin(angle));
     }
-/*
-    // Si el disparo aún no ha alcanzado su destino
-    if (!this.reachedDestination) {
-      this.setVelocity(this.velocity);
-      this.scene.physics.moveTo(this, this.pointerX, this.pointerY, this.velocity);
 
-      // Calcular la distancia restante al destino
-      const distanceToPointer = Phaser.Math.Distance.Between(this.x, this.y, this.pointerX, this.pointerY);
-      if (distanceToPointer < 20) {
-        this.reachedDestination = true;
-      }
-    } else {
-      // El disparo ya alcanzó su destino, ahora continúa en la misma dirección
-      const angle = Phaser.Math.DegToRad(this.angle);
-      this.setVelocityX(this.velocity * Math.cos(angle));
-      this.setVelocityY(this.velocity * Math.sin(angle));
-    }
-*//*
-      const angle = Phaser.Math.Angle.Between(this.x, this.y, this.pointerX, this.pointerY);
-      const directionX = Math.cos(angle);
-      const directionY = Math.sin(angle);
-
-      // Establecer manualmente la velocidad en la dirección del puntero
-      this.setVelocityX(this.velocity * directionX);
-      this.setVelocityY(this.velocity * directionY);
-*/
   }
 }
