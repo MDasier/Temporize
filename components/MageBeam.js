@@ -40,8 +40,6 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    //this.setVelocityY(1); // establece la velocidad en "y" a 0 para anular la gravedad
-    //this.setVelocityX(this.velocity);
 
     this.scene.physics.add.overlap(this, this.scene.boss, (mageBeam, boss) => {
       boss.HP -= 1;
@@ -50,7 +48,7 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
           boss.preFX.remove(damageGlow)
         });
         mageBeam.destroy()
-    }); // detecta las colisiones con el boss
+    }); // detecta las colisiones con el Boss
 
     if (this.scene.flyingEnemy) {
       this.scene.physics.add.overlap(
@@ -72,7 +70,7 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
           
         }
       );
-    }
+    }//colisiones con flyingEnemy
 
     if (this.scene.groundEnemy) {
       this.scene.physics.add.overlap(
@@ -105,13 +103,13 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
           mageBeam.destroy();
         }
       );
-    }
+    }//colisiones groundEnemy
 
     //Si el mageBeam no ha llegado a donde hemos hecho click
     if (!this.reachedDestination) {
       this.scene.physics.moveTo(this, this.pointerX, this.pointerY, this.velocity);
       const distanceToPointer = Phaser.Math.Distance.Between(this.x, this.y, this.pointerX, this.pointerY);
-      if (distanceToPointer < 50) {//Cuando está apunto de llegar al click
+      if (distanceToPointer < 50) {//Cuando está apunto de llegar al click (pointer)
         this.reachedDestination = true;
       }
     } else {//Si el mageBeam llega a donde hemos hecho click - Matematicas de IA

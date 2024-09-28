@@ -8,18 +8,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.texture = texture;
     this.isPlayerMovable = true;
     this.coins = 0;
-    this.playerType=0;//0 para mago, 1 para caballero//!hay que añadir el dato al crear el player
+    this.playerType=0;//0 para mago, 1 para caballero//!FALTA: hay que añadir el dato al crear el player
     this.isJumping = false;
     this.isInvencible = false;
     this.jumpCount = 0;
+    this.isIdle=true;
 
     this.scene.physics.add.existing(this); //cargar el jugador a la scene
     this.scene.add.existing(this); //hitbox del jugador
     this.setCollideWorldBounds(true); //limites para el jugador
     this.body.setSize(25, 75, true);
     this.body.setOffset(100, 70); //tamaño del hitbox
-
-
 
     this.createAnimation();
     this.anims.play("run");
@@ -91,12 +90,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const blockOrBlinkGlow = this.scene.player.preFX.addGlow(this.playerType==1?0x000000:0xffffff);
     this.isInvencible=true
     if(this.playerType==1){
-      //this.isPlayerMovable = false;
+      this.isPlayerMovable = false;
       this.scene.time.addEvent({
         delay: 2000,
         callback: () => {
           this.isInvencible=false
-          //this.isPlayerMovable = true;
+          this.isPlayerMovable = true;
           blockOrBlinkGlow.setActive(false);
         }
       });
@@ -128,6 +127,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       frames: this.anims.generateFrameNumbers(this.texture, {
         start: 0,
         end: 7,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "idle",
+      frames: this.anims.generateFrameNumbers("idle", {
+        start: 0,
+        end: 5,
       }),
       frameRate: 10,
       repeat: -1,
@@ -174,49 +182,43 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     //* MOVIMIENTO LATERAL
-    if (this.scene.keys.D.isDown && this.isPlayerMovable) {
+    if(this.scene.keys.D.isDown && this.isPlayerMovable) {
       this.scene.player.setVelocityX(125);
       this.scene.player.flipX = false;
-    } else if (this.scene.keys.A.isDown && this.isPlayerMovable) {
-      this.scene.player.setVelocityX(-180);
+    }else if(this.scene.keys.A.isDown && this.isPlayerMovable) {
+      this.scene.player.setVelocityX(-125);
       this.scene.player.flipX = true;
-    } else {
+    }else{
       this.scene.player.setVelocityX(0);
     }
 
-    //*SALTO Y DOBLE SALTO: No debería funcionar pero aquí estamos
-    if (
-      (Phaser.Input.Keyboard.JustDown(this.scene.keys.W) || Phaser.Input.Keyboard.JustDown(this.scene.cursors.space)) &&
-      this.isPlayerMovable && (this.jumpCount === 0 /*|| this.jumpCount === 1*/)
-    ) {
-      this.jumpCount += 1;
-      
-      this.scene.player.setVelocityY(-450);
-      this.anims.play("jump")
+    //*SALTO Y DOBLE SALTO
+    if(  (Phaser.Input.Keyboard.JustDown(this.scene.keys.W) || Phaser.Input.Keyboard.JustDown(this.scene.cursors.space)) &&
+      this.isPlayerMovable && (this.jumpCount === 0 /*|| this.jumpCount === 1*/) ){
+        this.jumpCount += 1;
+        this.scene.player.setVelocityY(-450);
+        this.anims.play("jump")
     }
-     if (!this.body.touching.down && !this.isAttacking) {
+    if(!this.body.touching.down && !this.isAttacking){
       this.anims.play("jump", true); //efecto caida
-      //this.canDoubleJump=true;
-    } else {
-      if (!this.isAttacking) {
-        this.anims.play("run", true);
-      }
-      
+    }else if(!this.isAttacking){
+        if(this.scene.boss){
+          this.anims.play(this.scene.player.body.velocity.x==0?"idle":"run", true)
+        }else{
+          this.anims.play(this.scene.player.body.velocity.x==0?"run":"run", true)//!hay que controlar mejor este ternario pero si no lo pongo la animacion de run se ralentiza cuando NO HAY BOSS
+        }
     }
-    if (this.body.touching.down && this.jumpCount!==0) {
-      //this.isJumping = false;
+
+    if(this.body.touching.down && this.jumpCount!==0) {
       this.jumpCount = 0;
     }
 
     //* ATAQUES CON TECLADO
-    if (
-      (Phaser.Input.Keyboard.JustDown(this.scene.keys.Z) || Phaser.Input.Keyboard.JustDown(this.scene.keys.E)) &&
-      !this.isAttacking
-    ) {
+    if( (Phaser.Input.Keyboard.JustDown(this.scene.keys.Z) || Phaser.Input.Keyboard.JustDown(this.scene.keys.E)) && !this.isAttacking){
       this.isAttacking = true;
 
       //*Movemos al player cuando dispara si es mago y estamos en la fase final
-      //if(this.scene.isFinalBattle && this.isMage){this.x -= this.flipX ? -35 : 35;}
+      //if(this.scene.boss && this.scene.player.playerType==0){this.x -= this.flipX ? -35 : 35;}
       
       this.anims.play("attack", true).on("animationcomplete", () => {
         this.isAttacking = false;
@@ -224,12 +226,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
       const direction = this.flipX ? "left" : "right";
       const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
-
-      this.scene.createBeam(this.x + offsetX, this.y - 22, this.flipX ? "left" : "right");
-
-      if (direction === "left") {
-        this.x += 70;
-      }
+      this.scene.createBeam(this.x + (offsetX), this.y - 22, direction);
     }
 
   }//update()

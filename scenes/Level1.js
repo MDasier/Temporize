@@ -46,6 +46,10 @@ export default class Level1 extends Phaser.Scene {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     });
+    this.load.spritesheet("idle", "../img/mage/Idle.png", {
+      frameWidth: 1386 / 6,
+      frameHeight: 190,
+    });
 
     //DISPARO
     this.load.image("beam", "../img/mage/beam.png", {
@@ -160,11 +164,16 @@ export default class Level1 extends Phaser.Scene {
     this.initializateTimer(data)
     
     //*Eventos del raton
+    /*
+        //!BLOQUEO EN PRUEBAS
+        if (this.scene.input.activePointer.isDown && this.scene.input.activePointer.button === 2) {
+          console.log("BLOQUEO EN PRUEBAS")//Sale mientras tengas el click derecho pulsado
+        }
+    */
     this.input.on('pointerdown', function (pointer) {
       if(pointer.leftButtonDown()){
-        //Guardamos la posicion donde hemos clicado.
-          //this.scene.player.cursorX=pointer.x 
-          //this.scene.player.cursorY=pointer.y
+        //Posicion donde hemos clicado.
+          //pointer.x ---- pointer.y
 
           if(this.scene.player.x<pointer.x){
             this.scene.player.setFlipX(false)
@@ -180,10 +189,17 @@ export default class Level1 extends Phaser.Scene {
             this.scene.player.anims.play("attack", true).on("animationcomplete", () => {              
               this.scene.player.isAttacking = false;
               this.scene.player.isPlayerMovable=true;
-            });
-            
+            });            
           }
-      }else if(pointer.rightButtonDown()){
+      }else if(this.scene.keys.A.isDown && pointer.rightButtonDown()){
+        this.scene.player.setFlipX(true)
+        this.scene.player.blockOrBlink()
+
+      }else if(this.scene.keys.D.isDown && pointer.rightButtonDown()){
+        this.scene.player.setFlipX(false)
+        this.scene.player.blockOrBlink()
+
+      }else if(pointer.rightButtonDown()){ 
         if(this.scene.player.isPlayerMovable){
           const playerDirection=this.scene.player.x>pointer.x//guardo la diferencia entre la posicion y el click en forma de booleano
           this.scene.player.setFlipX(playerDirection)
@@ -277,8 +293,7 @@ export default class Level1 extends Phaser.Scene {
           this.boss.body.setOffset(150, 50);
 
           this.bossSkillsArr[rngBossSkill].call(this.boss)
-          //!ME GUSTARIA HACER UNA SEGUNDA LLAMADA PARA QUE PAREZCA QUE SUELTA FANTASMAS QUE TE SIGUEN
-          //*QUIERO COPIAR/MODIFICAR EL CODIGO DEL ENEMYBEAM PARA QUE EN ESTE CASO PAREZCA UN FANTASMA QUE TE SIGUE Y EXPLOTA
+          //!COPIAR/MODIFICAR EL CODIGO DEL MAGEBEAM PARA QUE EN ESTE CASO PAREZCA UN FANTASMA QUE TE SIGUE Y EXPLOTA
           this.boss.anims.play("bossAttack2Anim").on("animationcomplete", () => {
             this.boss.anims.play("bossIdleAnim");
             this.boss.body.setSize(this.boss.w, this.boss.h, true);
@@ -302,7 +317,7 @@ export default class Level1 extends Phaser.Scene {
         this.player.coins+=10
         this.scoreText.text = `Score: ${this.player.coins}`
       }
-      if(minutes===0 && seconds === 50){//! Modificarlo a 2
+      if(minutes===0 && seconds === 50){//! Modificarlo a % del total de tiempo
         this.bossAppear()
       }
       if(minutes===0 && seconds === 9){
@@ -372,11 +387,10 @@ export default class Level1 extends Phaser.Scene {
   });
 
     //MOVIMIENTO Y 'ACCION' DEL FONDO
-    this.background.tilePositionX += 0.5; //velocidad de fondo
     this.backgroundAnimationY();
 
     //MOVIMIENTO DE PLATAFORMAS
-    this.platforms.movePlatforms();
+    this.platforms.movePlatforms();//!pararlas cuando salga el boss
 
     //ACCION DEL ENEMIGO VOLADOR
     if (this.flyingEnemy) {
@@ -396,6 +410,18 @@ export default class Level1 extends Phaser.Scene {
   }//cierre update
 
   backgroundAnimationY() {
+    if(!this.boss){
+      this.background.tilePositionX += 0.5;//velocidad de fondo
+    }else{
+      if(this.player.flipX && this.player.body.velocity.x!=0){
+        this.background.tilePositionX += 0.1
+      }else if(!this.player.flipX && this.player.body.velocity.x!=0){
+        this.background.tilePositionX -= 0.1
+      }else{
+        
+      }      
+    }
+
     this.initialBackgroundPositionY = this.initialBackgroundPositionY || this.background.tilePositionY
     const upperLimit = this.initialBackgroundPositionY - 5
     const lowerLimit = this.initialBackgroundPositionY + 5
@@ -405,6 +431,7 @@ export default class Level1 extends Phaser.Scene {
     } else if (this.player.body.velocity.y < 0) {
       this.background.tilePositionY = Math.max(this.background.tilePositionY - 0.07, upperLimit)
     }else if(this.player===this.player.body.velocity.y){ this.background.tilePositionY += (this.initialBackgroundPositionY - this.background.tilePositionY) * 0.1}
+
   }
 
   createPlatforms() {

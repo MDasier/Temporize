@@ -40,7 +40,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
       boss.HP -= 1;
      /*  boss.preFX.setPadding(10); */ //! NO HACE NADA!
         const damageGlow = boss.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
-      this.scene.time.delayedCall(100, () => {
+        this.scene.time.delayedCall(100, () => {
           boss.preFX.remove(damageGlow)
         });
       beam.destroy()
