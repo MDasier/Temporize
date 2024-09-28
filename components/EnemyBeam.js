@@ -40,9 +40,10 @@ export default class EnemyBeam extends Phaser.Physics.Arcade.Sprite {
 
       if(!player.isInvencible){
         player.isInvencible = true;
-
-        player.preFX.setPadding(32);
-        const damageGlow = player.preFX.addGlow(0xff0000,6,1,false); 
+        player.isHitted=true;
+        
+        //player.preFX.setPadding(32);
+        //const damageGlow = player.preFX.addGlow(0xff0000,6,1,false); 
         player.coins -= 5
         if(player.coins<0){
           player.coins=0
@@ -51,7 +52,8 @@ export default class EnemyBeam extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.time.delayedCall(300, () => {
           player.isInvencible = false;
-          player.preFX.remove(damageGlow)
+          player.isHitted=false;
+          //player.preFX.remove(damageGlow)
         });
       }
 

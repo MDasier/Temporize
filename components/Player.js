@@ -13,6 +13,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.isInvencible = false;
     this.jumpCount = 0;
     this.isIdle=true;
+    this.isHitted=false;
 
     this.scene.physics.add.existing(this); //cargar el jugador a la scene
     this.scene.add.existing(this); //hitbox del jugador
@@ -141,6 +142,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: -1,
     });
     this.anims.create({
+      key: "hit",
+      frames: this.anims.generateFrameNumbers("hit", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
       key: "jump",
       frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 1 }),
       frameRate: 10,
@@ -171,7 +181,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.anims.pause();
     }
 
-    if (this.scene.cursors.right.isDown) {
+    /*if (this.scene.cursors.right.isDown) {
       this.scene.player.setVelocityX(180);
       this.scene.player.flipX = false;
     } else if (this.scene.cursors.left.isDown) {
@@ -179,7 +189,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.scene.player.flipX = true;
     } else {
       this.scene.player.setVelocityX(0);
-    }
+    }*/
+
 
     //* MOVIMIENTO LATERAL
     if(this.scene.keys.D.isDown && this.isPlayerMovable) {
@@ -203,9 +214,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.anims.play("jump", true); //efecto caida
     }else if(!this.isAttacking){
         if(this.scene.boss){
-          this.anims.play(this.scene.player.body.velocity.x==0?"idle":"run", true)
+          this.anims.play(this.scene.player.isHitted?"hit":this.scene.player.body.velocity.x==0?"idle":"run", true)
+          //this.anims.play(this.scene.player.body.velocity.x==0?"idle":"run", true)
         }else{
-          this.anims.play(this.scene.player.body.velocity.x==0?"run":"run", true)//!hay que controlar mejor este ternario pero si no lo pongo la animacion de run se ralentiza cuando NO HAY BOSS
+          this.anims.play(this.scene.player.isHitted?"hit":"run", true)
+          //this.anims.play(this.scene.player.body.velocity.x==0?"run":"run", true)//!hay que controlar mejor este ternario pero si no lo pongo la animacion de run se ralentiza cuando NO HAY BOSS
         }
     }
 
@@ -228,6 +241,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
       this.scene.createBeam(this.x + (offsetX), this.y - 22, direction);
     }
-
+    //console.log("HIT: "+this.isHitted)
   }//update()
 }

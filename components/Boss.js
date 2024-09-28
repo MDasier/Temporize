@@ -370,9 +370,6 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
      //TODO Después de la animación(de tu derrota/victoria maloso), se va a la pantalla de puntuación.
       this.scene.player.coins/=3 //! Cambiar según pongamos precio items, cosas
         this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-
-      console.log("El boss está vivo, ganó, te pegó una paliza y media.");
-
   }
   checkIfDied(){
     if(this.HP <= 0){

@@ -50,6 +50,10 @@ export default class Level1 extends Phaser.Scene {
       frameWidth: 1386 / 6,
       frameHeight: 190,
     });
+    this.load.spritesheet("hit", "../img/mage/Hit.png", {
+      frameWidth: 924 / 4,
+      frameHeight: 190,
+    });
 
     //DISPARO
     this.load.image("beam", "../img/mage/beam.png", {

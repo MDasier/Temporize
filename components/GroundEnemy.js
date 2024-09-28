@@ -69,12 +69,13 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
 
   checkCollisions(){
     this.attackCollider = this.scene.physics.add.overlap(this, this.player,()=>{
+      
       if(!this.player.isInvencible){
         //console.log("Melee golpea Jugador")
         this.player.isInvencible = true;
-
-        this.player.preFX.setPadding(32);
-        const damageGlow = this.player.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
+        this.player.isHitted=true;
+        //this.player.preFX.setPadding(32);
+        //const damageGlow = this.player.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
         this.player.coins -= 5
         if(this.player.coins<0){
           this.player.coins=0
@@ -83,7 +84,8 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.time.delayedCall(300, () => {
           this.player.isInvencible = false;
-          this.player.preFX.remove(damageGlow)
+          this.player.isHitted=false;
+          //this.player.preFX.remove(damageGlow)
         });
       }      
     })
