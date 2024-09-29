@@ -3,11 +3,13 @@ export default class Store extends Phaser.Scene {
     super({ key: "store" });
   }
 
-  preload() {
-    
+  preload() {    
   }
 
   create() {
+    
+    
+
     this.menuButton = this.add.text(100, 100, 'MENU', { fill: '#0f0' })
      .setInteractive()
      .on('pointerover', () => this.menuButtonOver() )
@@ -30,6 +32,7 @@ export default class Store extends Phaser.Scene {
   }
 
   menuButtonDown(){
+    this.sound.stopByKey('storeMusic');
     this.cameras.main.fadeOut(500, 0, 0, 0)
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
       this.scene.switch('menu')

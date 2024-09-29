@@ -102,6 +102,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       });
     }
     if(this.playerType==0){
+      this.scene.sound.play('magicSpell');
       this.scene.tweens.add({
         targets: this,
         x: this.x+=this.flipX?-250:250,
@@ -229,7 +230,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     //* ATAQUES CON TECLADO
     if( (Phaser.Input.Keyboard.JustDown(this.scene.keys.Z) || Phaser.Input.Keyboard.JustDown(this.scene.keys.E)) && !this.isAttacking){
       this.isAttacking = true;
-
+      
       //*Movemos al player cuando dispara si es mago y estamos en la fase final
       //if(this.scene.boss && this.scene.player.playerType==0){this.x -= this.flipX ? -35 : 35;}
       

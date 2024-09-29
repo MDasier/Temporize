@@ -5,6 +5,10 @@ export default class Menu extends Phaser.Scene {
 
   preload() {
     //console.log("PRELOAD DE MENU");
+    this.load.audio('endlessSong', [ './sounds/Boadrius-thanks_musicaEndless.mp3' ]);
+    this.load.audio('storeMusic', [ './sounds/HarumachiMusic-thnks_shop.mp3' ]);
+    this.load.audio('rodoom', [ './sounds/Pixabay-thanks_rayOfDoom.mp3' ]);
+    this.load.audio('magicSpell', [ './sounds/magicSpell.mp3' ]);
   }
 
   init(data){
@@ -15,6 +19,13 @@ export default class Menu extends Phaser.Scene {
   }
 
   create() {
+
+    this.endlessSong = this.sound.add('endlessSong');
+    this.endlessSong.setVolume(0.09);//!cambiar 0.09 por variable para poder modificar el volumen en configuracion
+    this.storeMusic = this.sound.add('storeMusic');
+    this.rodoom = this.sound.add('rodoom');
+    this.magicSpell = this.sound.add('magicSpell');
+    this.magicSpell.setVolume(0.09);
 
     this.startButton = this.add.text(100, 100, 'START GAME', { fill: '#0f0' })
      .setInteractive()
@@ -55,6 +66,10 @@ export default class Menu extends Phaser.Scene {
     .on('pointerover', () => this.resumeButtonOver() )
     .on('pointerout', () => this.resumeButtonOut() )
     .on('pointerdown', () => this.resumeButtonDown() )
+
+    this.endlessSong.play();
+    this.endlessSong.setLoop(true);
+    this.endlessSong.setVolume(0.09);
     // fade to black
 		this.cameras.main.fadeOut(500, 0, 0, 0)
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
@@ -77,6 +92,9 @@ export default class Menu extends Phaser.Scene {
   storeButtonDown(){/*
     this.storeButton.setText(`BOTON 'STORE' PULSADO`);
     this.time.delayedCall(1000,()=>{this.storeButton.setText(`STORE`);})*/
+    this.storeMusic.play();
+    this.storeMusic.setLoop(true);
+    this.storeMusic.setVolume(0.09);
     this.scene.start("store")
   }
 
