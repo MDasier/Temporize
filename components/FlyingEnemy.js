@@ -24,6 +24,7 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
 
     this.w = 100;
     this.h = 86;
+    this.HP=1;
 
     // this.createAnimation = this.createAnimation.bind(this);
     // this.createAnimation();

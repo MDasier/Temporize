@@ -522,7 +522,8 @@ export default class Level1 extends Phaser.Scene {
         //DESACTIVAR TECLADO
         //PLAYER INMUNE
         //PARAR ANIMACIONES DE ENEMIGOS Y BOSS
-
+        //PARAR SONIDO
+        this.sound.stopByKey('endlessSong');
 
         //funcion para pausar
         this.physics.pause();

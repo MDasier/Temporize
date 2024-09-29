@@ -38,13 +38,13 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
 
     this.scene.physics.add.overlap(this, this.scene.boss, (beam, boss) => {
       boss.HP -= 1;
-     /*  boss.preFX.setPadding(10); */ //! NO HACE NADA!
+
         const damageGlow = boss.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
         this.scene.time.delayedCall(100, () => {
           boss.preFX.remove(damageGlow)
         });
       beam.destroy()
-      console.log("ouch eso duele");
+
     }); // detecta las colisiones
 
     if (this.scene.flyingEnemy) {
@@ -57,7 +57,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
           
           beam.destroy();
 
-          //* chapuza para que el enemigo "desaparezca" aunque sigue existiendo y llega al final para causar que uno nuevo aparece.
+          //* chapuza para que el enemigo "desaparezca" aunque sigue existiendo y llega al final para causar que uno nuevo aparezca.
           enemy.setVisible(false);
           enemy.canShoot = false;
           enemy.body.checkCollision.right = false;

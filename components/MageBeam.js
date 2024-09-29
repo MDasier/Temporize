@@ -40,83 +40,83 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
+    if(this.scene.boss && this.scene.boss.HP>0){
+      this.scene.physics.add.overlap(
+        this, this.scene.boss, (mageBeam, boss) => {
+          boss.HP -= 1;
+            const damageGlow = boss.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
+            this.scene.time.delayedCall(100, () => {
+              boss.preFX.remove(damageGlow)
+            });
+          mageBeam.destroy()
+      }); //colisiones con el Boss
+    }
+    
 
-    this.scene.physics.add.overlap(this, this.scene.boss, (mageBeam, boss) => {
-      boss.HP -= 1;
-        const damageGlow = boss.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
-        this.scene.time.delayedCall(100, () => {
-          boss.preFX.remove(damageGlow)
-        });
-        mageBeam.destroy()
-    }); // detecta las colisiones con el Boss
-
-    if (this.scene.flyingEnemy) {
+    if(this.scene.flyingEnemy && this.scene.flyingEnemy.HP>0){
       this.scene.physics.add.overlap(
         this,
         this.scene.flyingEnemy,
         (mageBeam, enemy) => {
+          enemy.HP -= 1;
           this.scene.player.coins += 5;
           this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-          
           mageBeam.destroy();
 
           //?el enemigo se deja de ver pero no se destruye. con .destroy se rompe el juego
+          //*AÑADIR ANIMACION DE MUERTE FLYINGENEMY
           enemy.setVisible(false);
           enemy.canShoot = false;
+
+          /* //!NO HACE FALTA AL NO TENER OVERLAP POR NO TENER VIDA
           enemy.body.checkCollision.right = false;
           enemy.body.checkCollision.left = false;
           enemy.body.checkCollision.up = false;
           enemy.body.checkCollision.down = false;
+          */
           
         }
       );
     }//colisiones con flyingEnemy
 
-    if (this.scene.groundEnemy) {
+    if (this.scene.groundEnemy && this.scene.groundEnemy.HP>0) {
       this.scene.physics.add.overlap(
         this,
         this.scene.groundEnemy,
         (mageBeam, enemy) => {
           
           enemy.HP -= 1;
-          //beam.destroy()
-
           if (enemy.HP <= 0) {
             this.scene.player.coins += 5;
             this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-            enemy.body.checkCollision.right = false;
-            enemy.body.checkCollision.left = false;
-            enemy.body.checkCollision.up = false;
             enemy.anims.play("death").on("animationcomplete",() => {
               enemy.setVisible(false);
               enemy.velocityX = -3;
-            });
+            });            
             enemy.isDying = true;
-            enemy.velocityX = -1; // para que animacion sea a velocidad estatico
-
+            enemy.velocityX = -1;            
             if (this.scene.groundEnemy.isBerserkMode) {
               enemy.destroy();
               this.scene.groundEnemy = null;
             }
           }
-
           mageBeam.destroy();
         }
       );
     }//colisiones groundEnemy
 
     //Si el mageBeam no ha llegado a donde hemos hecho click
-    if (!this.reachedDestination) {
+    if(!this.reachedDestination){
       this.scene.physics.moveTo(this, this.pointerX, this.pointerY, this.velocity);
       const distanceToPointer = Phaser.Math.Distance.Between(this.x, this.y, this.pointerX, this.pointerY);
       if (distanceToPointer < 50) {//Cuando está apunto de llegar al click (pointer)
         this.reachedDestination = true;
       }
-    } else {//Si el mageBeam llega a donde hemos hecho click - Matematicas de IA
+    }else{//Si el mageBeam llega a donde hemos hecho click - Matematicas de IA
       const angle = Phaser.Math.Angle.Between(this.x, this.y, this.x + this.body.velocity.x, this.y + this.body.velocity.y);
       this.setRotation(angle);
       this.setVelocity(this.velocity * Math.cos(angle), this.velocity * Math.sin(angle));
     }
-
+    
   }
 }
