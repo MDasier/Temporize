@@ -63,8 +63,7 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
           this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
           mageBeam.destroy();
 
-          //?el enemigo se deja de ver pero no se destruye. con .destroy se rompe el juego
-          //*AÑADIR ANIMACION DE MUERTE FLYINGENEMY
+          //*FALTA AÑADIR ANIMACION DE MUERTE FLYINGENEMY
           enemy.setVisible(false);
           enemy.canShoot = false;
 

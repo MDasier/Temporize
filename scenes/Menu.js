@@ -1,6 +1,7 @@
 export default class Menu extends Phaser.Scene {
   constructor(scene) {
     super({ key: "menu" });
+    this.currentSongTime;
   }
 
   preload() {
@@ -12,13 +13,9 @@ export default class Menu extends Phaser.Scene {
   }
 
   init(data){
-    /*this.scorem=data.score
-    this.timem=data.time
-    this.ended=data.ended*/
-    this.test=data.test
   }
 
-  create() {
+  create(){
 
     this.endlessSong = this.sound.add('endlessSong');
     this.storeMusic = this.sound.add('storeMusic');
@@ -106,6 +103,9 @@ export default class Menu extends Phaser.Scene {
   }
   
   resumeButtonDown() {
+    this.sound.get('endlessSong').resume();
+    //this.sound.get('nombreDelSonido').seek(10); // Reproduce desde el segundo 10
+    
     // fade to black
 		this.cameras.main.fadeOut(500, 0, 0, 0)
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {

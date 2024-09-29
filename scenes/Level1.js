@@ -22,6 +22,7 @@ export default class Level1 extends Phaser.Scene {
 
     this.flyingEnemy;
     this.groundEnemy;
+    this.currentSongTime;
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
@@ -507,6 +508,12 @@ export default class Level1 extends Phaser.Scene {
           this.resume(); //reanudar
         } else {
           //this.pause(); //pausar
+          //this.sound.stopByKey('endlessSong');
+          if (this.sound.get('endlessSong').isPlaying) {
+            //this.sound.stopByKey('endlessSong'); // Detiene el sonido
+            //this.currentSongTime = this.sound.get('endlessSong').seek(); // Guarda el tiempo actual            
+            this.sound.get('endlessSong').pause()
+          }
           this.cameras.main.fadeOut(500, 0, 0, 0)
           this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             //? Todas las escenas están creadas, switch solo las intercambia de posicion. Muestra la escena a la que se le hace referencia.
@@ -523,7 +530,6 @@ export default class Level1 extends Phaser.Scene {
         //PLAYER INMUNE
         //PARAR ANIMACIONES DE ENEMIGOS Y BOSS
         //PARAR SONIDO
-        this.sound.stopByKey('endlessSong');
 
         //funcion para pausar
         this.physics.pause();
