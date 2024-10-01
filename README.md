@@ -1,64 +1,48 @@
 
+# TEMPORIZE
 
-TEMPORIZE by Testeo-games
+## [Play Demo](https://mdasier.github.io/temporize/)
 
-> Primer proyecto en grupo de los cuatro jinetes: Asier Mimbrero, Xavi Valverde, Ronald Velez y Jorge Berrizbeitia.
-Este proyecto se empezó para el aprendizaje de Pasher y la creación de un minijuego. 
-
-Actualmente en desarrollo 
-
-## TAREAS:
-### Algunas tareas pendientes:
-
->- En pausa los elementos siguen moviendose.
->- En pause, los puntos por tiempo no deberían aumentar ni disminuir y las colisiones del jugador deberían estar desactivadas (o añadir modo invulnerable).
->- Revisar y borrar todos los setPadding de las animaciones de glow, parece que no están afectando.
->- Revisar animación de enemigo melee en modo "berserk"
+![Game Logo](https://github.com/MDasier/patataDice/blob/master/images/fondos/fondoFooterConColor.png)
 
 
-## DIARIO:
-### 1/7/24 El grupo se junta para empezar con la idea de proyecto
+# Descripción
 
->- Reunión de grupo para decidir el modo de trabajo, los días que se le dedica a cada parte del proyecto, la organización del grupo en general...
+Juego en desarrollo creado con Phaser (JavaScript ES6). Es un plataformas cuya mecánica principal se basa en la gestión del tiempo.
+Tiene mecánicas básicas de plataformas: El jugador se mueve por la pantalla tratando de esquivar ataques y movimientos enemigos mientras los intenta matar para ganar puntos.
+En función del modo de juego escogido, el jugador pierde vida o tiempo haciendoló así más inmersivo.
 
+# Funcionalidades principales:
 
-### 10/7/24 Trabajo realizado por el equipo:
-
->- Inicia el proyecto 'Temporize' del grupo.
->- Creación del repositorio y primer commit.
-
-
-### 22/7/24 Trabajo realizado por el equipo:
-
-- Se inicia el "blog" del proyecto. (Intentarémos subir info a las redes cada 2 semanas o cuando el proyecto avance de forma notable)
->- Pruebas de colisión del jugador contra las plataformas.
->- Movimientos del jugador por la pantalla.
->- Posición del fondo respecto al movimiento del jugador. (Parallax)
->- Organizar y comentar el código para una mejor lectura.
+- Optimización para navegadores.
+- Control de eventos de teclado y ratón para control de movimientos y acciones del jugador.
+- Lógica de IA enemiga con diferentes dificultades.
+- Modos de juego: Tutorial, Campaña, Combate, 'TreasureHunting'. (En desarrollo...)
+- Guardado de puntos para su posterior uso en la tienda del juego, donde podremos cambiarlos por más personajes o distintos recolors, modos de juego, sonidos...
+- Optimización para distintos dispositivos (Responsividad).
 
 
-### 24/7/24 Trabajo realizado por el equipo:
+# Tech!:
 
->- Añadido Pausa y efectos de pausa.
->- Añadido Menú de pausa.
->- Añadido Temporizador.
-
-
-### 21/8/24 Trabajo realizado por el equipo:
-
->- Empezadas nuevas escenas para un mejor "user flow".
->- Control de tiempo de juego ajustado (min 3, max 59).
->- Añadidos enemigos voladores, enemigos melees, disparos y sus colisiones/ataques.
->- Empezada clase 'Boss' y sus ataques especiales. 
->- Control de puntos en el juego por enemigos eliminados, golpes recibidos y por tiempo. 
+- Phaser
+- JavaScript(ES6)
+- CSS
+- Git/Github
 
 
-## ANOTACIONES:
-### Nota "cambios de escena"
 
->- this.scene.bringToTop("nombreEscena" ó this.)//Mueve la escena a la capa más alta.
->- this.scene.sendToBack("nombreEscena" ó this.)//mueve la escena a la capa más baja.
->- this.scene.moveUp("nombreEscena" ó this.)//mueve esta escena una capa hacia arriba. "nombreEscena" o this.
->- this.scene.moveDown("nombreEscena" ó this.)//mueve esta escena una capa hacia abajo.
->- this.scene.moveAbove("a","b")//mueve escena "b" justo encima de "a".
->- this.scene.moveBelow("a","b")//mueve escena "b" justo debajo de "a".
+# Estructura de proyecto simple:
+
+- components: Las 'clases' reutilizables. Aquí se encuentran el jugador, enemigos voladores, enemigos terrestres, jefe final, disparos...
+- scenes: Para el control del juego Phaser utiliza escenas. En cada escena podemos crear instancias de componentes para la logica del juego.
+- src: Recursos como sonidos y sprites de elementos de juego.
+
+
+# Extra Links 
+### Linkedin Asier Mimbrero (dev)
+[Link](https://es.linkedin.com/in/asiermd)
+### Phaser
+[Link](https://phaser.io/)
+
+## Deploy
+[Link](https://mdasier.github.io/temporize/)
