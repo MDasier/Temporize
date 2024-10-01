@@ -3,7 +3,7 @@
 
 ## [Play Demo](https://mdasier.github.io/temporize/)
 
-![Game Logo](https://github.com/MDasier/patataDice/blob/master/images/fondos/fondoFooterConColor.png)
+![Game Logo](https://github.com/MDasier/Temporize/blob/main/img/temporizeTime.gif)
 
 
 # Descripción
