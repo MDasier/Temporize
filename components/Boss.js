@@ -43,7 +43,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   createAnimation() {
     this.anims.create({
       key: "bossIdleAnim",
-      frames: this.anims.generateFrameNumbers("bossIdleSprite", {
+      frames: this.anims.generateFrameNumbers("idleBoss", {
         start: 0,
         end: 7,
       }),
@@ -53,7 +53,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.anims.create({
       key: "bossDeathAnim",
-      frames: this.anims.generateFrameNumbers("bossDeathSprite", {
+      frames: this.anims.generateFrameNumbers("deathBoss", {
         start: 0,
         end: 6,
       }),
@@ -63,7 +63,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.anims.create({
       key: "bossAttack1Anim",
-      frames: this.anims.generateFrameNumbers("bossAttack1Sprite", {
+      frames: this.anims.generateFrameNumbers("attack1Boss", {
         start: 0,
         end: 6,
       }),
@@ -73,7 +73,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.anims.create({
       key: "bossAttack2Anim",
-      frames: this.anims.generateFrameNumbers("bossAttack2Sprite", {
+      frames: this.anims.generateFrameNumbers("attack2Boss", {
         start: 4,
         end: 6,
       }),
@@ -83,9 +83,9 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.anims.create({
       key: "bossFallAnim",
-      frames: this.anims.generateFrameNumbers("bossFallSprite", {
+      frames: this.anims.generateFrameNumbers("fallBoss", {
         start: 0,
-        end: 6,
+        end: 1,
       }),
       frameRate: 10,
       repeat: 0,
@@ -93,7 +93,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.anims.create({
       key: "bossRunAnim",
-      frames: this.anims.generateFrameNumbers("bossRunSprite", {
+      frames: this.anims.generateFrameNumbers("runBoss", {
         start: 0,
         end: 7,
       }),
@@ -103,7 +103,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.anims.create({
       key: "bossHitAnim",
-      frames: this.anims.generateFrameNumbers("bossHitSprite", {
+      frames: this.anims.generateFrameNumbers("hitBoss", {
         start: 0,
         end: 6,
       }),
@@ -113,7 +113,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.anims.create({
       key: "bossJumpAnim",
-      frames: this.anims.generateFrameNumbers("bossJumpSprite", {
+      frames: this.anims.generateFrameNumbers("jumpBoss", {
         start: 0,
         end: 6,
       }),
@@ -142,15 +142,15 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   //* category: attack
   clonePlayer() {
-    console.log(this.scene.groundEnemy)
+    //console.log(this.scene.groundEnemy)
     //*Crear un enemigo Melee con el sprite que esté usando el player y le persiga
     /*this.scene.groundEnemyClone = new GroundEnemy(500,450,this.scene.player);
     this.scene.add.existing(this.groundEnemyClone)*/
     //*Añadir a la clase meleeEnemy un metodo que haga explotar al enemigo estando cerca del player
-    if(this.scene.groundEnemy){
+    if(this.scene.groundEnemy && this.scene.groundEnemy.HP>0){
       this.scene.groundEnemy.seekAndDestroy();
     }else{
-      this.scene.createGroundEnemy()
+      this.scene.createGroundEnemy(true)
       this.scene.groundEnemy.seekAndDestroy();
     }
   }
@@ -209,7 +209,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   charge() {
     //Sprint del boss por la pantalla que arroya al player si no lo esquiva
     //?Si le ponemos brillo se ralentiza el juego :/
-
+    //!añadir overlap del boss contra player
     // Define las posiciones para las animaciones
     const positionY1 = this.y; //Posición inicial y final en Y
     const positionX1 = this.x; //Posición inicial en X
@@ -217,13 +217,14 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     
     this.isInvencible=true//? Añadirlo a godmode() PRINCIPIOS SOLID CHICOS!
     //!godmode()
-
+    this.anims.play("bossFallAnim");
     this.scene.tweens.add({
       targets: this,
       y: 380,
       duration: 1500,
       ease: 'sine.inout',
       onComplete: () => {
+        this.anims.play("bossRunAnim");
           this.scene.tweens.add({
               targets: this,
               y: 380,
@@ -231,6 +232,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
               duration: 1500, //Duración de la animación
               ease: 'Power2', //Tipo de animacion
               onComplete: () => {
+                this.anims.play("bossFallAnim");
                   this.scene.tweens.add({
                     targets: this,
                     y: positionY1, //volver al punto inicial en Y
@@ -239,6 +241,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
                     ease: 'Power2', 
                     onComplete: () => {
                       this.isInvencible=false
+                      this.anims.play("bossIdleAnim");
                     }
                   });
               }

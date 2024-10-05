@@ -84,7 +84,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
             enemy.body.checkCollision.right = false;
             enemy.body.checkCollision.left = false;
             enemy.body.checkCollision.up = false;
-            enemy.anims.play("death").on("animationcomplete",() => {
+            enemy.anims.play("deathEnemy").on("animationcomplete",() => {
               enemy.setVisible(false);
               enemy.velocityX = -3;
             });

@@ -35,35 +35,39 @@ export default class Level1 extends Phaser.Scene {
     }); 
 
     //JUGADOR
-    this.load.spritesheet("player", "../img/mage/Run.png", {
+    this.load.spritesheet("runPlayer", "../img/mage/Run.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     }); //para añadir al jugador se toman las medidas del sprite el ancho se divide por la cantidad de imagenes del personaje
-    this.load.spritesheet("jump", "../img/mage/Jump.png", {
+    this.load.spritesheet("jumpPlayer", "../img/mage/Jump.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     });
-    this.load.spritesheet("attack", "../img/mage/Attack2.png", {
+    this.load.spritesheet("attackPlayer", "../img/mage/Attack2.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     });
-    this.load.spritesheet("idle", "../img/mage/Idle.png", {
+    this.load.spritesheet("idlePlayer", "../img/mage/Idle.png", {
       frameWidth: 1386 / 6,
       frameHeight: 190,
     });
-    this.load.spritesheet("hit", "../img/mage/Hit.png", {
+    this.load.spritesheet("hitPlayer", "../img/mage/Hit.png", {
       frameWidth: 924 / 4,
       frameHeight: 190,
     });
+    this.load.spritesheet("deathPlayer", "../img/mage/Death.png", {
+      frameWidth: 1617 / 7,
+      frameHeight: 190,
+    }); 
 
     //DISPARO
-    this.load.image("beam", "../img/mage/beam.png", {
+    this.load.image("beamPlayer", "../img/mage/beam.png", {
       frameWidth: 127,
       frameHeight: 123,
     });
 
     //DISPARO BOSS
-    this.load.image("bossBeam", "../img/bossOne/bossBeam.png", {
+    this.load.image("beamBoss", "../img/bossOne/bossBeam.png", {
       frameWidth: 56,
       frameHeight: 71,
     });
@@ -73,51 +77,59 @@ export default class Level1 extends Phaser.Scene {
       frameWidth: 100 / 1,
       frameHeight: 86,
     });
-    this.load.image("fire","../img/enemies/ball.png",{
+    this.load.image("beamEnemy","../img/enemies/ball.png",{
       frameWidth: 92,
       frameHeight: 211
     })
 
     //BOSS
-    this.load.spritesheet("bossIdleSprite", "../img/bossOne/Idle.png", {
+    this.load.spritesheet("idleBoss", "../img/bossOne/Idle.png", {
       frameWidth: 1999 /8,
       frameHeight: 105,
     });
-    this.load.spritesheet("bossAttack1Sprite", "../img/bossOne/Attack1.png", {
+    this.load.spritesheet("attack1Boss", "../img/bossOne/Attack1.png", {
       frameWidth: 1874 /8,
       frameHeight: 149,
     });
-    this.load.spritesheet("bossAttack2Sprite", "../img/bossOne/Attack2.png", {
+    this.load.spritesheet("attack2Boss", "../img/bossOne/Attack2.png", {
       frameWidth: 1820 /8,
       frameHeight: 154,
     });
-    this.load.spritesheet("bossDeathSprite", "../img/bossOne/Death.png", {
+    this.load.spritesheet("deathBoss", "../img/bossOne/Death.png", {
       frameWidth: 1999 /8,
       frameHeight: 105,
     });
-    this.load.spritesheet("bossRunSprite", "../img/bossOne/Run.png", {
+    this.load.spritesheet("runBoss", "../img/bossOne/Run.png", {
       frameWidth: 2000 /8,
       frameHeight: 73,
     });
+    this.load.spritesheet("fallBoss", "../img/bossOne/Fall.png", {
+      frameWidth: 500 /2,
+      frameHeight: 250,
+    });
+    this.load.spritesheet("hitBoss", "../img/bossOne/Hit.png", {
+      frameWidth: 750 /3,
+      frameHeight: 250,
+    });
     
     // GROUND ENEMY
-    this.load.spritesheet("groundEnemyIdle", "../img/enemies/ground-enemy-idle.png", {
+    this.load.spritesheet("idleEnemy", "../img/enemies/ground-enemy-idle.png", {
       frameWidth: 720 / 9,
       frameHeight: 80,
     });
-    this.load.spritesheet("groundEnemyRun", "../img/enemies/ground-enemy-run.png", {
+    this.load.spritesheet("runEnemy", "../img/enemies/ground-enemy-run.png", {
       frameWidth: 480 / 6,
       frameHeight: 80,
     });
-    this.load.spritesheet("groundEnemyAttack", "../img/enemies/ground-enemy-attack.png", {
+    this.load.spritesheet("attackEnemy", "../img/enemies/ground-enemy-attack.png", {
       frameWidth: 960 / 12,
       frameHeight: 80,
     });
-    this.load.spritesheet("groundEnemyHit", "../img/enemies/ground-enemy-hit.png", {
+    this.load.spritesheet("hitEnemy", "../img/enemies/ground-enemy-hit.png", {
       frameWidth: 400 / 5,
       frameHeight: 80,
     });
-    this.load.spritesheet("groundEnemyDeath", "../img/enemies/ground-enemy-death.png", {
+    this.load.spritesheet("deathEnemy", "../img/enemies/ground-enemy-death.png", {
       frameWidth: 1840 / 23,
       frameHeight: 80,
     });
@@ -145,12 +157,11 @@ export default class Level1 extends Phaser.Scene {
     
     //jugador
     //this.player = new Player(this, 450, 250, "player");//Así iniciabamos el player antes
-    this.player = new Player(this, -50, 250, "player");//Ahora creamos el player "fuera de la pantalla" para que aparezca corriendo
+    this.player = new Player(this, -50, 250, "runPlayer");//Ahora creamos el player "fuera de la pantalla" para que aparezca corriendo
     //!Hay que añadir control de invulnerabilidad etc
     this.player.playerInitialMove()//Animacion inicial para que el player aparezca corriendo desde fuera
 
-    //?refix-asier: creo que he solucionado el error que salia en consola.
-    //!FALTA PROBARLO
+
     //flying enemy
     this.createFlyingEnemy();
    
@@ -169,12 +180,6 @@ export default class Level1 extends Phaser.Scene {
     this.initializateTimer(data)
     
     //*Eventos del raton
-    /*
-        //!BLOQUEO EN PRUEBAS
-        if (this.scene.input.activePointer.isDown && this.scene.input.activePointer.button === 2) {
-          console.log("BLOQUEO EN PRUEBAS")//Sale mientras tengas el click derecho pulsado
-        }
-    */
     this.input.on('pointerdown', function (pointer) {
       if(pointer.leftButtonDown()){
         //Posicion donde hemos clicado.
@@ -188,7 +193,7 @@ export default class Level1 extends Phaser.Scene {
 
           if(this.scene.player.playerType==0 && this.scene.player.isPlayerMovable && !this.scene.player.isAttacking){
             //CREAR DISPARO DEL MAGO
-            this.scene.createMageBeam(this.scene.player.x + (this.scene.player.flipX ? -40 : 40), this.scene.player.y, this.scene.player.flipX ? "left" : "right",pointer.x,pointer.y);
+            this.scene.createMageBeam(this.scene.player.x, this.scene.player.y-15, this.scene.player.flipX ? "left" : "right",pointer.x,pointer.y);
             this.scene.player.isAttacking = true;
             this.scene.player.isPlayerMovable=false;            
             this.scene.player.anims.play("attack", true).on("animationcomplete", () => {              
@@ -218,6 +223,7 @@ export default class Level1 extends Phaser.Scene {
   bossAppear(){
     this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
     //this.boss.METODOATAQUE()//PARA PROBAR ATAQUES DIRECTAMENTE
+    this.boss.clonePlayer();
   }
 
   initializateTimer(data){
@@ -258,11 +264,12 @@ export default class Level1 extends Phaser.Scene {
   }
 
   createBeam(x, y, direction) {
-    const beam = new Beam(this, x, y, 'beam', direction === 'left',1000,1,1000,25,20);
+    const beam = new Beam(this, x, y, 'beamEnemy', direction === 'left',1000,1,1000,25,20);
     this.beamGroup.add(beam);
   }
+
   createMageBeam(x, y, direction,pointerX,pointerY) {
-    const mageBeam = new MageBeam(this, x, y, 'beam', direction === 'left',1500,1,500,25,20,pointerX,pointerY);
+    const mageBeam = new MageBeam(this, x, y, 'beamPlayer', direction === 'left',1500,1,500,25,20,pointerX,pointerY);
 
     const angle = Phaser.Math.Angle.Between(x, y, pointerX, pointerY);
     // Establece el ángulo del sprite según el ángulo calculado
@@ -291,15 +298,15 @@ export default class Level1 extends Phaser.Scene {
         ];
         let rngBossSkill = Phaser.Math.Between(0, this.bossSkillsArr.length - 1);
         //! PARA HACER PRUEBAS this.bossSkillsArr[x].call(this.boss)
-        //this.bossSkillsArr[0].call(this.boss)
-
+        //this.bossSkillsArr[1].call(this.boss)
+        
         if(rngBossSkill==0){
           this.boss.body.setSize(this.boss.w+50, this.boss.h+5, true);
           this.boss.body.setOffset(150, 50);
 
           this.bossSkillsArr[rngBossSkill].call(this.boss)
           //!COPIAR/MODIFICAR EL CODIGO DEL MAGEBEAM PARA QUE EN ESTE CASO PAREZCA UN FANTASMA QUE TE SIGUE Y EXPLOTA
-          this.boss.anims.play("bossAttack2Anim").on("animationcomplete", () => {
+          this.boss.anims.play("bossAttack1Anim").on("animationcomplete", () => {
             this.boss.anims.play("bossIdleAnim");
             this.boss.body.setSize(this.boss.w, this.boss.h, true);
             this.boss.body.setOffset(100, 45);
@@ -309,7 +316,7 @@ export default class Level1 extends Phaser.Scene {
           this.boss.body.setSize(this.boss.w+50, this.boss.h+5, true);
           this.boss.body.setOffset(150, 50);
           this.bossSkillsArr[rngBossSkill].call(this.boss)
-          this.boss.anims.play("bossAttack1Anim").on("animationcomplete", () => {
+          this.boss.anims.play("bossAttack2Anim").on("animationcomplete", () => {
             this.boss.anims.play("bossIdleAnim");
             this.boss.body.setSize(this.boss.w, this.boss.h, true);
             this.boss.body.setOffset(100, 45);
@@ -386,7 +393,7 @@ export default class Level1 extends Phaser.Scene {
     if (this.isPaused) {
       return; //--------controla el pause de las fisicas
     }
-//------------------------actualiza los diferentes beams---------
+  //------------------------actualiza los diferentes beams---------
     this.beamGroup.getChildren().forEach(beam => {
       beam.update();
   });
@@ -480,10 +487,10 @@ export default class Level1 extends Phaser.Scene {
     // this.flyingEnemy.alpha = 1;
   }
 
-  createGroundEnemy() {
+  createGroundEnemy(clone) {
     const x = this.cameras.main.worldView.right;
 
-    this.groundEnemy = new GroundEnemy(this, x, 450, this.player);
+    this.groundEnemy = new GroundEnemy(this, x, 350, this.player,clone);
     this.physics.add.collider(this.ground, this.groundEnemy)
   }
   

@@ -44,6 +44,10 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
       this.scene.physics.add.overlap(
         this, this.scene.boss, (mageBeam, boss) => {
           boss.HP -= 1;
+          this.body.setSize(boss.x, 100, true);
+          boss.anims.play("bossHitAnim").on("animationcomplete", () => {
+            boss.anims.play("bossIdleAnim")
+          });
             const damageGlow = boss.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
             this.scene.time.delayedCall(100, () => {
               boss.preFX.remove(damageGlow)
@@ -85,19 +89,19 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
         (mageBeam, enemy) => {
           
           enemy.HP -= 1;
+          enemy.anims.play(enemy.isBerserkMode?"hitPlayerAnim":"hitEnemyAnim").on("animationcomplete",() => {
+            enemy.anims.play(enemy.isBerserkMode?"runPlayerAnim":"runEnemyAnim")
+          });
           if (enemy.HP <= 0) {
             this.scene.player.coins += 5;
             this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-            enemy.anims.play("death").on("animationcomplete",() => {
+            enemy.anims.play(enemy.isBerserkMode?"deathPlayerAnim":"deathEnemyAnim").on("animationcomplete",() => {
               enemy.setVisible(false);
               enemy.velocityX = -3;
+              
             });            
             enemy.isDying = true;
-            enemy.velocityX = -1;            
-            if (this.scene.groundEnemy.isBerserkMode) {
-              enemy.destroy();
-              this.scene.groundEnemy = null;
-            }
+            enemy.velocityX = -1; 
           }
           mageBeam.destroy();
         }

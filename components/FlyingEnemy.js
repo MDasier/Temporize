@@ -79,7 +79,7 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
       yoyo: true,
       repeat: -1,
     });*/
-    new EnemyBeam(this.scene,this.x,this.y,"fire",10,0.8,1000,50,50)
+    new EnemyBeam(this.scene,this.x,this.y,"beamEnemy",10,0.8,1000,50,50)
   }
 
   update(time, delta) {

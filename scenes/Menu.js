@@ -63,9 +63,9 @@ export default class Menu extends Phaser.Scene {
     .on('pointerout', () => this.resumeButtonOut() )
     .on('pointerdown', () => this.resumeButtonDown() )
 
-    this.endlessSong.play();
+    //this.endlessSong.play();
     //this.endlessSong.setLoop(true);
-    this.endlessSong.setVolume(0.1);//!cambiar 0.1 por variable para poder modificar el volumen en configuracion
+    //this.endlessSong.setVolume(0.1);//!cambiar 0.1 por variable para poder modificar el volumen en configuracion
     // fade to black
 		this.cameras.main.fadeOut(500, 0, 0, 0)
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
@@ -103,7 +103,7 @@ export default class Menu extends Phaser.Scene {
   }
   
   resumeButtonDown() {
-    this.sound.get('endlessSong').resume();
+    //this.sound.get('endlessSong').resume();
     //this.sound.get('nombreDelSonido').seek(10); // Reproduce desde el segundo 10
     
     // fade to black

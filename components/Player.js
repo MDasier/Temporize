@@ -135,7 +135,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
     this.anims.create({
       key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", {
+      frames: this.anims.generateFrameNumbers("idlePlayer", {
         start: 0,
         end: 5,
       }),
@@ -144,7 +144,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
     this.anims.create({
       key: "hit",
-      frames: this.anims.generateFrameNumbers("hit", {
+      frames: this.anims.generateFrameNumbers("hitPlayer", {
         start: 0,
         end: 3,
       }),
@@ -153,13 +153,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
     this.anims.create({
       key: "jump",
-      frames: this.anims.generateFrameNumbers("jump", { start: 0, end: 1 }),
+      frames: this.anims.generateFrameNumbers("jumpPlayer", { start: 0, end: 1 }),
       frameRate: 10,
       repeat: 0,
     });
     this.anims.create({
       key: "attack",
-      frames: this.scene.anims.generateFrameNumbers("attack", {
+      frames: this.scene.anims.generateFrameNumbers("attackPlayer", {
         start: 4,
         end: 7,
       }),
@@ -168,7 +168,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
     this.anims.create({
       key: "jumpAttack",
-      frames: this.scene.anims.generateFrameNumbers("attack", {
+      frames: this.scene.anims.generateFrameNumbers("attackPlayer", {
         start: 5,
         end: 7,
       }),
