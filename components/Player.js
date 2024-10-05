@@ -182,17 +182,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.anims.pause();
     }
 
-    /*if (this.scene.cursors.right.isDown) {
-      this.scene.player.setVelocityX(180);
-      this.scene.player.flipX = false;
-    } else if (this.scene.cursors.left.isDown) {
-      this.scene.player.setVelocityX(-180);
-      this.scene.player.flipX = true;
-    } else {
-      this.scene.player.setVelocityX(0);
-    }*/
-
-
     //* MOVIMIENTO LATERAL
     if(this.scene.keys.D.isDown && this.isPlayerMovable) {
       this.scene.player.setVelocityX(125);

@@ -1,5 +1,4 @@
 import PlatformGroup from "../components/PlatformGroup.js";
-import Platform from "../components/PlatformGroup.js";
 import Player from "../components/Player.js";
 import FlyingEnemy from "../components/FlyingEnemy.js";
 import Beam from "../components/Beam.js";
@@ -28,108 +27,108 @@ export default class Level1 extends Phaser.Scene {
   //*********************** ASSETS-SPRITES/IMAGES ***********************
   preload() {
 
-    this.load.image("background", "../img/background/mountain.png");
-    this.load.image("platform", "../img/platforms/platform4.png",{
+    this.load.image("background", "./src/img/background/mountain.png");
+    this.load.image("platform", "./src/img/platforms/platform4.png",{
       frameHeight: 60,
       frameWidth: 120
-    }); 
+    });
 
     //JUGADOR
-    this.load.spritesheet("runPlayer", "../img/mage/Run.png", {
+    this.load.spritesheet("runPlayer", "./src/img/mage/Run.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     }); //para añadir al jugador se toman las medidas del sprite el ancho se divide por la cantidad de imagenes del personaje
-    this.load.spritesheet("jumpPlayer", "../img/mage/Jump.png", {
+    this.load.spritesheet("jumpPlayer", "./src/img/mage/Jump.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     });
-    this.load.spritesheet("attackPlayer", "../img/mage/Attack2.png", {
+    this.load.spritesheet("attackPlayer", "./src/img/mage/Attack2.png", {
       frameWidth: 1848 / 8,
       frameHeight: 190,
     });
-    this.load.spritesheet("idlePlayer", "../img/mage/Idle.png", {
+    this.load.spritesheet("idlePlayer", "./src/img/mage/Idle.png", {
       frameWidth: 1386 / 6,
       frameHeight: 190,
     });
-    this.load.spritesheet("hitPlayer", "../img/mage/Hit.png", {
+    this.load.spritesheet("hitPlayer", "./src/img/mage/Hit.png", {
       frameWidth: 924 / 4,
       frameHeight: 190,
     });
-    this.load.spritesheet("deathPlayer", "../img/mage/Death.png", {
+    this.load.spritesheet("deathPlayer", "./src/img/mage/Death.png", {
       frameWidth: 1617 / 7,
       frameHeight: 190,
     }); 
 
     //DISPARO
-    this.load.image("beamPlayer", "../img/mage/beam.png", {
+    this.load.image("beamPlayer", "./src/img/mage/beam.png", {
       frameWidth: 127,
       frameHeight: 123,
     });
 
     //DISPARO BOSS
-    this.load.image("beamBoss", "../img/bossOne/bossBeam.png", {
+    this.load.image("beamBoss", "./src/img/bossOne/bossBeam.png", {
       frameWidth: 56,
       frameHeight: 71,
     });
 
     //ENEMIGO RANGO
-    this.load.spritesheet("flyingEnemy", "../img/enemies/0-beholder.png", {
+    this.load.spritesheet("flyingEnemy", "./src/img/enemies/0-beholder.png", {
       frameWidth: 100 / 1,
       frameHeight: 86,
     });
-    this.load.image("beamEnemy","../img/enemies/ball.png",{
+    this.load.image("beamEnemy","./src/img/enemies/ball.png",{
       frameWidth: 92,
       frameHeight: 211
     })
 
     //BOSS
-    this.load.spritesheet("idleBoss", "../img/bossOne/Idle.png", {
+    this.load.spritesheet("idleBoss", "./src/img/bossOne/Idle.png", {
       frameWidth: 1999 /8,
       frameHeight: 105,
     });
-    this.load.spritesheet("attack1Boss", "../img/bossOne/Attack1.png", {
+    this.load.spritesheet("attack1Boss", "./src/img/bossOne/Attack1.png", {
       frameWidth: 1874 /8,
       frameHeight: 149,
     });
-    this.load.spritesheet("attack2Boss", "../img/bossOne/Attack2.png", {
+    this.load.spritesheet("attack2Boss", "./src/img/bossOne/Attack2.png", {
       frameWidth: 1820 /8,
       frameHeight: 154,
     });
-    this.load.spritesheet("deathBoss", "../img/bossOne/Death.png", {
+    this.load.spritesheet("deathBoss", "./src/img/bossOne/Death.png", {
       frameWidth: 1999 /8,
       frameHeight: 105,
     });
-    this.load.spritesheet("runBoss", "../img/bossOne/Run.png", {
+    this.load.spritesheet("runBoss", "./src/img/bossOne/Run.png", {
       frameWidth: 2000 /8,
       frameHeight: 73,
     });
-    this.load.spritesheet("fallBoss", "../img/bossOne/Fall.png", {
+    this.load.spritesheet("fallBoss", "./src/img/bossOne/Fall.png", {
       frameWidth: 500 /2,
       frameHeight: 250,
     });
-    this.load.spritesheet("hitBoss", "../img/bossOne/Hit.png", {
+    this.load.spritesheet("hitBoss", "./src/img/bossOne/Hit.png", {
       frameWidth: 750 /3,
       frameHeight: 250,
     });
     
     // GROUND ENEMY
-    this.load.spritesheet("idleEnemy", "../img/enemies/ground-enemy-idle.png", {
+    this.load.spritesheet("idleEnemy", "./src/img/enemies/ground-enemy-idle.png", {
       frameWidth: 720 / 9,
       frameHeight: 80,
     });
-    this.load.spritesheet("runEnemy", "../img/enemies/ground-enemy-run.png", {
+    this.load.spritesheet("runEnemy", "./src/img/enemies/ground-enemy-run.png", {
       frameWidth: 480 / 6,
       frameHeight: 80,
     });
-    this.load.spritesheet("attackEnemy", "../img/enemies/ground-enemy-attack.png", {
+    this.load.spritesheet("attackEnemy", "./src/img/enemies/ground-enemy-attack.png", {
       frameWidth: 960 / 12,
       frameHeight: 80,
     });
-    this.load.spritesheet("hitEnemy", "../img/enemies/ground-enemy-hit.png", {
+    this.load.spritesheet("hitEnemy", "./src/img/enemies/ground-enemy-hit.png", {
       frameWidth: 400 / 5,
       frameHeight: 80,
     });
-    this.load.spritesheet("deathEnemy", "../img/enemies/ground-enemy-death.png", {
+    this.load.spritesheet("deathEnemy", "./src/img/enemies/ground-enemy-death.png", {
       frameWidth: 1840 / 23,
       frameHeight: 80,
     });
@@ -284,7 +283,7 @@ export default class Level1 extends Phaser.Scene {
       let seconds = this.timer % 60;
 
       //! CONTROL DE LA IA DEL BOSS - ATAQUES     
-      if(this.timer>6&&seconds%3==0&&this.boss){//Probando cada 3 segundos
+      if(this.timer>6&&seconds%3==0&&this.boss){//Probando ataques del boss cada 3 segundos (aleatorios)
         
         this.bossSkillsArr = [
           this.boss.shootBeam,

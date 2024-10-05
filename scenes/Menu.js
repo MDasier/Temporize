@@ -6,10 +6,10 @@ export default class Menu extends Phaser.Scene {
 
   preload() {
     //console.log("PRELOAD DE MENU");
-    this.load.audio('endlessSong', [ './sounds/Boadrius-thanks_musicaEndless.mp3' ]);
-    this.load.audio('storeMusic', [ './sounds/HarumachiMusic-thnks_shop.mp3' ]);
-    this.load.audio('rodoom', [ './sounds/Pixabay-thanks_rayOfDoom.mp3' ]);
-    this.load.audio('magicSpell', [ './sounds/magicSpell.mp3' ]);
+    this.load.audio('endlessSong', [ './src/sounds/Boadrius-thanks_musicaEndless.mp3' ]);
+    this.load.audio('storeMusic', [ './src/sounds/HarumachiMusic-thnks_shop.mp3' ]);
+    this.load.audio('rodoom', [ './src/sounds/Pixabay-thanks_rayOfDoom.mp3' ]);
+    this.load.audio('magicSpell', [ './src/sounds/magicSpell.mp3' ]);
   }
 
   init(data){
