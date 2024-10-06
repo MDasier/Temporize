@@ -69,15 +69,7 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
 
           //*FALTA AÑADIR ANIMACION DE MUERTE FLYINGENEMY
           enemy.setVisible(false);
-          enemy.canShoot = false;
-
-          /* //!NO HACE FALTA AL NO TENER OVERLAP POR NO TENER VIDA
-          enemy.body.checkCollision.right = false;
-          enemy.body.checkCollision.left = false;
-          enemy.body.checkCollision.up = false;
-          enemy.body.checkCollision.down = false;
-          */
-          
+          enemy.canShoot = false;         
         }
       );
     }//colisiones con flyingEnemy
@@ -98,6 +90,7 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
             enemy.anims.play(enemy.isBerserkMode?"deathPlayerAnim":"deathEnemyAnim").on("animationcomplete",() => {
               enemy.setVisible(false);
               enemy.velocityX = -3;
+              enemy.isBerserkMode?enemy.isBerserkMode=false:null;
               
             });            
             enemy.isDying = true;

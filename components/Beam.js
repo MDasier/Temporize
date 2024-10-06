@@ -45,7 +45,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
         });
       beam.destroy()
 
-    }); // detecta las colisiones
+    }); // detecta las colisiones con el boss
 
     if (this.scene.flyingEnemy) {
       this.scene.physics.add.overlap(
@@ -69,12 +69,8 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
       );
     }
 
-    if (this.scene.groundEnemy) {
-      this.scene.physics.add.overlap(
-        this,
-        this.scene.groundEnemy,
-        (beam, enemy) => {
-          
+    if(this.scene.groundEnemy){
+      this.scene.physics.add.overlap(this,this.scene.groundEnemy,(beam, enemy) => {          
           enemy.HP -= 1;
           //beam.destroy()
 
@@ -89,7 +85,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
               enemy.velocityX = -3;
             });
             enemy.isDying = true;
-            enemy.velocityX = -1; // para que animacion sea a velocidad estatico
+            enemy.velocityX = -1;
 
             if (this.scene.groundEnemy.isBerserkMode) {
               enemy.destroy();
@@ -98,8 +94,8 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
           }
 
           beam.destroy();
-        }
-      );
+        });
     }
+
   }
 }

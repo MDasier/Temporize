@@ -160,8 +160,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.anims.create({
       key: "attack",
       frames: this.scene.anims.generateFrameNumbers("attackPlayer", {
-        start: 4,
-        end: 7,
+        start: 0,
+        end: 6,
       }),
       frameRate: 15,
       repeat: 0,
@@ -217,6 +217,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     //* ATAQUES CON TECLADO
+    /*
     if( (Phaser.Input.Keyboard.JustDown(this.scene.keys.Z) || Phaser.Input.Keyboard.JustDown(this.scene.keys.E)) && !this.isAttacking){
       this.isAttacking = true;
       
@@ -230,7 +231,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       const direction = this.flipX ? "left" : "right";
       const offsetX = this.flipX ? -90 : 90; // ajusta la posición de salida del disparo según la dirección
       this.scene.createBeam(this.x + (offsetX), this.y - 22, direction);
-    }
+    }*/
     //console.log("HIT: "+this.isHitted)
   }//update()
 }

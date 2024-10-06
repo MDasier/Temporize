@@ -72,11 +72,11 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     this.anims.create({
       key: "attackPlayerAnim",
       frames: this.scene.anims.generateFrameNumbers("attackPlayer", {
-        start: 4,
-        end: 7,
+        start: 3,
+        end: 6,
       }),
       frameRate: 15,
-      repeat: 0,
+      repeat: 1,
     });
     this.anims.create({
       key: "runPlayerAnim",
@@ -159,19 +159,18 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
 
-    if (this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 80) <= this.player.x && (this.x + 80) >= this.player.x) ) {
+    if(this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 80) <= this.player.x && (this.x + 80) >= this.player.x)){
       this.isAttacking = true
-      //MAYOR HITBOX MIENTRAS ATACA
-      !this.isBerserkMode?this.body.setSize(60, 40, true):this.body.setSize(25, 75, true);
-      !this.isBerserkMode?this.body.setOffset(this.flipX ? 0:20, 25):this.body.setOffset(100, 70);;
-      this.anims.play(!this.isBerserkMode?"attackEnemyAnim":"attackPlayerAnim");
+      !this.isBerserkMode?this.body.setSize(60, 40, true):this.body.setSize(80, 75, true);
+      !this.isBerserkMode?this.body.setOffset(this.flipX ? 0:20, 25):this.body.setOffset(!this.flipX ? 110:50,70);;
+      this.anims.play(!this.isBerserkMode?"attackEnemyAnim":"attackPlayerAnim");//!FALTA CAMBIO DE ANIMACION CUANDO EL CLONE ES MAGO
       this.velocityX = -1;
       this.scene.time.delayedCall(900,()=>{
         this.attackCollider.active=true
-      })
+      });
       this.scene.time.delayedCall(1200,()=>{
         this.attackCollider.active=false
-      })
+      });
       this.scene.time.delayedCall(1500, () => {
         if (!this.isDying && (this.x-80)>0) {
           this.isAttacking = false
@@ -185,8 +184,7 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
           this.anims.play(!this.isBerserkMode?"runEnemyAnim":"runPlayerAnim");
           this.velocityX = -3;
         }
-      }
-      );
+      });
     }
 
     //Destruir enemigo cuando sale de la pantalla y crear uno nuevo.
@@ -194,5 +192,6 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
       this.scene.createGroundEnemy();
       this.destroy();
     }
-  }
+
+  }//update
 }

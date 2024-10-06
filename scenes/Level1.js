@@ -157,7 +157,6 @@ export default class Level1 extends Phaser.Scene {
     //jugador
     //this.player = new Player(this, 450, 250, "player");//Así iniciabamos el player antes
     this.player = new Player(this, -50, 250, "runPlayer");//Ahora creamos el player "fuera de la pantalla" para que aparezca corriendo
-    //!Hay que añadir control de invulnerabilidad etc
     this.player.playerInitialMove()//Animacion inicial para que el player aparezca corriendo desde fuera
 
 
@@ -401,7 +400,7 @@ export default class Level1 extends Phaser.Scene {
     this.backgroundAnimationY();
 
     //MOVIMIENTO DE PLATAFORMAS
-    this.platforms.movePlatforms();//!pararlas cuando salga el boss
+    this.platforms.movePlatforms();
 
     //ACCION DEL ENEMIGO VOLADOR
     if (this.flyingEnemy) {
@@ -455,16 +454,12 @@ export default class Level1 extends Phaser.Scene {
     this.platformEvent = this.time.addEvent({
       delay: Phaser.Math.Between(3000, 5000),
       callback: () => {
-        this.platforms.createPlatform(
-          this.game.config.width,
-          Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 50),
-          "platform",
-          0.8,
-          0.3,
-        );
-      },
-      loop: true,
+        if(!this.boss){
+          this.platforms.createPlatform(this.game.config.width,Phaser.Math.Between(this.game.config.height/2, this.game.config.height - 50),"platform",0.8,0.3,);
+        }
+      }, loop: true,
     });
+    
   }
 
   createFlyingEnemy() {

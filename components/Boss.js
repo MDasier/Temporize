@@ -120,6 +120,16 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       frameRate: 10,
       repeat: 0,
     });
+
+    this.anims.create({
+      key: "hitPlayerBoss",
+      frames: this.anims.generateFrameNumbers("hitPlayer", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
   }
 
   //! FUNCIONES LOCAS DEL BOSS. necesitaré MUCHA ayuda. Estoy contanto con RNG total para esto
@@ -207,16 +217,15 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
   //* category: attack
   charge() {
-    //Sprint del boss por la pantalla que arroya al player si no lo esquiva
-    //?Si le ponemos brillo se ralentiza el juego :/
-    //!añadir overlap del boss contra player
+
     // Define las posiciones para las animaciones
     const positionY1 = this.y; //Posición inicial y final en Y
     const positionX1 = this.x; //Posición inicial en X
     const positionX2 = positionX1>350?50:this.scene.game.config.width-50; // Posición final en X
     
-    this.isInvencible=true//? Añadirlo a godmode() PRINCIPIOS SOLID CHICOS!
+    this.isInvencible=true
     //!godmode()
+
     this.anims.play("bossFallAnim");
     this.scene.tweens.add({
       targets: this,
@@ -224,6 +233,20 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
       duration: 1500,
       ease: 'sine.inout',
       onComplete: () => {
+        this.scene.physics.add.overlap(
+          this, this.scene.player, (boss, player) => {
+            player.coins -= 1;
+            player.anims.play("hitPlayerBoss").on("animationcomplete", () => {
+              
+            });
+
+              /*const chargeDMG = player.preFX.addGlow(0xff0000,6,1,false,undefined,10); 
+              this.scene.time.delayedCall(100, () => {
+                player.preFX.remove(chargeDMG)
+              });*/
+
+        }); //colisiones con el player
+
         this.anims.play("bossRunAnim");
           this.scene.tweens.add({
               targets: this,
@@ -360,28 +383,29 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     );
   }
 
-  death() {
+  death(){
     this.anims.play("bossDeathAnim");
     //TODO Después de la animación, se va a la pantalla de puntuación.
     //TODO en momento de la animación, meter algún efecto reshulón, parar spawn de bichos
      this.scene.player.coins*=5 //! Cambiar según pongamos precio items, cosas
         this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-
-
   }
+
   gameOver(){
      //TODO Después de la animación(de tu derrota/victoria maloso), se va a la pantalla de puntuación.
       this.scene.player.coins/=3 //! Cambiar según pongamos precio items, cosas
         this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
   }
+
   checkIfDied(){
     if(this.HP <= 0){
       this.death()
       
     }else{
-    this.gameOver()
+      this.gameOver()
     }
   }
+
   update(time, delta) {
     //CONTROL DE DAÑOS - Abria que controlar el GAME OVER
     //TODO hacer este check cuando falten entre 10 y 15 segundos del timer.
