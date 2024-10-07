@@ -72,8 +72,8 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
     this.anims.create({
       key: "attackPlayerAnim",
       frames: this.scene.anims.generateFrameNumbers("attackPlayer", {
-        start: 3,
-        end: 6,
+        start: 0,
+        end: 2,
       }),
       frameRate: 15,
       repeat: 1,
@@ -101,6 +101,15 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
       frames: this.anims.generateFrameNumbers("deathPlayer", { start: 0, end: 6 }),
       frameRate: 10,
       repeat: 0,
+    });
+    this.anims.create({
+      key: "idlePlayerAnim",
+      frames: this.anims.generateFrameNumbers("idlePlayer", {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 10,
+      repeat: -1,
     });
   }
 
@@ -158,20 +167,22 @@ export default class GroundEnemy extends Phaser.Physics.Arcade.Sprite {
       }
     }
 
+    //!FALTA AÑADIR ANIMACION IDLE PARA CUANDO EL ENEMIGO NO SE MUEVE DEL SITIO
+
 
     if(this.player.y >= 450 && !this.isDying && !this.isAttacking && ((this.x - 80) <= this.player.x && (this.x + 80) >= this.player.x)){
       this.isAttacking = true
       !this.isBerserkMode?this.body.setSize(60, 40, true):this.body.setSize(80, 75, true);
-      !this.isBerserkMode?this.body.setOffset(this.flipX ? 0:20, 25):this.body.setOffset(!this.flipX ? 110:50,70);;
+      !this.isBerserkMode?this.body.setOffset(this.flipX ? 0:20, 25):this.body.setOffset(!this.flipX ? 120:20,70);;
       this.anims.play(!this.isBerserkMode?"attackEnemyAnim":"attackPlayerAnim");//!FALTA CAMBIO DE ANIMACION CUANDO EL CLONE ES MAGO
       this.velocityX = -1;
-      this.scene.time.delayedCall(900,()=>{
+      this.scene.time.delayedCall(!this.isBerserkMode?900:450,()=>{
         this.attackCollider.active=true
       });
-      this.scene.time.delayedCall(1200,()=>{
+      this.scene.time.delayedCall(!this.isBerserkMode?1200:600,()=>{
         this.attackCollider.active=false
       });
-      this.scene.time.delayedCall(1500, () => {
+      this.scene.time.delayedCall(!this.isBerserkMode?1500:750,()=>{
         if (!this.isDying && (this.x-80)>0) {
           this.isAttacking = false
           if(this.isBerserkMode){
