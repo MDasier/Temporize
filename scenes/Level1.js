@@ -22,6 +22,12 @@ export default class Level1 extends Phaser.Scene {
     this.flyingEnemy;
     this.groundEnemy;
     this.currentSongTime;
+
+    //*LOGROS
+    this.achivements={
+      "firstJump": { unlocked: false, progress: 0 },
+      "firstAttack": { unlocked: false, progress: 0 }
+    };
   }
 
   //*********************** ASSETS-SPRITES/IMAGES ***********************
@@ -32,6 +38,9 @@ export default class Level1 extends Phaser.Scene {
       frameHeight: 60,
       frameWidth: 120
     });
+
+    //*CAGAR LOGROS SI HAY
+    this.loadAchivements;
 
     //JUGADOR
     this.load.spritesheet("runPlayer", "./src/img/mage/Run.png", {
@@ -139,7 +148,10 @@ export default class Level1 extends Phaser.Scene {
     window.addEventListener('contextmenu', function (e) {
       e.preventDefault(); // Esto evita que aparezca el menú contextual
     });
-    
+
+    //*logros
+    this.loadAchivements()
+
     //fondo siempre primero
     this.background = this.add.tileSprite(500, 200, 0, 350, "background");
     this.background.setScale(3.8);
@@ -179,9 +191,16 @@ export default class Level1 extends Phaser.Scene {
     
     //*Eventos del raton
     this.input.on('pointerdown', function (pointer) {
-      if(pointer.leftButtonDown()){
+      if(pointer.leftButtonDown() && !this.scene.player.isAttacking){
         //Posicion donde hemos clicado.
           //pointer.x ---- pointer.y
+
+          this.scene.verifyAchivements('attack');//Registramos el evento en logros
+          console.log(this.scene.achivements["firstAttack"].progress)//comprobamos el progreso
+          if(!this.scene.contenedor && this.scene.achivements["firstAttack"].progress % 5 === 0){
+            this.scene.createToast("¡Logro Desbloqueado: Sigue disparando! "+this.scene.achivements["firstAttack"].progress,1,2000)//cambiar por numero de logro
+            //this.scene.createToast("¡Logro Desbloqueado: Sigue disparando!",2)//cambiar por numero de logro
+          }       
 
           if(this.scene.player.x<pointer.x){
             this.scene.player.setFlipX(false)
@@ -199,19 +218,20 @@ export default class Level1 extends Phaser.Scene {
               this.scene.player.isPlayerMovable=true;
             });            
           }
-      }else if(this.scene.keys.A.isDown && pointer.rightButtonDown()){
+      }else if(this.scene.keys.A.isDown && pointer.rightButtonDown() && !this.scene.player.isSpecialAttacking){
         this.scene.player.setFlipX(true)
         this.scene.player.blockOrBlink()
-
-      }else if(this.scene.keys.D.isDown && pointer.rightButtonDown()){
+        this.scene.createToast("BLINK EN CD",1,7000)
+      }else if(this.scene.keys.D.isDown && pointer.rightButtonDown() && !this.scene.player.isSpecialAttacking){
         this.scene.player.setFlipX(false)
         this.scene.player.blockOrBlink()
-
-      }else if(pointer.rightButtonDown()){ 
+        this.scene.createToast("BLINK EN CD",1,7000)
+      }else if(pointer.rightButtonDown() && !this.scene.player.isSpecialAttacking){ 
         if(this.scene.player.isPlayerMovable){
           const playerDirection=this.scene.player.x>pointer.x//guardo la diferencia entre la posicion y el click en forma de booleano
           this.scene.player.setFlipX(playerDirection)
           this.scene.player.blockOrBlink()
+          this.scene.createToast("BLINK EN CD",1,7000)
         }
       }
     });
@@ -579,4 +599,85 @@ export default class Level1 extends Phaser.Scene {
       };
     }
   }
+
+
+  loadAchivements() {
+    this.storedAchivements = localStorage.getItem('achivements');
+    if (this.storedAchivements) {
+        Object.assign(this.achivements, JSON.parse(this.storedAchivements));
+        console.log(this.storedAchivements)
+    }
+  }
+  saveAchivements() {
+    //!localStorage.setItem('achivements', JSON.stringify(this.achivements));
+  }
+
+  verifyAchivements(event) {//EL EVENTO LO MARCAMOS NOSOTROS CUANDO HAGAMOS EL CALL A 'VERIFICARLOGROS'
+    switch (event) {
+        case 'jump':
+            this.achivements["firstJump"].progress++;
+            if (this.achivements["firstJump"].progress === 1 && !this.achivements["firstJump"].unlocked) {
+              this.achivements["firstJump"].unlocked = true;
+              //mostrarMensaje("¡Logro Desbloqueado: Primer Salto!");
+                this.saveAchivements();
+            }            
+          break;
+        case 'attack':
+            this.achivements["firstAttack"].progress++;
+            if (this.achivements["firstAttack"].progress === 5 && !this.achivements["firstAttack"].unlocked) {
+              this.achivements["firstAttack"].unlocked = true;
+                //mostrarMensaje("¡Logro Desbloqueado: Sigue disparando!");
+                this.saveAchivements();
+                console.log("¡Logro Desbloqueado: Sigue disparando!")
+                //this.scene.showToast.call(this, "¡Logro Desbloqueado: Sigue disparando!")
+            }
+            if (this.achivements["firstAttack"].progress % 5 === 0 && this.achivements["firstAttack"].unlocked) {
+              //mostrarMensaje("¡Logro Desbloqueado: Primer Salto!");
+              this.saveAchivements();
+            }
+          break;/*
+        case 'score':
+            logros["Puntos"].progreso += score// Asumiendo que score es la cantidad de puntos obtenidos
+            if (logros["Puntos"].progreso >= 100 && !logros["Puntos"].desbloqueado) {
+              logros["Puntos"].desbloqueado = true;
+              logros["Puntos"].progreso += score;
+            }*/
+    }
+  }
+
+  createToast(message,index,delay){          
+
+    if(delay>2000){
+      this.toast1 = this.add.container()
+      this.toastBg1 = this.add.rectangle(5,450,250,45,{ fill: '#fff' })
+      this.toastText1 = this.add.text(10, 450, message, { fill: '#fff' })
+      this.toastBg1.setScale(1.3)
+      this.toast1.add(this.toastBg1)
+      this.toast1.add(this.toastText1)
+
+      this.time.delayedCall(8000, () => {
+        //this.toastBg.setVisible(false)
+        //this.toastText.setVisible(false)
+        this.toast1.setVisible(false)
+        this.toast1.destroy()
+      })
+    }else{
+      this.toast2 = this.add.container()
+      this.toastBg2 = this.add.rectangle(5,50+(index*50),700,45,{ fill: '#fff' })
+      this.toastText2 = this.add.text(10,50+(index*50), message, { fill: '#fff' })
+      this.toastBg2.setScale(1.3)
+      this.toast2.add(this.toastBg2)
+      this.toast2.add(this.toastText2)
+
+      this.time.delayedCall(2000, () => {
+        //this.toastBg.setVisible(false)
+        //this.toastText.setVisible(false)
+        this.toast2.setVisible(false)
+        this.toast2.destroy()
+      })
+    }
+    
+    //this.scene.createToast.call(this.scene,"¡Logro Desbloqueado: Sigue disparando!",1/*cambiar por numero de logro*/)
+  }
+
 }

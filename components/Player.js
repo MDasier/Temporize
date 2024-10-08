@@ -88,6 +88,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
 
   blockOrBlink() {
+    this.isSpecialAttacking=true;
+    this.scene.time.delayedCall(8000, () => {
+      this.isSpecialAttacking=false;
+    })
+    
     const blockOrBlinkGlow = this.scene.player.preFX.addGlow(this.playerType==1?0x000000:0xffffff);
     this.isInvencible=true
     if(this.playerType==1){
@@ -120,6 +125,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
       });
     }
+
+    
    
   }
 
