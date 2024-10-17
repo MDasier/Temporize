@@ -141,6 +141,12 @@ export default class Level1 extends Phaser.Scene {
       frameWidth: 1840 / 23,
       frameHeight: 80,
     });
+
+    //SKILL COOLDOWN
+    this.load.image("skillCd", "./src/img/skillCd.png", {
+      frameWidth: 130,
+      frameHeight: 130,
+    });
   } 
 
   //*********************** ELEMENTOS ***********************
@@ -171,6 +177,9 @@ export default class Level1 extends Phaser.Scene {
     this.player = new Player(this, -50, 250, "runPlayer");//Ahora creamos el player "fuera de la pantalla" para que aparezca corriendo
     this.player.playerInitialMove()//Animacion inicial para que el player aparezca corriendo desde fuera
 
+    //SKILLS
+    this.skillCd = this.add.tileSprite(20, 450, 130, 130, "skillCd");
+    this.skillCd.setScale(0.5)
 
     //flying enemy
     this.createFlyingEnemy();
@@ -221,17 +230,20 @@ export default class Level1 extends Phaser.Scene {
       }else if(this.scene.keys.A.isDown && pointer.rightButtonDown() && !this.scene.player.isSpecialAttacking){
         this.scene.player.setFlipX(true)
         this.scene.player.blockOrBlink()
-        this.scene.createToast("BLINK EN CD",1,7000)
+        this.scene.skillCooldown()
+        //this.scene.createToast("BLINK EN CD",1,7000)
       }else if(this.scene.keys.D.isDown && pointer.rightButtonDown() && !this.scene.player.isSpecialAttacking){
         this.scene.player.setFlipX(false)
         this.scene.player.blockOrBlink()
-        this.scene.createToast("BLINK EN CD",1,7000)
+        this.scene.skillCooldown()
+        //this.scene.createToast("BLINK EN CD",1,7000)
       }else if(pointer.rightButtonDown() && !this.scene.player.isSpecialAttacking){ 
         if(this.scene.player.isPlayerMovable){
           const playerDirection=this.scene.player.x>pointer.x//guardo la diferencia entre la posicion y el click en forma de booleano
           this.scene.player.setFlipX(playerDirection)
           this.scene.player.blockOrBlink()
-          this.scene.createToast("BLINK EN CD",1,7000)
+          this.scene.skillCooldown()
+          //this.scene.createToast("BLINK EN CD",1,7000)
         }
       }
     });
@@ -678,6 +690,19 @@ export default class Level1 extends Phaser.Scene {
     }
     
     //this.scene.createToast.call(this.scene,"¡Logro Desbloqueado: Sigue disparando!",1/*cambiar por numero de logro*/)
+  }
+
+  skillCooldown(){
+    
+
+    this.skillFrame = this.make.graphics({ x: 5, y: 435, add: true });
+    this.skillFrame.fillStyle(0x151515, 0.8); //color y opacidad
+    this.skillFrame.fillCircle(15, 15, 30); // Radio del círculo (x,y,%radius)
+
+    this.time.delayedCall(8000, () => {
+      this.skillFrame.destroy()
+    })
+    
   }
 
 }
