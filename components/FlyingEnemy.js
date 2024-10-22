@@ -1,30 +1,34 @@
 import EnemyBeam from "./EnemyBeam.js";
 export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y) {
-    super(scene, x, y, "flyingEnemy");
+  constructor(scene, x, y, texture, difficulty) {
+    super(scene, x, y, texture, difficulty);
 
     this.scene = scene;
     this.speed = 0.1; //velocidad de movimiento, probando
+    this.difficulty=difficulty;
 
     /*  this.floatTime = 0; //para controlar el tiempo que el enemigo está flotando en pantalla antes de irse
     this.shootInterval = 5000; //5 segundos para disparar
     this.lastShootTime = 0; //contador de tiempo para el disparo
     this.isFloating = false; //empieza moviendose */
-
+    this.w = 100;
+    this.h = 86;
+    this.HP=1;
     this.setDepth(1);
-    this.setTexture("flyingEnemy");
+    this.setTexture(texture);
     this.setPosition(x, y);
     this.setScale(1);
 
     //para moverlo
-    this.velocityX = -3; //mov horizontal, negativa izquierda
-    this.velocityY = 0.015; //mov vertical
-    this.amplitude = 3;
-    this.frequency = 1000;
+    if(this.difficulty>0){
+      this.velocityX = -3; //mov horizontal, negativa izquierda
+      this.velocityY = 0.015; //mov vertical
+      this.amplitude = 3;
+      this.frequency = 1000;
+      
+    }    
 
-    this.w = 100;
-    this.h = 86;
-    this.HP=1;
+    
 
     // this.createAnimation = this.createAnimation.bind(this);
     // this.createAnimation();

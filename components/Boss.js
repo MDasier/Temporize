@@ -1,11 +1,11 @@
 import GroundEnemy from "../components/GroundEnemy.js";
 import EnemyBeam from "./EnemyBeam.js";
 export default class Boss extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y) {
-    super(scene, x, y, "spriteBoss");
+  constructor(scene, x, y, difficulty) {
+    super(scene, x, y, "spriteBoss", difficulty);
 
     this.scene = scene;
-    this.dificulty = 1; //dificulty
+    this.difficulty = difficulty; //difficulty
     this.HP = 10; //VIDA DEL BOSS (ya veremos como ajustamos valores y daño)
     this.speed = 0.1;
     this.isInvencible=false
@@ -30,12 +30,14 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.w = 40;
     this.h = 60;
 
-    this.scene.physics.add.existing(this); 
-    this.scene.add.existing(this); 
-    this.body.setSize(this.w, this.h, true);
-    this.body.setOffset(100, 45);
-
-    this.body.setAllowGravity(false);
+    if(this.difficulty>0){
+      this.scene.physics.add.existing(this); 
+      this.scene.add.existing(this); 
+      this.body.setSize(this.w, this.h, true);
+      this.body.setOffset(100, 45);  
+      this.body.setAllowGravity(false);
+    }
+    
 
     this.groundEnemyClone = null;
   }
@@ -168,7 +170,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   //* category: debuff
   root() {
     //Llamada a metodo 'root' de player durante 1*dificultad segundos
-    this.scene.player.root(1500 * this.dificulty);
+    this.scene.player.root(1500 * this.difficulty);
   }
 
   //* category: debuff
@@ -198,7 +200,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     });
 
     this.scene.time.delayedCall(
-      3000 * this.dificulty,
+      3000 * this.difficulty,
       () => {
         this.scene.keys.A = this.scene.input.keyboard.addKey(
           Phaser.Input.Keyboard.KeyCodes.A
@@ -321,7 +323,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
 
     this.isFogOfWarActive = true;
     this.scene.time.delayedCall(
-      3000 * this.dificulty,
+      3000 * this.difficulty,
       () => {
         this.isFogOfWarActive = false;
         rt.setVisible(false); // FOW 'desactivado'
@@ -334,12 +336,12 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   //* category: attack
   debuffCoin() {
     this.scene.scoreText.setStyle({ fill: '#800000'});
-    this.scene.player.coins -= 10*this.dificulty;
+    this.scene.player.coins -= 10*this.difficulty;
 
     //!falta añadir alguna animacion al texto (tipo efecto combo en cualquier arcade/lucha)
 
     this.scene.time.delayedCall(
-      3000 * this.dificulty,
+      3000 * this.difficulty,
       () => {
         this.scene.scoreText.setStyle({ fill: '#ffffff'});
       },
@@ -354,7 +356,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
   debuffDPS() {
     this.scene.player.damage = this.scene.player.damage / 2;
     this.scene.time.delayedCall(
-      3000 * this.dificulty,
+      3000 * this.difficulty,
       () => {
         this.scene.player.damage = this.scene.player.damage * 2;
       },

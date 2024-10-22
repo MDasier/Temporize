@@ -2,7 +2,7 @@ import Level1 from './scenes/Level1.js'
 import InitialScene from './scenes/InitialScene.js'
 import Menu from './scenes/Menu.js';
 import Store from './scenes/Store.js';
-import HowToPlay from './scenes/HowToPlay.js';
+import Tutorial from './scenes/Tutorial.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -24,7 +24,7 @@ const config = {
     target:120,
     forceSetTimeOut: true,
   },
-  scene:[ Menu, Store, HowToPlay, InitialScene, Level1 ]
+  scene:[ Menu, Store, Tutorial, InitialScene, Level1 ]
 
 };
 const game = new Phaser.Game(config)

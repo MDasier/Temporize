@@ -62,14 +62,22 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
         this,
         this.scene.flyingEnemy,
         (mageBeam, enemy) => {
-          enemy.HP -= 1;
-          this.scene.player.coins += 5;
-          this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
-          mageBeam.destroy();
-
-          //*FALTA AÑADIR ANIMACION DE MUERTE FLYINGENEMY
-          enemy.setVisible(false);
-          enemy.canShoot = false;         
+          if(this.scene.flyingEnemy.difficulty==0){//SI ES TUTORIAL SOLO LO DESTRUYE
+            enemy.HP -= 1;
+            mageBeam.destroy();            
+            enemy.setVisible(false);//!ANIMACION DE MUERTE ENEMIGOVOLADOR
+            enemy.canShoot = false; 
+          }else{//SI ES JUEGO ADEMÁS SUMA PUNTOS
+            enemy.HP -= 1;
+            this.scene.player.coins += 5;
+            this.scene.scoreText.text = `Score: ${this.scene.player.coins}`
+            mageBeam.destroy();
+  
+            //*FALTA AÑADIR ANIMACION DE MUERTE FLYINGENEMY
+            enemy.setVisible(false);//!ANIMACION DE MUERTE ENEMIGOVOLADOR
+            enemy.canShoot = false; 
+          }
+                  
         }
       );
     }//colisiones con flyingEnemy

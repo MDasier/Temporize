@@ -505,7 +505,7 @@ export default class Level1 extends Phaser.Scene {
 
     let y = Phaser.Math.Between(minY, maxY);
 
-    this.flyingEnemy = new FlyingEnemy(this, x, y, this.player);
+    this.flyingEnemy = new FlyingEnemy(this, x, y, "flyingEnemy", 1);
     this.add.existing(this.flyingEnemy);
 
     // this.flyingEnemy.setVisible(true);
@@ -692,8 +692,7 @@ export default class Level1 extends Phaser.Scene {
     //this.scene.createToast.call(this.scene,"¡Logro Desbloqueado: Sigue disparando!",1/*cambiar por numero de logro*/)
   }
 
-  skillCooldown(){
-    
+  skillCooldown(){   
 
     this.skillFrame = this.make.graphics({ x: 5, y: 435, add: true });
     this.skillFrame.fillStyle(0x151515, 0.8); //color y opacidad
