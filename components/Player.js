@@ -193,9 +193,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if(this.scene.keys.D.isDown && this.isPlayerMovable) {
       this.scene.player.setVelocityX(125);
       this.scene.player.flipX = false;
+      this.scene.player.variablePruebaD = true;
     }else if(this.scene.keys.A.isDown && this.isPlayerMovable) {
       this.scene.player.setVelocityX(-125);
       this.scene.player.flipX = true;
+      this.scene.player.variablePruebaA = true;
     }else{
       this.scene.player.setVelocityX(0);
     }

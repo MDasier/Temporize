@@ -205,7 +205,7 @@ export default class Level1 extends Phaser.Scene {
           //pointer.x ---- pointer.y
 
           this.scene.verifyAchivements('attack');//Registramos el evento en logros
-          console.log(this.scene.achivements["firstAttack"].progress)//comprobamos el progreso
+          //console.log(this.scene.achivements["firstAttack"].progress)//comprobamos el progreso
           if(!this.scene.contenedor && this.scene.achivements["firstAttack"].progress % 5 === 0){
             this.scene.createToast("¡Logro Desbloqueado: Sigue disparando! "+this.scene.achivements["firstAttack"].progress,1,2000)//cambiar por numero de logro
             //this.scene.createToast("¡Logro Desbloqueado: Sigue disparando!",2)//cambiar por numero de logro
@@ -252,8 +252,9 @@ export default class Level1 extends Phaser.Scene {
 
   bossAppear(){
     this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,1);
+    this.boss.setVisible(true)
     //this.boss.METODOATAQUE()//PARA PROBAR ATAQUES DIRECTAMENTE
-    this.boss.clonePlayer();
+    //this.boss.clonePlayer();
   }
 
   initializateTimer(data){

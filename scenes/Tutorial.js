@@ -18,11 +18,12 @@ export default class Store extends Phaser.Scene {
     this.timerText = null;
     this.scoreText = null;
     this.floor = null;
+    this.playerH=75
 
     this.flyingEnemy;
-    this.groundEnemy;
+    this.endPoint;
     this.currentSongTime;
-
+    this.canCreateFlyingEnemy=true;
   }
 
   preload() {
@@ -32,6 +33,10 @@ export default class Store extends Phaser.Scene {
       frameHeight: 60,
       frameWidth: 120
     });
+
+    //PRUEBA ENDPOINT
+    this.load.image("arrowTemp", "./src/img/arrowTemp.png");
+    this.load.image("arrowGreen", "./src/img/arrowGreen.png");
 
     //JUGADOR
     this.load.spritesheet("runPlayer", "./src/img/mage/Run.png", {
@@ -148,8 +153,6 @@ export default class Store extends Phaser.Scene {
     this.boss = new Boss(this,this.cameras.main.worldView.right-150,200,this.player,0);
     this.boss.setVisible(false);
 
-    //ENEMIGO VOLADOR
-    this.createFlyingEnemy();
  
     //BOTON PAUSA
     this.createPauseButton();    
@@ -194,6 +197,13 @@ export default class Store extends Phaser.Scene {
       }
     });
 
+    this.infoRect = this.add.rectangle(100, 120, 1500, 45, 0xDCDCDC)
+    this.infoText = this.add.text(80, 100, 'MUÉVETE LATERALMENTE CON "A" y "D"', { fill: '#000',
+      fontSize: '32px',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    })
+    
   }//create
 
   createFlyingEnemy() {
@@ -243,9 +253,92 @@ export default class Store extends Phaser.Scene {
     //MOVIMIENTO Y 'ACCION' DEL FONDO
     this.backgroundAnimationY();
 
-    //MOVIMIENTO DE PLATAFORMAS
-    //this.platforms.movePlatforms();
+
+    //SI EL USUARIO CUMPLE EL MOVIMIENTO PASAMOS A CREAR ENEMIGO
+    if(this.player.variablePruebaD && this.player.variablePruebaA && this.canCreateFlyingEnemy){
+      this.canCreateFlyingEnemy=false
+      this.player.variablePruebaD=false
+      this.player.variablePruebaA=false
+
+      this.infoText.text='DISPARA CON CLICK IZQUIERDO! -->'
+      this.infoText.setColor('#000')
+      this.createFlyingEnemy();
+      this.time.delayedCall(2000, () => {
+        //ENEMIGO VOLADOR
+        
+      })
+    }
+
+    this.flyingEnemyKill()
+    this.playerJumping()
+    this.tutorialComplete()
   }//cierre update
+
+
+  flyingEnemyKill(){
+    if(this.flyingEnemy && !this.flyingEnemy.visible){
+      this.infoText.text='SALTO/DOBLE SALTO CON "W" o "ESPACIO"'
+
+      if(!this.arrowTemp){
+        this.arrowTemp = this.add.tileSprite(700, 260, 205, 243, "arrowTemp");
+        this.arrowTemp.setScale(0.32);
+
+        this.tweens.add({
+          targets: this.arrowTemp,
+          y: 220,
+          duration: 900,
+          ease: 'Sine.easeInOut',
+          yoyo: true, 
+          repeat: -1 
+        });
+      }
+      
+    }
+  }
+
+  playerJumping(){
+    if( (this.player.y+this.playerH)<=330
+        && (this.player.x+25)>=690 
+        && (this.player.x+25)<=710
+        && this.player.body.touching.down){
+          this.arrowTemp.setVisible(false)
+      this.infoText.text='CLICK DERECHO PARA HABILIDAD ESPECIAL'
+      if(!this.arrowGreen){
+        this.arrowGreen = this.add.tileSprite(110, 190, 205, 243, "arrowGreen");
+        this.arrowGreen.setScale(0.32);
+
+        this.tweens.add({
+          targets: this.arrowGreen,
+          y: 160,
+          duration: 900,
+          ease: 'Sine.easeInOut',
+          yoyo: true, 
+          repeat: -1 
+        });
+      }
+    }
+  }
+
+  tutorialComplete(){
+    if( (this.player.y+this.playerH)<=260 
+        && (this.player.x+25)>=100 
+        && (this.player.x+25)<=140 
+        && this.player.body.touching.down){
+      this.infoText.text='TUTORIAL COMPLETADO - PULSA PARA IR AL MENU'
+      this.infoText.setColor('#fff')
+      this.arrowGreen.setVisible(false)
+      this.infoText.setInteractive()
+      this.infoText.on('pointerdown', () => {
+        // fade to black
+        this.cameras.main.fadeOut(500, 0, 0, 0)
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+          //? Todas las escenas están creadas, switch solo las intercambia de posicion. Muestra la escena a la que se le hace referencia.
+        this.scene.switch('menu')
+        this.cameras.main.fadeIn(1500, 0, 0, 0)
+        })
+      });
+    }
+  }
 
   backgroundAnimationY() {
 

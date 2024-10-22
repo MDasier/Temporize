@@ -6,6 +6,7 @@ export default class FlyingEnemy extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
     this.speed = 0.1; //velocidad de movimiento, probando
     this.difficulty=difficulty;
+    this.visible=true;
 
     /*  this.floatTime = 0; //para controlar el tiempo que el enemigo está flotando en pantalla antes de irse
     this.shootInterval = 5000; //5 segundos para disparar

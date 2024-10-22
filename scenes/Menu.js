@@ -41,7 +41,27 @@ export default class Menu extends Phaser.Scene {
      .on('pointerout', () => this.htpButtonOut() )
      .on('pointerdown', () => this.htpButtonDown() )
 
+     //this.showScene('menu');
   }
+/*
+  showScene(sceneKey) {
+    // Primero, hacer invisible todas las escenas lanzadas
+    this.scene.get('level1').scene.setVisible(false);
+    this.scene.get('tutorial').scene.setVisible(false);
+    this.scene.get('store').scene.setVisible(false);
+    this.scene.get('menu').scene.setVisible(false);
+
+    // Mostrar solo la escena especificada
+    this.scene.get(sceneKey).scene.setVisible(true);
+
+    // También puedes pausar o detener las escenas que no quieres que actualicen
+    this.scene.pause('level1');
+    this.scene.pause('tutorial');
+    this.scene.pause('store');
+
+    // Reanudar solo la escena que queremos que esté activa
+    this.scene.resume(sceneKey);
+  }*/
 
   startButtonOver() {
     this.startButton.setStyle({ fill: '#ff0'});
@@ -91,7 +111,12 @@ export default class Menu extends Phaser.Scene {
     this.storeMusic.play();
     this.storeMusic.setLoop(true);
     this.storeMusic.setVolume(0.01);
-    this.scene.start("store")
+    this.cameras.main.fadeOut(500, 0, 0, 0)
+    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+      //? Todas las escenas están creadas, switch solo las intercambia de posicion. Muestra la escena a la que se le hace referencia.
+    this.scene.switch('store')
+    this.cameras.main.fadeIn(1500, 0, 0, 0)
+    })
   }
 
   resumeButtonOver() {
@@ -130,6 +155,7 @@ export default class Menu extends Phaser.Scene {
 		this.cameras.main.fadeOut(500, 0, 0, 0)
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
       //? Todas las escenas están creadas, switch solo las intercambia de posicion. Muestra la escena a la que se le hace referencia.
+      //this.scene.launch('tutorial')
     this.scene.switch('tutorial')
     this.cameras.main.fadeIn(1500, 0, 0, 0)
     })

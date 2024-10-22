@@ -30,14 +30,11 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
     this.w = 40;
     this.h = 60;
 
-    if(this.difficulty>0){
-      this.scene.physics.add.existing(this); 
-      this.scene.add.existing(this); 
-      this.body.setSize(this.w, this.h, true);
-      this.body.setOffset(100, 45);  
-      this.body.setAllowGravity(false);
-    }
-    
+    this.scene.physics.add.existing(this); 
+    this.scene.add.existing(this); 
+    this.body.setSize(this.w, this.h, true);
+    this.body.setOffset(100, 45);  
+    this.body.setAllowGravity(false);  
 
     this.groundEnemyClone = null;
   }
@@ -248,7 +245,7 @@ export default class Boss extends Phaser.Physics.Arcade.Sprite {
               });*/
 
         }); //colisiones con el player
-
+      
         this.anims.play("bossRunAnim");
           this.scene.tweens.add({
               targets: this,

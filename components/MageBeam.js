@@ -39,8 +39,10 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  update() {
-    if(this.scene.boss && this.scene.boss.HP>0){
+
+  update(){
+    
+    if(this.scene.boss && this.scene.boss.HP>0 && this.scene.boss.visible){
       this.scene.physics.add.overlap(
         this, this.scene.boss, (mageBeam, boss) => {
           boss.HP -= 1;
@@ -66,6 +68,8 @@ export default class MageBeam extends Phaser.Physics.Arcade.Sprite {
             enemy.HP -= 1;
             mageBeam.destroy();            
             enemy.setVisible(false);//!ANIMACION DE MUERTE ENEMIGOVOLADOR
+            enemy.visible=false;
+            console.log(enemy.visible)
             enemy.canShoot = false; 
           }else{//SI ES JUEGO ADEMÁS SUMA PUNTOS
             enemy.HP -= 1;
